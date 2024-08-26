@@ -1,0 +1,132 @@
+- EJB(Enterprise Java Bean)
+    - 사용하기 어려움
+    - 느림
+
+- jpa는 자바진영의 표준orm이며, 하이버네이트는 이를 구현하는 구현체로 시장의 80% 점유률을 가진다.
+    
+    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/25aaccab-ae59-4d3b-b302-12ecfc2ca9f9/Untitled.png)
+    
+
+---
+
+## 스프링이란?
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9fd46ce8-fec1-4561-a6dc-f7d003fcd028/Untitled.png)
+
+- 스프링 배치(spring batch) : 배치 처리를 특화한 기술
+
+ 
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/4513d3c5-f0b9-4fa0-b1c8-faf9fdbd86a0/Untitled.png)
+
+위의 언급된 기술들을 통합하여 스프링이라고 함.
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d80b41c6-e84d-4fef-8721-b3cde59986ff/Untitled.png)
+
+스프링을 사용하게 편하게 한 것이 `스프링부트`
+
+- 라이브러리 관리를 쉽게 해줌(관련되어있는 라이브러리, 버전 등)
+- tomcat서버를 내장하고 있어서 설정에 시간을 투자하지 않아도 됨.
+
+- 스프링은 왜 만들어졌는 가?
+    - 스프링은 자바 언어 기반의 프레임 워크
+    - 스프링은 좋은 `객체 지향` 애플리케이션을 개발할 수 있게 도와주는 프레임워크
+        - EJB는 객체 지향에 적합하지 않음
+
+---
+
+### 좋은 객체 지향이란?
+
+- 객체 지향 프로그래밍은 프로그램을 `유연`` 하고 `변경`이 용이하게 만든다.
+    
+    → 다형성(Polymorphism)
+    
+
+- 다형성이란?
+    
+    인터페이스를 구현한 객체 인스턴스를 실행 시점에서 유연하게 변경할 수있다.
+    
+    클라이언트를 변경하지 않고, 서버의 구현 기능을 유연하게 변경할 수 있다.
+    
+    - 역할과 구현
+        - 역할:interface
+        - 구현:object
+    - 클라이언트는 대상의 역할(인터페이스)만 알면 된다.
+    - 클라이언트는 구현 대상의 내부 구조를 몰라도된다.
+    - 클라이언트는 구현 대상의 내부 구조가 변경되어도 영향을 받지 않는다.
+    - 클라이언트는 구현 대상 자체를 변경해도 영향을 받지 않는다.
+- 다형성의 실세계 비유
+    - 운전자- 자동차
+        - 차량 운전자는 차종에 관계없이 운전할 수 있다.
+            - 운전자는 차가 어떻게 만들어졌는지 알 필요가 없다.
+            - 클라이언트에 영향을 미치지 않는다.
+    - 공연 무대
+    - 키보드, 마우스 등 세상의 표준 인터페이스
+    
+- 자바 언어의 다형성
+    
+    (오버 라이딩 : 재정의 / 오버 로딩: 매소드 구현)
+    
+    (부모클래스는 자식클래스로 정의될 수 있다.)
+    
+    - 오버 라이딩
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1885b9a0-bc51-4634-857d-8b18a3433dc7/Untitled.png)
+
+- 스프링과 객체 지향
+    
+    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/998e5ab9-0241-4ab1-ad77-15bd7f273625/Untitled.png)
+    
+    스프링은 `다형성을 극대화`하여 이용할 수 있게 도와준다!.
+    
+
+---
+
+### 좋은 객체 지향 설계의 5가지 원칙(SOLID)
+
+중요!
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/367b7f8c-b9ad-40ad-bfb4-69c7a0d861de/Untitled.png)
+
+- SPR(단일 책임의 원칙 single responsibility principle)
+    - 하나의 클래스는 하나의 책임을 가져야한다.
+    - 단일책임의 원칙을 따르는 것은, 변경이 있을 때 파급효과가 최대한 적어야 한다.
+    
+- OCP(개방 폐쇄 원칙 open - closed principle)
+    - `확장`에는 열려 있으나 `변경`에는 닫혀 있어야 한다.
+    - 코드 상에서 인터페이스의 구현체를 바꾼다면, 이 과정을 위한 코드 변경이 필요하다
+        
+        → 다형성을 사용했지만 ocp원칙을 위배했다. 
+        
+        →  스프링이 이러한 문제를 해결해준다.(어떻게? 나중 강의를 통해)
+        
+- LSP 리스코프 치환 원칙
+    - 프로그램의 목적성을 해치지 않는 선에서, 인스턴스를 변경해야 한다.
+    
+- ISP 인터페이스 분리 원칙(interface sergregation principle)
+    - 특정 클라이언트를 위한 인터페이스 여러개가 범용 인터페이스 하나 보다 낫다.(포카락, 포크 + 숫가락)
+    - 인터페이스가 명확해지고, 대체 가능성이 높아진다.
+
+- DIP 의존 관계 역전 원칙(dependency inversion principle)
+    - 구현 클래스에 의존하지 말고, 인터페이스를 의존해야 한다.
+    - 구현 클래스에 의존하면, 변경이 어려워진다.
+        
+        ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2a5a358e-f356-462c-b640-74e5f4d4b332/Untitled.png)
+        
+        사실 위의 코드는 좌)인터페이스와 우)구현체를 모두 의존하고 있어, dip 의존 관계 역전원칙에 위배된다. →(??뒤에서 설명해 드립니다.)
+        
+    
+    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/bec7b3af-0e91-4266-a783-67d783d76ceb/Untitled.png)
+    
+
+---
+
+### 객체 지향 설계와 스프링
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/08721ff3-e63d-4423-9cd8-1cfcb25cbb22/Untitled.png)
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6ee8dd73-7cb5-4d9f-8226-84b2ab6e1cb9/Untitled.png)
+
+- 인터페이스 설계의 문제점
+    - 추상화라는 비용이 발생한다. → (코드를 한번 확인하는 절차가 늘어남)
+    - 기능의 확장 가능성이 없다면, 구현 클래스를 직접 사용하고, 향후 리팩터링을 통해 인터페이스를 도입하자.
