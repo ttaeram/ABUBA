@@ -5,9 +5,13 @@ Spring Security의 주요 목적은 애플리케이션의 인증(Authentication)
 Spring Security의 아키텍처는 필터 체인을 기반으로 한다. 이 필터 체인은 HTTP 요청이 애플리케이션에 도달하기 전에 여러 보안 관련 작업을 수행한다. 주요 필터들은 다음과 같다:
 
 1. SecurityContextPersistenceFilter: SecurityContext를 로드하고 저장하는 역할을 한다.
+
 2. UsernamePasswordAuthenticationFilter: 폼 기반 로그인을 처리한다.
+
 3. AnonymousAuthenticationFilter: 인증되지 않은 사용자에게 익명 사용자 토큰을 부여한다.
+
 4. ExceptionTranslationFilter: Spring Security 예외를 HTTP 응답으로 변환한다.
+
 5. FilterSecurityInterceptor: 접근 제어 결정을 내리는 주요 필터이다.
 
 Spring Security는 다양한 인증 방식을 지원한다. 가장 기본적인 방식은 폼 기반 로그인이지만, HTTP Basic 인증, OAuth, LDAP, Remember-Me 인증 등도 지원한다. 개발자는 필요에 따라 이러한 인증 방식을 선택하거나 조합할 수 있다.
