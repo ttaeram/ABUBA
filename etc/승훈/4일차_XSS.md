@@ -55,7 +55,7 @@ ex) `https://example.hyundai.com/search?keyword="보안"`이라는 url을 입력
 - 제대로 사용하기 위해서는 어떠한 대책이 있는지 알아두고 있는 것이 좋음
 
 1. **문자열 이스케이프 처리**
-- img tag에서 <img>에서 '<'와 '>' 등을 이스케이프 처리. 아래와 같은 문자들을 이스케이프 처리 할 수 있음
+- img tag에서 < img >에서 '<'와 '>' 등을 이스케이프 처리. 아래와 같은 문자들을 이스케이프 처리 할 수 있음
 
 | 특수문자 | 이스케이프 처리 |
 | --- | --- |
@@ -64,7 +64,7 @@ ex) `https://example.hyundai.com/search?keyword="보안"`이라는 url을 입력
 | > | > |
 | " | " |
 | ' | ' |
-1. **속성값의 문자열을 쌍따옴표로 감싸기**
+2. **속성값의 문자열을 쌍따옴표로 감싸기**
 - 만약 URL이 이러한 형태를 띄고 있다면 이스케이프 처리만으로는 방어하기 힘듦
 
 ```
@@ -83,20 +83,20 @@ http://example.hyundai/search?keyword="x onmouseover=alert(1)"
 <input value="&quot; onmouseover='alert(1)'">
 ```
 
-1. **링크의 스키마를 http/https로 제한하기**
+3. **링크의 스키마를 http/https로 제한하기**
 - tag를 사용할 때에는 http/https 뿐만 아니라 자바스크립트 스키마도 지정할 수 있기 때문에 주의해야 함. 이를 예방하기 위해서는 href 속성 값을 http 또는 https 만으로 제한해서 방어할 수 있음
     
     ```
     <a href="">link</a> // 이러한 스키마 금지!
     ```
     
-1. **DOM 조작을 위한 메서드와 프로퍼티 사용하기**
+4. **DOM 조작을 위한 메서드와 프로퍼티 사용하기**
 DOM 기반 XSS는 문자열을 HTML로 해석하는 innterHTML 등의 기능을 사용할 때 발생함. 이는 DOM API를 적절하게 사용하는 것으로 방어 할 수 있음
-2. **쿠키에 HttpOnly 속성 추가하기**
+5. **쿠키에 HttpOnly 속성 추가하기**
 서버에서 쿠키를 발행할 때 httpOnly 속성을 부여하면 XSS에 의한 쿠키의 유출 위험을 줄일 수 있음. 이는 로그인 서비스 등에서 유용한 방법으로 활용될 수 있음
-3. **프레임워크 활용하기**
+6. **프레임워크 활용하기**
 React, Vue 등의 프레임워크는 내부에서 자동으로 이스케이프 처리를 해줌. React 와 같은 경우는 input 요소에 입력값을 그대로 화면에 반영해도 처리가 자동으로 되기 때문에 XSS 문제가 발생하지 않음
-4. **DOMPurify 라이브러리 활용하기**
-5. **Sanitizer API 활용하기**
+7. **DOMPurify 라이브러리 활용하기**
+8. **Sanitizer API 활용하기**
     - DOMPurity와 같이 XSS의 원인이 되는 위험한 문자열을 제거하는 API
     - Sanitizer API는 Sanitizer 클래스를 활용
