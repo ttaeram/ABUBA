@@ -86,9 +86,9 @@ http://example.hyundai/search?keyword="x onmouseover=alert(1)"
 3. **링크의 스키마를 http/https로 제한하기**
 - tag를 사용할 때에는 http/https 뿐만 아니라 자바스크립트 스키마도 지정할 수 있기 때문에 주의해야 함. 이를 예방하기 위해서는 href 속성 값을 http 또는 https 만으로 제한해서 방어할 수 있음
     
-    ```
-    <a href="">link</a> // 이러한 스키마 금지!
-    ```
+```
+<a href="">link</a> // 이러한 스키마 금지!
+```
     
 4. **DOM 조작을 위한 메서드와 프로퍼티 사용하기**
 DOM 기반 XSS는 문자열을 HTML로 해석하는 innterHTML 등의 기능을 사용할 때 발생함. 이는 DOM API를 적절하게 사용하는 것으로 방어 할 수 있음
