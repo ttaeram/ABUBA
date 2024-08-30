@@ -13,17 +13,13 @@ Docker는 어플리케이션을 컨테이너라는 가상 환경에서 독립적
 
 전체적인 동작 과정은 이렇다.
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/2c49a078-dd4c-49a6-a588-ccab273b758a/7ca84fea-6860-48ad-87be-660b1439c562/image.png)
-
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/2c49a078-dd4c-49a6-a588-ccab273b758a/97aac3b9-6ab4-4ca4-943e-0db96ff4d719/image.png)
 
 - Dockerfile
     
     도커 파일은 도커 이미지를 build하기 위해서 작성하는 명세서 같은 것이다. 
     
     어떤 외부 이미지를 쓸지, 컨테이너 안에서 뭘 할지, 포트는 어떤 걸 쓸지 이런 걸 적는다. 심지어 환경 변수 설정을 해줄 수 있어서 yaml파일이 없어도 빌드 배포 가능.
-    
-    ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/2c49a078-dd4c-49a6-a588-ccab273b758a/52ec4d5e-a1f8-46ea-b7d7-4e9db0e0ecdc/image.png)
+
     
 - Docker Volumn
     
@@ -68,10 +64,6 @@ Docker는 어플리케이션을 컨테이너라는 가상 환경에서 독립적
     Pipeline으로 만들면 아래에 작성한 Pipeline을 작성해서 일의 순서를 정할 수 있다.
     
     근데 다른 사람들 보니까 Free style로 만들어서 UI를 이용해 간단하게 작성하더라… 다음에는 이렇게 해서 분리해봐야겠다.
-    
-    [Backend 예시.pdf](https://prod-files-secure.s3.us-west-2.amazonaws.com/2c49a078-dd4c-49a6-a588-ccab273b758a/a7e4fe1d-9fb9-4ce7-a991-9dc80305f395/Backend_%EC%98%88%EC%8B%9C.pdf)
-    
-    [Frontend 예시.pdf](https://prod-files-secure.s3.us-west-2.amazonaws.com/2c49a078-dd4c-49a6-a588-ccab273b758a/34ddfd8f-a762-44a0-b77d-676583201339/Frontend_%EC%98%88%EC%8B%9C.pdf)
     
 - Pipeline
     파이프 라인은 Shell script로 작성된 일의 순서이다.
