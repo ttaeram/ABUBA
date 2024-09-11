@@ -1,39 +1,52 @@
 package com.hexagon.abuba.user;
 
 import com.hexagon.abuba.alarm.Alarm;
+import com.hexagon.abuba.diary.Diary;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Entity
 public class Parent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "parent_id")
-    Long id;
+    private Long id;
 
     //사용자 이름
-    String name;
+    private String name;
 
     //이메일
-    String email;
+    private String email;
 
-    String password;
+    private String password;
 
     //아이와의 관계
-    String relationship;
+    private String relationship;
 
     //ssafy api를 활용하기 위한 api키
-    String userkey;
+    private String userkey;
 
-    String account;
+    private String account;
 
-    @OneToMany
-    List<Alarm> alarms = new ArrayList<>();
+    @OneToMany(mappedBy = "parent")
+    private List<Alarm> alarms = new ArrayList<>();
+
+    @OneToMany(mappedBy = "parent")
+    private List<Diary> diaries = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "baby_id")
-    Baby baby;
+    private Baby baby;
 
+    public void SetBaby(Baby baby) {
+        if(this.baby != null){
+            this.baby.getParents().remove(this);
+        }
+        this.baby = baby;
+        baby.getParents().add(this);
+    }
 }

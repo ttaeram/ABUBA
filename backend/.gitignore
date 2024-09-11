@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+## .yml ##
+/application.yml
+
+# 환경별 설정 파일 무시
+/application-*.yml
