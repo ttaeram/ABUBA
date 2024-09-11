@@ -1,8 +1,4 @@
-import React from 'react'
-
-type Props = {}
-
-const main = (props: Props) => {
+const main = () => {
   return (
     <div>main</div>
   )
