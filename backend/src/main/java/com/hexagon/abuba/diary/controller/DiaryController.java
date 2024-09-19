@@ -3,6 +3,7 @@ package com.hexagon.abuba.diary.controller;
 import com.hexagon.abuba.diary.Diary;
 import com.hexagon.abuba.diary.dto.request.DiaryRecentReqDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
+import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
 import com.hexagon.abuba.diary.service.DiaryService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +27,7 @@ import java.util.Optional;
 public class DiaryController {
     /*
     TODO
-    /recents : GET - 아이 사진 정보 최대 3개
     /notification : GET - 알림
-    / : GET - 목록 조회
     / : POST - 일기 작성
     / : PUT - 일기 수정
     /{diary_id} : GET - 상세 조회
@@ -54,4 +53,18 @@ public class DiaryController {
         return ResponseEntity.ok(diaryRecentResDTOList);
     }
 
+    /***
+     * 다이어리에 작성한 게시물 목록을 리턴하기
+     * @param diaryRecentReqDTO
+     * @return
+     */
+    @GetMapping("/")
+    @Operation(summary = "작성한 게시글의 목록 조회")
+    public ResponseEntity<List<DiaryResDTO>> getList(@RequestBody(required = true) final DiaryRecentReqDTO diaryRecentReqDTO) {
+        log.info("getList");
+
+        List<DiaryResDTO> resDTOList = diaryService.getList(diaryRecentReqDTO);
+
+        return ResponseEntity.ok(resDTOList);
+    }
 }

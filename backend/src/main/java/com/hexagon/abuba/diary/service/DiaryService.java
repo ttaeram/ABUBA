@@ -3,6 +3,7 @@ package com.hexagon.abuba.diary.service;
 import com.hexagon.abuba.diary.Diary;
 import com.hexagon.abuba.diary.dto.request.DiaryRecentReqDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
+import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
 import com.hexagon.abuba.diary.repository.DiaryRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -38,5 +39,24 @@ public class DiaryService {
             if(diaryRecentResDTOList.size() == 3) break; // 최대 3개까지만
         }
         return diaryRecentResDTOList;
+    }
+
+    public List<DiaryResDTO> getList(DiaryRecentReqDTO reqDTO){
+        List<Diary> diaries = diaryRepository.findByParentId(reqDTO.getParentId());
+        List<DiaryResDTO> diaryResDTOList = new ArrayList<>();
+        for (Diary diary : diaries) {
+            DiaryResDTO diaryResDTO = new DiaryResDTO();
+
+            diaryResDTO.setId(diary.getId());
+            diaryResDTO.setTitle(diary.getTitle());
+            diaryResDTO.setContent(diary.getContent());
+            diaryResDTO.setDeposit(diary.getDeposit());
+            diaryResDTO.setCreatedAt(diary.getCreatedAt());
+            diaryResDTO.setImageUrl(diary.getImage_url());
+
+            diaryResDTOList.add(diaryResDTO);
+        }
+
+        return diaryResDTOList;
     }
 }
