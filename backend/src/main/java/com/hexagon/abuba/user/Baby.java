@@ -1,36 +1,37 @@
 package com.hexagon.abuba.user;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Entity
 public class Baby {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "baby_id")
-    Long id;
+    private Long id;
 
-    String name;
+    private String name;
 
-    LocalDate birth_date;
+    private LocalDate birth_date;
 
-    String gender;
+    private String gender;
 
-    String image_url;
+    private String image_url;
 
-    String account;
+    private String account;
 
-    String bank_info;
-
+    private String bank_info;
     //키
-    Double height;
+    private Double height;
 
     //몸무게
-    Double weight;
+    private Double weight;
 
-    @OneToMany
-    List<Parent> parents = new ArrayList<>();
+    @OneToMany(mappedBy = "baby")
+    private List<Parent> parents = new ArrayList<>();
 }

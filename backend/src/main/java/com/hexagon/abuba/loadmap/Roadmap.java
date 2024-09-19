@@ -1,20 +1,22 @@
 package com.hexagon.abuba.loadmap;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 public class Roadmap {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "roadmap_id")
-    Long id;
+    private Long id;
 
-    String title;
+    private String title;
 
-    String content;
+    private String content;
 
     @Enumerated(EnumType.STRING)
-    RoadmapType type;
+    private RoadmapType type;
 
 
 }
