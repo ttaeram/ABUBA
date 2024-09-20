@@ -1,6 +1,7 @@
 package com.hexagon.abuba.diary.service;
 
 import com.hexagon.abuba.diary.Diary;
+import com.hexagon.abuba.diary.dto.request.DiaryDetailReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryRecentReqDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
@@ -45,18 +46,49 @@ public class DiaryService {
         List<Diary> diaries = diaryRepository.findByParentId(reqDTO.getParentId());
         List<DiaryResDTO> diaryResDTOList = new ArrayList<>();
         for (Diary diary : diaries) {
-            DiaryResDTO diaryResDTO = new DiaryResDTO();
-
-            diaryResDTO.setId(diary.getId());
-            diaryResDTO.setTitle(diary.getTitle());
-            diaryResDTO.setContent(diary.getContent());
-            diaryResDTO.setDeposit(diary.getDeposit());
-            diaryResDTO.setCreatedAt(diary.getCreatedAt());
-            diaryResDTO.setImageUrl(diary.getImage_url());
-
+            DiaryResDTO diaryResDTO = EntityToResDTO(diary);
             diaryResDTOList.add(diaryResDTO);
         }
 
         return diaryResDTOList;
+    }
+
+    public void addDiary(DiaryDetailReqDTO reqDTO){
+        Diary diary = DTOToEntity(reqDTO);
+        diaryRepository.save(diary);
+    }
+
+
+
+
+
+    private DiaryResDTO EntityToResDTO(Diary diary){
+        DiaryResDTO diaryResDTO = new DiaryResDTO();
+
+        diaryResDTO.setId(diary.getId());
+        diaryResDTO.setTitle(diary.getTitle());
+        diaryResDTO.setContent(diary.getContent());
+        diaryResDTO.setDeposit(diary.getDeposit());
+        diaryResDTO.setCreatedAt(diary.getCreatedAt());
+        diaryResDTO.setImageUrl(diary.getImage_url());
+
+        return diaryResDTO;
+    }
+
+    private Diary DTOToEntity(DiaryDetailReqDTO reqDTO){
+        Diary diary = new Diary();
+
+        // TODO : parentRepository 에서 parent 를 가져와 객체에 할당하는 코드 필요함
+        diary.setTitle(reqDTO.getTitle());
+        diary.setContent(reqDTO.getContent());
+        diary.setCreatedAt(reqDTO.getCreatedAt());
+        diary.setAccount(reqDTO.getAccount());
+        diary.setDeposit(reqDTO.getDeposit());
+        diary.setRecord_url(reqDTO.getRecord_url());
+        diary.setImage_url(reqDTO.getImage_url());
+        diary.setHeight(reqDTO.getHeight());
+        diary.setWeight(reqDTO.getWeight());
+
+        return diary;
     }
 }

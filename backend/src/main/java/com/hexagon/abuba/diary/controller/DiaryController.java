@@ -1,6 +1,7 @@
 package com.hexagon.abuba.diary.controller;
 
 import com.hexagon.abuba.diary.Diary;
+import com.hexagon.abuba.diary.dto.request.DiaryDetailReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryRecentReqDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
@@ -28,7 +29,6 @@ public class DiaryController {
     /*
     TODO
     /notification : GET - 알림
-    / : POST - 일기 작성
     / : PUT - 일기 수정
     /{diary_id} : GET - 상세 조회
      */
@@ -66,5 +66,14 @@ public class DiaryController {
         List<DiaryResDTO> resDTOList = diaryService.getList(diaryRecentReqDTO);
 
         return ResponseEntity.ok(resDTOList);
+    }
+
+
+    @PostMapping("/")
+    @Operation(summary = "일기 작성")
+    public ResponseEntity<String> addDiary(@RequestBody(required = true) DiaryDetailReqDTO diaryDetailReqDTO){
+        log.info("addDiary");
+        diaryService.addDiary(diaryDetailReqDTO);
+        return ResponseEntity.ok("add Diary Success");
     }
 }
