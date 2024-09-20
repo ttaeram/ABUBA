@@ -1,11 +1,19 @@
-import Navbar from "../Navbar"
+import React from "react";
+import { useLocation } from "react-router-dom";
+import Navbar from "../Navbar";
 
 const Header = () => {
+  const location = useLocation();
+
+  if (location.pathname === '/login' || location.pathname === '/onboard' || location.pathname === '/signup') {
+    return null;
+  }
+
   return (
     <div>
-      <Navbar></Navbar>
+      <Navbar />
     </div>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

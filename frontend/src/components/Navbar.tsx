@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+<<<<<<< HEAD
+import { IoNotificationsOutline } from 'react-icons/io5';
+import AlertModal from './AlertModal';
+import { LogoSvgStyled } from '../styles/styledComponents';
+=======
 import { ReactComponent as LogoSvg } from '../assets/images/onlylogo.svg';
 import { IoNotificationsOutline } from 'react-icons/io5';
 import AlertModal from './AlertModal';
+>>>>>>> f15746bd10d9c3487122ba2848a56b0376331636
 
 type NavbarProps = {};
 
@@ -32,10 +38,13 @@ const Navbar = (props: NavbarProps) => {
 
 export default Navbar;
 
+<<<<<<< HEAD
+=======
 const LogoSvgStyled = styled(LogoSvg)`
   width: 100px; 
   height: auto;  
 `;
+>>>>>>> f15746bd10d9c3487122ba2848a56b0376331636
 
 const NavbarContainer = styled.nav`
   display: flex;
