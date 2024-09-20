@@ -6,6 +6,7 @@ import com.hexagon.abuba.diary.dto.request.DiaryRecentReqDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
 import com.hexagon.abuba.diary.repository.DiaryRepository;
+import com.hexagon.abuba.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,12 @@ import java.util.List;
 @Transactional
 @Slf4j
 public class DiaryService {
-    private DiaryRepository diaryRepository;
+    private final DiaryRepository diaryRepository;
+    private final ParentRepository parentRepository;
 
-    public DiaryService(DiaryRepository diaryRepository) {
+    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository) {
         this.diaryRepository = diaryRepository;
+        this.parentRepository = parentRepository;
     }
 
     public List<DiaryRecentResDTO> recentDiary(DiaryRecentReqDTO reqDTO) {
@@ -78,7 +81,8 @@ public class DiaryService {
     private Diary DTOToEntity(DiaryDetailReqDTO reqDTO){
         Diary diary = new Diary();
 
-        // TODO : parentRepository 에서 parent 를 가져와 객체에 할당하는 코드 필요함
+        diary.setParent(parentRepository.findById(reqDTO.getParentId()).orElse(null));
+
         diary.setTitle(reqDTO.getTitle());
         diary.setContent(reqDTO.getContent());
         diary.setCreatedAt(reqDTO.getCreatedAt());
