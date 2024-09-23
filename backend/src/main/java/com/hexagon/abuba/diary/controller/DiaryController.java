@@ -76,4 +76,12 @@ public class DiaryController {
         diaryService.addDiary(diaryDetailReqDTO);
         return ResponseEntity.ok("add Diary Success");
     }
+
+    @PutMapping("/")
+    @Operation(summary = "일기 작성")
+    public ResponseEntity<String> editDiary(@RequestBody(required = true) DiaryDetailReqDTO diaryDetailReqDTO){
+        log.info("editDiary");
+        diaryService.addDiary(diaryDetailReqDTO);
+        return ResponseEntity.ok("edit Diary Success");
+    }
 }
