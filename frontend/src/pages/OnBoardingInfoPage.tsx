@@ -6,9 +6,7 @@ import ChildInfoForm from '../components/onboardinginfo/ChildInfoForm';
 import ChildAccount from '../components/onboardinginfo/ChildAccountForm'; 
 import ParentAccount from '../components/onboardinginfo/ParentAccountForm';
 
-type Props = {};
-
-const OnboardingInfoPage = (props: Props) => {
+const OnboardingInfoPage = () => {
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
 
