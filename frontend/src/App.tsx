@@ -11,16 +11,22 @@ import DiaryList from './pages/diary/DiaryList'
 import DiaryDetail from './pages/diary/DiaryDetail'
 import DiaryCreate from './pages/diary/DiaryCreate'
 import DiaryUpdate from './pages/diary/DiaryUpdate'
+import GlobalStyle from './styles/GlobalStyle'
+import ChildAccount from './pages/account/ChildAccount'
+import ChildRoadMap from './pages/roadmap/ChildRoadMap'
 
 function App() {
   return (
-    <Router>
+    <Router> 
+    <GlobalStyle />
     <Layout>
       <Routes>
         <Route path="/" element={<Main/>} />
         <Route path="/login" element={<LoginPage/>} />
         <Route path="/onboard" element={<OnBoardingInfoPage/>} />
         <Route path="/signup" element={<SignupPage/>} />
+        <Route path="/account" element={<ChildAccount/>} />
+        <Route path="/roadmap" element={<ChildRoadMap/>} />
         <Route path="/" element={<Main />} />
         <Route path="/diaryList" element={<DiaryList />} />
         <Route path="/diary/:id" element={<DiaryDetail />} />
