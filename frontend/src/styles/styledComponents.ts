@@ -29,6 +29,9 @@ export const FormTitle = styled.h2`
 `;
 
 export const Button = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 15px;
   background-color: #3B6EBA;
   margin-bottom: 10px;
