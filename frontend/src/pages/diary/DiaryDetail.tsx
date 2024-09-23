@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import BackButton from "../../components/buttons/BackButton"
 import axios from "axios"
-import AudioPlayer from "react-h5-audio-player"
+import AudioPlayer from "../../components/AudioPlayer"
 import "react-h5-audio-player/lib/styles.css"
 import styled from "styled-components"
 
@@ -62,15 +62,10 @@ const DiaryDetail = () => {
         <h1>{diaryData?.title || "제목 없음"}</h1>
         <p>{diaryData?.content || "내용 없음"}</p>
         {diaryData?.audioUrl && (
-          <>
-            <AudioLabel>목소리 듣기</AudioLabel>
-            <AudioPlayer
-              src={diaryData?.audioUrl}
-              onPlay={e =>
-                console.log("onPlay")
-              }
-            />
-          </>
+        <>
+          <AudioLabel>목소리 듣기</AudioLabel>
+          <AudioPlayer src={diaryData.audioUrl} />
+        </>
         )}
       </Content>
     </DiaryContainer>
