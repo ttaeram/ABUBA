@@ -19,8 +19,8 @@ public class Parent {
     //사용자 이름
     private String name;
 
-    //이메일
-    private String email;
+    //username = 사용자 이메일 = 로그인시 사용하는 id
+    private String username;
 
     private String password;
 
@@ -31,6 +31,8 @@ public class Parent {
     private String userkey;
 
     private String account;
+
+    private String role;
 
     @OneToMany(mappedBy = "parent")
     private List<Alarm> alarms = new ArrayList<>();
@@ -48,5 +50,16 @@ public class Parent {
         }
         this.baby = baby;
         baby.getParents().add(this);
+    }
+
+    public void setUsername(String username) {
+
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setPassword(String encode) {
     }
 }
