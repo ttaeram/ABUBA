@@ -4,9 +4,7 @@ import { ReactComponent as LogoSvg } from '../assets/images/onlylogo.svg';
 import { IoNotificationsOutline } from 'react-icons/io5';
 import AlertModal from './AlertModal';
 
-type NavbarProps = {};
-
-const Navbar = (props: NavbarProps) => {
+const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleModal = () => {
