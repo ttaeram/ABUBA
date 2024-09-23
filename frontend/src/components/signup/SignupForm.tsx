@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Button } from '../../styles/styledComponents';
 
 const SignupForm = () => {
   const [email, setEmail] = useState('');
@@ -9,6 +10,8 @@ const SignupForm = () => {
   const [authCode, setAuthCode] = useState('');
   const [timer, setTimer] = useState(60);
   const [isCodeSent, setIsCodeSent] = useState(false);
+  const [isCodeVerified, setIsCodeVerified] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSendCode = () => {
     setIsCodeSent(true);
@@ -23,71 +26,78 @@ const SignupForm = () => {
     }, 1000);
   };
 
+  const handleVerifyCode = () => {
+    if (authCode === '123456') {
+      setIsCodeVerified(true);
+      alert('인증번호가 확인되었습니다!');
+    } else {
+      alert('인증번호가 올바르지 않습니다.');
+    }
+  };
+
   const handleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
   };
 
   return (
-    <FormContainer>
-      <form onSubmit={handleSubmit}>
+    <FormContainer onSubmit={handleSubmit}>
+        <InputContainer>
         <FormGroup>
-          <Label htmlFor="email">이메일</Label>
           <Input
             type="email"
-            id="email"
+            placeholder="이메일"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-        </FormGroup>
         <Button type="button" onClick={handleSendCode}>
             인증번호 전송
         </Button>
+        </FormGroup>
+
           {isCodeSent && <span>{timer}</span>}
         <FormGroup>
-          <Label htmlFor="authCode">인증번호</Label>
           <Input
             type="text"
-            id="authCode"
+            placeholder="인증번호"
             value={authCode}
             onChange={(e) => setAuthCode(e.target.value)}
             required
           />
-         
+          <Button type="button" onClick={handleVerifyCode}>
+            인증번호 확인
+          </Button>
         </FormGroup>
-        <FormGroup>
-          <Label htmlFor="nickname">이름</Label>
           <Input
             type="text"
-            id="name"
+            placeholder="이름"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
           />
-        </FormGroup>
-        <FormGroup>
-          <Label htmlFor="password">비밀번호</Label>
+
           <Input
             type="password"
-            id="password"
+            placeholder="비밀번호"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </FormGroup>
-        <FormGroup>
-          <Label htmlFor="confirmPassword">비밀번호 확인</Label>
+
+
           <Input
             type="password"
-            id="confirmPassword"
+            placeholder="비밀번호 확인"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-        </FormGroup>
-    
+
+        </InputContainer>
+
+        {error && <ErrorMessage>{error}</ErrorMessage>}
         <Button type="submit">가입하기</Button>
-      </form>
+
     </FormContainer>
   );
 };
@@ -103,38 +113,31 @@ const FormContainer = styled.form`
 `;
 
 const FormGroup = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 15px;
 `;
 
-const Label = styled.label`
-  display: block;
-  margin-bottom: 5px;
+const InputContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 30px;
 `;
 
 const Input = styled.input`
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-`;
-
-const Button = styled.button`
+  width: 80%;
   padding: 15px;
-  background-color: #3B6EBA;
-  margin-bottom: 10px;
-  color: white;
-  border: none;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #173C91;
-  }
 `;
 
 const ErrorMessage = styled.div`
   color: red;
   margin-bottom: 15px;
 `;
+
+
 
