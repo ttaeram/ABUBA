@@ -1,9 +1,6 @@
 package com.hexagon.abuba.diary.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,8 +15,6 @@ import java.time.LocalDateTime;
  * @param weight    몸무게
  */
 @Schema
-@Getter
-@Setter
 public record DiaryDetailReqDTO(Long parentId, String title, String content, LocalDateTime createdAt, String account,
                                 BigDecimal deposit, String record_url, String image_url, Double height, Double weight) {
 }

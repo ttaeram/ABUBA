@@ -20,6 +20,15 @@ const LoginForm = () => {
     // console.log('로그인 시도:', { username, password });
   };
 
+  const handleSignupClick = () => {
+    navigate('/signup'); // 회원가입 페이지로 이동
+  };
+
+  // const handleFindPwdClick = () => {
+  //   navigate('/find-password');
+  // };
+
+
   return (
     <FormContainer onSubmit={handleSubmit}>
       <InputContainer>
@@ -40,7 +49,7 @@ const LoginForm = () => {
       <Button type="submit">로그인</Button>
       <SubContainer>
         <FindPwd>비밀번호를 잊으셨나요?</FindPwd>
-        <Signup>회원가입</Signup>
+        <Signup onClick={handleSignupClick}>회원가입</Signup>
       </SubContainer>
     </FormContainer>
   );
