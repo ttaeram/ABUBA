@@ -40,34 +40,37 @@ const SignupForm = () => {
   };
 
   return (
-    <FormContainer onSubmit={handleSubmit}>
-        <InputContainer>
-        <FormGroup>
-          <Input
-            type="email"
-            placeholder="이메일"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        <Button type="button" onClick={handleSendCode}>
-            인증번호 전송
-        </Button>
-        </FormGroup>
 
-          {isCodeSent && <span>{timer}</span>}
-        <FormGroup>
-          <Input
-            type="text"
-            placeholder="인증번호"
-            value={authCode}
-            onChange={(e) => setAuthCode(e.target.value)}
-            required
-          />
-          <Button type="button" onClick={handleVerifyCode}>
-            인증번호 확인
-          </Button>
-        </FormGroup>
+      <FormContainer onSubmit={handleSubmit}>
+        <InputContainer>
+          <FormGroup>
+            <Input
+              type="email"
+              placeholder="이메일"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <Button type="button" onClick={handleSendCode}>
+              인증번호 전송
+            </Button>
+          </FormGroup>
+
+          {isCodeSent && <Timer>{timer}초</Timer>}
+
+          <FormGroup>
+            <Input
+              type="text"
+              placeholder="인증번호"
+              value={authCode}
+              onChange={(e) => setAuthCode(e.target.value)}
+              required
+            />
+            <Button type="button" onClick={handleVerifyCode}>
+              인증번호 확인
+            </Button>
+          </FormGroup>
+
           <Input
             type="text"
             placeholder="이름"
@@ -84,7 +87,6 @@ const SignupForm = () => {
             required
           />
 
-
           <Input
             type="password"
             placeholder="비밀번호 확인"
@@ -96,48 +98,76 @@ const SignupForm = () => {
         </InputContainer>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
-        <Button type="submit">가입하기</Button>
+        <SubmitButton type="submit">
+            가입하기
+        </SubmitButton>
+      </FormContainer>
 
-    </FormContainer>
   );
 };
 
 export default SignupForm;
 
+
 const FormContainer = styled.form`
+  background: white;
+  border-radius: 12px;
+  width: 400px;
+  padding: 40px;
   display: flex;
   flex-direction: column;
-  width: 80%;
-  padding: 20px;
-  border-radius: 8px;
+  align-items: center;
+`;
+
+const InputContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `;
 
 const FormGroup = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-`;
-
-const InputContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  margin-bottom: 30px;
+  gap: 10px;
+  width: 100%;
 `;
 
 const Input = styled.input`
-  width: 80%;
+  flex: 1;
   padding: 15px;
-  border: 1px solid #ccc;
+  border: 1px solid #ddd;
   border-radius: 8px;
+  font-size: 16px;
+`;
+
+const Timer = styled.span`
+  font-size: 14px;
+  color: #ff6b6b;
+  margin-bottom: 10px;
+  text-align: right;
 `;
 
 const ErrorMessage = styled.div`
   color: red;
+  font-size: 14px;
   margin-bottom: 15px;
 `;
 
 
+const SubmitButton = styled.button`
+  width: 100%;
+  margin-top: 20px;
+  font-size: 15px;
+  padding: 15px;
+  background-color: #3B6EBA;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
 
+  &:hover {
+    background-color: #173C91;
+  }
+
+`
