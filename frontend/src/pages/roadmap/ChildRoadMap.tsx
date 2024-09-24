@@ -8,8 +8,8 @@ const ChildRoadMap = () => {
       <All>
         태람(이)는 지금
       </All>
-      {/* <RoadMap>
-      </RoadMap> */}
+      <RoadMap/>
+
     </InfoContainer>
   )
 }
