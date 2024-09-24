@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import BackButton from "../../components/buttons/BackButton"
+import AudioPlayer from "../../components/AudioPlayer"
 import axios from "axios"
 import styled from "styled-components"
 
@@ -23,6 +24,10 @@ const DiaryUpdate = () => {
     const { name, value } = e.target
     setDiaryData({ ...diaryData, [name]: value })
   }
+
+  const handleNewRecording = (newAudioUrl: string) => {
+    setDiaryData({ ...diaryData, audioUrl: newAudioUrl });
+  };
 
   const handleUpdate = async () => {
     try {
@@ -73,6 +78,8 @@ const DiaryUpdate = () => {
         onChange={handleChange}
       />
     </Content>
+    <Label>목소리 녹음/듣기</Label>
+    <AudioPlayer src={diaryData.audioUrl} onNewRecording={handleNewRecording} />
   </DiaryContainer>
   )
 }
