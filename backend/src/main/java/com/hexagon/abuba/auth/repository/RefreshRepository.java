@@ -1,6 +1,6 @@
-package com.hexagon.abuba.Auth.repository;
+package com.hexagon.abuba.auth.repository;
 
-import com.hexagon.abuba.Auth.entity.RefreshEntity;
+import com.hexagon.abuba.auth.entity.RefreshEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 

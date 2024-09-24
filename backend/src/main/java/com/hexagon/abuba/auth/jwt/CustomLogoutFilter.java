@@ -1,6 +1,6 @@
-package com.hexagon.abuba.Auth.jwt;
+package com.hexagon.abuba.auth.jwt;
 
-import com.hexagon.abuba.Auth.repository.RefreshRepository;
+import com.hexagon.abuba.auth.repository.RefreshRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

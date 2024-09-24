@@ -1,4 +1,4 @@
-package com.hexagon.abuba.Auth.entity;
+package com.hexagon.abuba.auth.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

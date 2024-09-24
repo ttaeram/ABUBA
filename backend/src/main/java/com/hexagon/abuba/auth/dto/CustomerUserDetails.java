@@ -1,4 +1,4 @@
-package com.hexagon.abuba.Auth.dto;
+package com.hexagon.abuba.auth.dto;
 
 import com.hexagon.abuba.user.Parent;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,6 +1,6 @@
-package com.hexagon.abuba.Auth.jwt;
+package com.hexagon.abuba.auth.jwt;
 
-import com.hexagon.abuba.Auth.dto.CustomerUserDetails;
+import com.hexagon.abuba.auth.dto.CustomerUserDetails;
 import com.hexagon.abuba.user.Parent;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;

@@ -1,7 +1,7 @@
-package com.hexagon.abuba.Auth.service;
+package com.hexagon.abuba.auth.service;
 
 
-import com.hexagon.abuba.Auth.dto.JoinDTO;
+import com.hexagon.abuba.auth.dto.JoinDTO;
 import com.hexagon.abuba.user.Parent;
 import com.hexagon.abuba.user.repository.ParentRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

@@ -1,11 +1,11 @@
-package com.hexagon.abuba.Auth.config;
+package com.hexagon.abuba.auth.config;
 
 
-import com.hexagon.abuba.Auth.jwt.CustomLogoutFilter;
-import com.hexagon.abuba.Auth.jwt.JWTFilter;
-import com.hexagon.abuba.Auth.jwt.JWTUtil;
-import com.hexagon.abuba.Auth.jwt.LoginFilter;
-import com.hexagon.abuba.Auth.repository.RefreshRepository;
+import com.hexagon.abuba.auth.jwt.CustomLogoutFilter;
+import com.hexagon.abuba.auth.jwt.JWTFilter;
+import com.hexagon.abuba.auth.jwt.JWTUtil;
+import com.hexagon.abuba.auth.jwt.LoginFilter;
+import com.hexagon.abuba.auth.repository.RefreshRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

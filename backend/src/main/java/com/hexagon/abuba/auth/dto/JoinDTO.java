@@ -1,4 +1,4 @@
-package com.hexagon.abuba.Auth.dto;
+package com.hexagon.abuba.auth.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
