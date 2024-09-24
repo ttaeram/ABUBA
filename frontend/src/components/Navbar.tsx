@@ -3,17 +3,23 @@ import styled from 'styled-components';
 import { ReactComponent as LogoSvg } from '../assets/images/onlylogo.svg';
 import { IoNotificationsOutline } from 'react-icons/io5';
 import AlertModal from './AlertModal';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
 
+  const handleHomeClick = () => {
+    navigate('/main');
+  }
+
   return (
     <NavbarContainer>
-      <LogoSvgStyled />
+      <LogoSvgStyled onClick={handleHomeClick}/>
       <NotificationButton onClick={toggleModal}>
         <IoNotificationsOutline size={24} />
       </NotificationButton>

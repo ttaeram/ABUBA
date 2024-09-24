@@ -21,13 +21,12 @@ function App() {
     <GlobalStyle />
     <Layout>
       <Routes>
-        <Route path="/" element={<Main/>} />
-        <Route path="/login" element={<LoginPage/>} />
+        <Route path="/" element={<LoginPage/>} />
+        <Route path="/main" element={<Main/>} />
         <Route path="/onboard" element={<OnBoardingInfoPage/>} />
         <Route path="/signup" element={<SignupPage/>} />
         <Route path="/account" element={<ChildAccount/>} />
         <Route path="/roadmap" element={<ChildRoadMap/>} />
-        <Route path="/" element={<Main />} />
         <Route path="/diaryList" element={<DiaryList />} />
         <Route path="/diary/:id" element={<DiaryDetail />} />
         <Route path="/diary/create" element={<DiaryCreate />} />

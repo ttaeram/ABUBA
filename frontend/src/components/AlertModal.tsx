@@ -13,7 +13,7 @@ const AlertModal = ({ isOpen, onClose, message }: AlertModalProps) => {
   return (
     <Modal>
       <ModalContent>
-        <p>{message}</p>
+        <p>{message}zzz</p>
         <CloseButton onClick={onClose}>닫기</CloseButton>
       </ModalContent>
     </Modal>
@@ -44,13 +44,13 @@ const ModalContent = styled.div`
 const CloseButton = styled.button`
   margin-top: 1rem;
   padding: 0.5rem 1rem;
-  background-color: #ff6347;
+  background-color: #3B6EBA;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 
   &:hover {
-    background-color: #e55342;
+    background-color: #173C91;
   }
 `;
