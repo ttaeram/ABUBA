@@ -34,6 +34,7 @@ public class DiaryService {
             // TODO : 이미지 URL 이 Null 로 나올지 빈칸으로 나올지 모르기 때문에 수정할 가능성 있음
             if(diary.getImage_url().isEmpty()) continue; // 이미지 URL 이 null 일 경우
 
+            // TODO : 이미지 url 을 실제 이미지(S3에서 다운로드)로 변경
             DiaryRecentResDTO diaryRecentResDTO = new DiaryRecentResDTO(
                     diary.getId(),
                     diary.getImage_url()
@@ -67,6 +68,7 @@ public class DiaryService {
 
 
     private DiaryResDTO EntityToResDTO(Diary diary){
+        // TODO : 이미지 url 을 실제 이미지(S3에서 다운로드)로 변경
         return new DiaryResDTO(
                 diary.getId(),
                 diary.getTitle(),
@@ -79,6 +81,7 @@ public class DiaryService {
 
     private Diary DTOToEntity(DiaryDetailReqDTO reqDTO){
         Diary diary = new Diary();
+        // TODO : reqDTO 의 이미지 url 을 실제 이미지로 수정 후 S3에 업로드하는 코드로 변경
 
         diary.setParent(parentRepository.findById(reqDTO.parentId()).orElse(null));
 
