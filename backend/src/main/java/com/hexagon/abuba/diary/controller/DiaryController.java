@@ -10,8 +10,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.net.ssl.SSLSession;
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
@@ -71,9 +73,13 @@ public class DiaryController {
 
     @PostMapping("/")
     @Operation(summary = "일기 작성")
-    public ResponseEntity<String> addDiary(@RequestBody(required = true) DiaryDetailReqDTO diaryDetailReqDTO){
+    public ResponseEntity<String> addDiary(@RequestParam("image") MultipartFile image, @RequestBody(required = true) DiaryDetailReqDTO diaryDetailReqDTO){
         log.info("addDiary");
-        diaryService.addDiary(diaryDetailReqDTO);
+        try {
+            diaryService.addDiary(diaryDetailReqDTO, image.getInputStream(), image.getOriginalFilename());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return ResponseEntity.ok("add Diary Success");
     }
 
@@ -81,7 +87,7 @@ public class DiaryController {
     @Operation(summary = "일기 작성")
     public ResponseEntity<String> editDiary(@RequestBody(required = true) DiaryDetailReqDTO diaryDetailReqDTO){
         log.info("editDiary");
-        diaryService.addDiary(diaryDetailReqDTO);
+
         return ResponseEntity.ok("edit Diary Success");
     }
 }

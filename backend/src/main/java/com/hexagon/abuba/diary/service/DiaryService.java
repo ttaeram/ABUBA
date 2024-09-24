@@ -6,11 +6,13 @@ import com.hexagon.abuba.diary.dto.request.DiaryRecentReqDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
 import com.hexagon.abuba.diary.repository.DiaryRepository;
+import com.hexagon.abuba.s3.service.S3Service;
 import com.hexagon.abuba.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +22,12 @@ import java.util.List;
 public class DiaryService {
     private final DiaryRepository diaryRepository;
     private final ParentRepository parentRepository;
+    private final S3Service s3Service;
 
-    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository) {
+    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, S3Service s3Service) {
         this.diaryRepository = diaryRepository;
         this.parentRepository = parentRepository;
+        this.s3Service = s3Service;
     }
 
     public List<DiaryRecentResDTO> recentDiary(DiaryRecentReqDTO reqDTO) {
@@ -58,8 +62,8 @@ public class DiaryService {
         return diaryResDTOList;
     }
 
-    public void addDiary(DiaryDetailReqDTO reqDTO){
-        Diary diary = DTOToEntity(reqDTO);
+    public void addDiary(DiaryDetailReqDTO reqDTO, InputStream imageStream, String imageName){
+        Diary diary = DTOToEntity(reqDTO, imageStream, imageName);
         diaryRepository.save(diary);
     }
 
@@ -79,7 +83,7 @@ public class DiaryService {
         );
     }
 
-    private Diary DTOToEntity(DiaryDetailReqDTO reqDTO){
+    private Diary DTOToEntity(DiaryDetailReqDTO reqDTO, InputStream imageStream, String imageName){
         Diary diary = new Diary();
         // TODO : reqDTO 의 이미지 url 을 실제 이미지로 수정 후 S3에 업로드하는 코드로 변경
 
@@ -91,9 +95,14 @@ public class DiaryService {
         diary.setAccount(reqDTO.account());
         diary.setDeposit(reqDTO.deposit());
         diary.setRecord_url(reqDTO.record_url());
-        diary.setImage_url(reqDTO.image_url());
         diary.setHeight(reqDTO.height());
         diary.setWeight(reqDTO.weight());
+
+        if(imageStream != null && imageName != null){
+            String uploadedFileName = s3Service.uploadFile(imageStream, imageName);
+            String imageUrl = s3Service.getFileUrl(uploadedFileName);
+            diary.setImage_url(imageUrl);
+        }
 
         return diary;
     }

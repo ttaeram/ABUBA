@@ -1,6 +1,7 @@
 package com.hexagon.abuba.s3.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -15,6 +16,7 @@ import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+@Service
 public class S3Service {
 
     private final S3Client s3Client;
