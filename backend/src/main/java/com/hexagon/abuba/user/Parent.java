@@ -62,4 +62,8 @@ public class Parent {
 
     public void setPassword(String encode) {
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

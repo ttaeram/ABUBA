@@ -22,11 +22,12 @@ public class AuthService {
 
         String username = joinDTO.getUsername();
         String password = joinDTO.getPassword();
+        String name = joinDTO.getName();
 
         Boolean isExist = userRepository.existsByUsername(username);
 
         if (isExist) {
-
+            //이미 존재하는 경우 exception발생 시켜야함.
             return;
         }
 
@@ -34,6 +35,7 @@ public class AuthService {
 
         data.setUsername(username);
         data.setPassword(bCryptPasswordEncoder.encode(password));
+        data.setName(name);
         data.setRole("ROLE_USER");
 
         userRepository.save(data);
