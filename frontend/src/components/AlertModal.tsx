@@ -13,7 +13,7 @@ const AlertModal = ({ isOpen, onClose, message }: AlertModalProps) => {
   return (
     <Modal>
       <ModalContent>
-        <p>{message}zzz</p>
+        <p>{message}</p>
         <CloseButton onClick={onClose}>닫기</CloseButton>
       </ModalContent>
     </Modal>
