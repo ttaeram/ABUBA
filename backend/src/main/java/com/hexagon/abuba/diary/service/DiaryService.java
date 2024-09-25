@@ -11,6 +11,7 @@ import com.hexagon.abuba.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -61,9 +62,25 @@ public class DiaryService {
         return diaryResDTOList;
     }
 
-    public void addDiary(DiaryDetailReqDTO reqDTO,
-                         InputStream imageStream, String imageName,
-                         InputStream recordStream, String recordName){
+    public void addDiary(DiaryDetailReqDTO reqDTO, MultipartFile image, MultipartFile record){
+        InputStream imageStream = null;
+        InputStream recordStream = null;
+        String imageName = null;
+        String recordName = null;
+
+        try {
+            if (image != null) {
+                imageStream = image.getInputStream();
+                imageName = image.getOriginalFilename();
+            }
+            if (record != null) {
+                recordStream = record.getInputStream();
+                recordName = record.getOriginalFilename();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         Diary diary = DTOToEntity(reqDTO, imageStream, imageName, recordStream, recordName);
         diaryRepository.save(diary);
     }

@@ -73,15 +73,11 @@ public class DiaryController {
 
     @PostMapping("/")
     @Operation(summary = "일기 작성")
-    public ResponseEntity<String> addDiary(@RequestParam("image") MultipartFile image, @RequestParam("record") MultipartFile record, @RequestBody(required = true) DiaryDetailReqDTO diaryDetailReqDTO){
+    public ResponseEntity<String> addDiary(@RequestParam(value = "image", required = false) MultipartFile image,
+                                           @RequestParam(value = "record", required = false) MultipartFile record,
+                                           @ModelAttribute DiaryDetailReqDTO diaryDetailReqDTO){
         log.info("addDiary");
-        try {
-            diaryService.addDiary(diaryDetailReqDTO,
-                    image.getInputStream(), image.getOriginalFilename(),
-                    record.getInputStream(), record.getOriginalFilename());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        diaryService.addDiary(diaryDetailReqDTO, image, record);
         return ResponseEntity.ok("add Diary Success");
     }
 
