@@ -5,6 +5,7 @@ import com.hexagon.abuba.auth.dto.request.LoginDTO;
 import com.hexagon.abuba.auth.entity.RefreshEntity;
 import com.hexagon.abuba.auth.repository.RefreshRepository;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
@@ -58,7 +60,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws ServletException, IOException {
 
         //유저 정보
         String username = authentication.getName();
@@ -79,6 +81,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        //TODO 원인 분석 필요
+//        chain.doFilter(request, response); // 이 줄을 추가하세요
         log.info("요청이 로그인 필터에 들어왔습니다. access설정");
     }
 

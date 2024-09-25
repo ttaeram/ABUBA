@@ -33,6 +33,9 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	//mariadb
 	implementation("org.mariadb.jdbc:mariadb-java-client:3.4.1")
+	// https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
+	implementation("com.mysql:mysql-connector-j:8.3.0")
+
 	//swagger
 	// https://mvnrepository.com/artifact/io.swagger.core.v3/swagger-annotations
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
