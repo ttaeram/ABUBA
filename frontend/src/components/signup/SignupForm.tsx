@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '../../styles/styledComponents';
+import { sendAuthCode,signup } from '../../api/signup';
+import { useNavigate } from 'react-router-dom';
 
 const SignupForm = () => {
   const [email, setEmail] = useState('');
@@ -12,18 +14,24 @@ const SignupForm = () => {
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleSendCode = () => {
-    setIsCodeSent(true);
-    const countdown = setInterval(() => {
-      setTimer((prev) => {
-        if (prev <= 1) {
-          clearInterval(countdown);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+  const handleSendCode = async () => {
+    try {
+      await sendAuthCode(email);
+      setIsCodeSent(true);
+      const countdown = setInterval(() => {
+        setTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(countdown);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } catch (error: any) {
+      setError(error.message);
+    }
   };
 
   const handleVerifyCode = () => {
@@ -35,12 +43,31 @@ const SignupForm = () => {
     }
   };
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError('');
+
+    if (password !== confirmPassword) {
+      setError('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
+    if (!isCodeVerified) {
+      setError('인증 코드를 먼저 확인해 주세요.');
+      return;
+    }
+
+    try {
+      await signup(email, name, password); 
+      alert('회원가입 성공!');
+      navigate('/main');
+      
+    } catch (error: any) {
+      setError(error.message);
+    }
   };
 
   return (
-
       <FormContainer onSubmit={handleSubmit}>
         <InputContainer>
           <FormGroup>
