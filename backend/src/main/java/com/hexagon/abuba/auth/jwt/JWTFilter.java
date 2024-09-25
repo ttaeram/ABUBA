@@ -1,6 +1,6 @@
 package com.hexagon.abuba.auth.jwt;
 
-import com.hexagon.abuba.auth.dto.CustomerUserDetails;
+import com.hexagon.abuba.auth.dto.CustomUserDetails;
 import com.hexagon.abuba.user.Parent;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -72,7 +72,7 @@ public class JWTFilter extends OncePerRequestFilter {
         Parent userEntity = new Parent();
         userEntity.setUsername(username);
         userEntity.setRole(role);
-        CustomerUserDetails customerUserDetails = new CustomerUserDetails(userEntity);
+        CustomUserDetails customerUserDetails = new CustomUserDetails(userEntity);
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(customerUserDetails, null, customerUserDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);

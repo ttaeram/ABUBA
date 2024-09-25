@@ -1,6 +1,5 @@
 package com.hexagon.abuba.auth.config;
 
-
 import com.hexagon.abuba.auth.jwt.CustomLogoutFilter;
 import com.hexagon.abuba.auth.jwt.JWTFilter;
 import com.hexagon.abuba.auth.jwt.JWTUtil;
@@ -47,6 +46,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository);
+        loginFilter.setFilterProcessesUrl("/api/v1/auth/login");
 
         //csrf disable
         http
@@ -62,13 +63,14 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/api/v1/auth/signup").permitAll()
+                        .requestMatchers("/api/v1/auth/login", "/", "/api/v1/auth/signup").permitAll()
                         .requestMatchers("/reissue").permitAll()
                         .anyRequest().authenticated());
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
+//                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
         http
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
         //세션 설정

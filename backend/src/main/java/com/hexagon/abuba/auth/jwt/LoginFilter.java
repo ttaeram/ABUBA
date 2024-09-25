@@ -1,5 +1,7 @@
 package com.hexagon.abuba.auth.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hexagon.abuba.auth.dto.request.LoginDTO;
 import com.hexagon.abuba.auth.entity.RefreshEntity;
 import com.hexagon.abuba.auth.repository.RefreshRepository;
 import jakarta.servlet.FilterChain;
@@ -15,6 +17,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -36,13 +39,21 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
-        String username = obtainUsername(request);
-        String password = obtainPassword(request);
+        // JSON 데이터를 파싱
+        ObjectMapper objectMapper = new ObjectMapper();
+        LoginDTO loginDTO = null;
+        try {
+            // 요청 바디에서 JSON 데이터 읽기
+            loginDTO = objectMapper.readValue(request.getInputStream(), LoginDTO.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        String username = loginDTO.username();
+        String password = loginDTO.password();
 
         log.info("username={}", username);
-
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
-
         return authenticationManager.authenticate(authToken);
     }
 
@@ -68,6 +79,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());
+        log.info("요청이 로그인 필터에 들어왔습니다. access설정");
     }
 
     @Override
@@ -75,7 +87,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         response.setStatus(401);
     }
-    
+
     //쿠키생성 메서드
     private Cookie createCookie(String key, String value) {
 

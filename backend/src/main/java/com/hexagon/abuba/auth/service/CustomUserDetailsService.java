@@ -1,7 +1,7 @@
 package com.hexagon.abuba.auth.service;
 
 
-import com.hexagon.abuba.auth.dto.CustomerUserDetails;
+import com.hexagon.abuba.auth.dto.CustomUserDetails;
 import com.hexagon.abuba.user.Parent;
 import com.hexagon.abuba.user.repository.ParentRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,10 +25,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         Parent userData = userRepository.findByUsername(username);
 
         if (userData != null) {
-
-            return new CustomerUserDetails(userData);
+            return new CustomUserDetails(userData);
         }
-
 
         return null;
     }

@@ -1,4 +1,4 @@
-package com.hexagon.abuba.auth.dto;
+package com.hexagon.abuba.auth.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -16,4 +16,13 @@ public class JoinDTO {
 
     @Schema(description = "이름", required = true)
     private String name;
+
+    @Override
+    public String toString() {
+        return "JoinDTO{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

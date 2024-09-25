@@ -6,11 +6,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class CustomerUserDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 
     private final Parent userEntity;
 
-    public CustomerUserDetails(Parent userEntity) {
+    public CustomUserDetails(Parent userEntity) {
 
         this.userEntity = userEntity;
     }

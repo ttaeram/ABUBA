@@ -45,7 +45,7 @@ public class Parent {
     private Baby baby;
 
     public void SetBaby(Baby baby) {
-        if(this.baby != null){
+        if (this.baby != null) {
             this.baby.getParents().remove(this);
         }
         this.baby = baby;
@@ -53,14 +53,15 @@ public class Parent {
     }
 
     public void setUsername(String username) {
-
+        this.username = username;
     }
 
     public void setRole(String role) {
         this.role = role;
     }
 
-    public void setPassword(String encode) {
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setName(String name) {
