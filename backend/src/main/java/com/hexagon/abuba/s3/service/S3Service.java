@@ -35,8 +35,8 @@ public class S3Service {
                 .build();
     }
 
-    public String uploadFile(InputStream inputStream, String fileName) {
-        String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
+    public String uploadFile(InputStream inputStream, String fileName, String type) {
+        String uniqueFileName = type+"/"+UUID.randomUUID().toString() + "_" + fileName;
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(uniqueFileName)

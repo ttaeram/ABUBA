@@ -73,10 +73,12 @@ public class DiaryController {
 
     @PostMapping("/")
     @Operation(summary = "일기 작성")
-    public ResponseEntity<String> addDiary(@RequestParam("image") MultipartFile image, @RequestBody(required = true) DiaryDetailReqDTO diaryDetailReqDTO){
+    public ResponseEntity<String> addDiary(@RequestParam("image") MultipartFile image, @RequestParam("record") MultipartFile record, @RequestBody(required = true) DiaryDetailReqDTO diaryDetailReqDTO){
         log.info("addDiary");
         try {
-            diaryService.addDiary(diaryDetailReqDTO, image.getInputStream(), image.getOriginalFilename());
+            diaryService.addDiary(diaryDetailReqDTO,
+                    image.getInputStream(), image.getOriginalFilename(),
+                    record.getInputStream(), record.getOriginalFilename());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -84,10 +86,10 @@ public class DiaryController {
     }
 
     @PutMapping("/")
-    @Operation(summary = "일기 작성")
+    @Operation(summary = "일기 수정")
     public ResponseEntity<String> editDiary(@RequestBody(required = true) DiaryDetailReqDTO diaryDetailReqDTO){
         log.info("editDiary");
-
+        // TODO : 수정 작성
         return ResponseEntity.ok("edit Diary Success");
     }
 }

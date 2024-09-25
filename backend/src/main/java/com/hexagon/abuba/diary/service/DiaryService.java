@@ -61,8 +61,10 @@ public class DiaryService {
         return diaryResDTOList;
     }
 
-    public void addDiary(DiaryDetailReqDTO reqDTO, InputStream imageStream, String imageName){
-        Diary diary = DTOToEntity(reqDTO, imageStream, imageName);
+    public void addDiary(DiaryDetailReqDTO reqDTO,
+                         InputStream imageStream, String imageName,
+                         InputStream recordStream, String recordName){
+        Diary diary = DTOToEntity(reqDTO, imageStream, imageName, recordStream, recordName);
         diaryRepository.save(diary);
     }
 
@@ -81,7 +83,9 @@ public class DiaryService {
         );
     }
 
-    private Diary DTOToEntity(DiaryDetailReqDTO reqDTO, InputStream imageStream, String imageName){
+    private Diary DTOToEntity(DiaryDetailReqDTO reqDTO,
+                              InputStream imageStream, String imageName,
+                              InputStream recordStream, String recordName){
         Diary diary = new Diary();
 
         diary.setParent(parentRepository.findById(reqDTO.parentId()).orElse(null));
@@ -91,14 +95,19 @@ public class DiaryService {
         diary.setCreatedAt(reqDTO.createdAt());
         diary.setAccount(reqDTO.account());
         diary.setDeposit(reqDTO.deposit());
-        diary.setRecord_url(reqDTO.record_url());
         diary.setHeight(reqDTO.height());
         diary.setWeight(reqDTO.weight());
 
         if(imageStream != null && imageName != null){
-            String uploadedFileName = s3Service.uploadFile(imageStream, imageName);
+            String uploadedFileName = s3Service.uploadFile(imageStream, imageName, "img");
             String imageUrl = s3Service.getFileUrl(uploadedFileName, "img");
             diary.setImage_url(imageUrl);
+        }
+
+        if(recordStream != null && recordName != null){
+            String uploadedFileName = s3Service.uploadFile(recordStream, recordName, "record");
+            String recordUrl = s3Service.getFileUrl(uploadedFileName, "record");
+            diary.setRecord_url(recordUrl);
         }
 
         return diary;
