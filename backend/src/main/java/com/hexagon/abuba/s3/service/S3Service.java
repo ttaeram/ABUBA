@@ -50,7 +50,7 @@ public class S3Service {
         return uniqueFileName;
     }
 
-    public String getFileUrl(String fileName) {
-        return "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
+    public String getFileUrl(String fileName, String type) {
+        return "https://" + bucketName + ".s3.amazonaws.com/" + type + "/" + fileName;
     }
 }
