@@ -65,6 +65,12 @@
     ]
   },
   "devDependencies": {
-    "@types/styled-components": "^5.1.34"
+    "@types/styled-components": "^5.1.34",
+    "msw": "^2.4.9"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
