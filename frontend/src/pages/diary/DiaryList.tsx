@@ -5,7 +5,7 @@ import BackButton from "../../components/buttons/BackButton"
 import styled from "styled-components"
 
 const DiaryList = () => {
-  const [diaries, setDiaries] = useState<{ id: number; title: string; content: string; date: string; imageUrl: string }[]>([])
+  const [diaries, setDiaries] = useState<{ id: number; title: string; content: string; date: string; money: string; imageUrl: string }[]>([])
   const navigate = useNavigate()
 
   // 10개의 임시 데이터 생성
@@ -15,6 +15,7 @@ const DiaryList = () => {
       title: `일기 ${index + 1}`,
       content: `일기 내용 ${index + 1}`,
       date: '09/19 10:19',
+      money: '30,000 원',
       imageUrl: 'https://via.placeholder.com/400x300',
     }))
     setDiaries(newDiaries)
@@ -49,7 +50,6 @@ export default DiaryList
 
 const Container = styled.div`
   padding: 20px;
-  font-family: sans-serif;
 `;
 
 const Header = styled.div`
@@ -59,7 +59,7 @@ const Header = styled.div`
   margin-bottom: 20px;
 `;
 
-const Title = styled.h2`
+const Title = styled.div`
   font-size: 16px;
   font-weight: bold;
 `;
