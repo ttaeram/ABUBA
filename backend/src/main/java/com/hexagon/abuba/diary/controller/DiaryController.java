@@ -2,6 +2,7 @@ package com.hexagon.abuba.diary.controller;
 
 import com.hexagon.abuba.diary.Diary;
 import com.hexagon.abuba.diary.dto.request.DiaryDetailReqDTO;
+import com.hexagon.abuba.diary.dto.request.DiaryEditReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryRecentReqDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
@@ -48,7 +49,7 @@ public class DiaryController {
      */
     @GetMapping("/recents")
     @Operation(summary = "가장 최근에 다이어리에 작성한 사진이 있는 게시물 3개 불러오기")
-    public ResponseEntity<List<DiaryRecentResDTO>> getRecent(@RequestBody(required = true) final DiaryRecentReqDTO diaryRecentReqDTO) {
+    public ResponseEntity<List<DiaryRecentResDTO>> getRecent(@RequestBody DiaryRecentReqDTO diaryRecentReqDTO) {
         log.info("getRecent");
         List<DiaryRecentResDTO> diaryRecentResDTOList = diaryService.recentDiary(diaryRecentReqDTO);
 
@@ -62,7 +63,7 @@ public class DiaryController {
      */
     @GetMapping("/")
     @Operation(summary = "작성한 게시글의 목록 조회")
-    public ResponseEntity<List<DiaryResDTO>> getList(@RequestBody(required = true) final DiaryRecentReqDTO diaryRecentReqDTO) {
+    public ResponseEntity<List<DiaryResDTO>> getList(@RequestBody DiaryRecentReqDTO diaryRecentReqDTO) {
         log.info("getList");
 
         List<DiaryResDTO> resDTOList = diaryService.getList(diaryRecentReqDTO);
@@ -83,9 +84,11 @@ public class DiaryController {
 
     @PutMapping("/")
     @Operation(summary = "일기 수정")
-    public ResponseEntity<String> editDiary(@RequestBody(required = true) DiaryDetailReqDTO diaryDetailReqDTO){
+    public ResponseEntity<String> editDiary(@RequestParam(value = "image", required = false) MultipartFile image,
+                                            @RequestParam(value = "record", required = false) MultipartFile record,
+                                            @ModelAttribute DiaryEditReqDTO diaryEditReqDTO){
         log.info("editDiary");
-        // TODO : 수정 작성
+        diaryService.editDiary(diaryEditReqDTO, image, record);
         return ResponseEntity.ok("edit Diary Success");
     }
 }

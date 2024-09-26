@@ -2,6 +2,7 @@ package com.hexagon.abuba.diary.service;
 
 import com.hexagon.abuba.diary.Diary;
 import com.hexagon.abuba.diary.dto.request.DiaryDetailReqDTO;
+import com.hexagon.abuba.diary.dto.request.DiaryEditReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryRecentReqDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
@@ -41,7 +42,7 @@ public class DiaryService {
 
             DiaryRecentResDTO diaryRecentResDTO = new DiaryRecentResDTO(
                     diary.getId(),
-                    diary.getImage_url()
+                    s3Service.getFileUrl(diary.getImage_url())
             );
 
             diaryRecentResDTOList.add(diaryRecentResDTO);
@@ -85,6 +86,40 @@ public class DiaryService {
         diaryRepository.save(diary);
     }
 
+    public void editDiary(DiaryEditReqDTO reqDTO, MultipartFile image, MultipartFile record){
+        Diary diary = diaryRepository.findById(reqDTO.diaryId()).orElseThrow();
+
+        diary.setTitle(reqDTO.title());
+        diary.setContent(reqDTO.content());
+        diary.setCreatedAt(reqDTO.createdAt());
+        diary.setHeight(reqDTO.height());
+        diary.setWeight(reqDTO.weight());
+
+        s3Service.deleteFile(diary.getImage_url());
+        s3Service.deleteFile(diary.getRecord_url());
+
+        InputStream imageStream = null;
+        InputStream recordStream = null;
+        String imageName = null;
+        String recordName = null;
+        try {
+            if (image != null) {
+                imageStream = image.getInputStream();
+                imageName = image.getOriginalFilename();
+            }
+            if (record != null) {
+                recordStream = record.getInputStream();
+                recordName = record.getOriginalFilename();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        diary = uploadFile(imageStream, imageName, "img", diary);
+        diary = uploadFile(recordStream, recordName, "record", diary);
+
+        diaryRepository.save(diary);
+    }
 
 
 
@@ -96,7 +131,7 @@ public class DiaryService {
                 diary.getContent(),
                 diary.getCreatedAt(),
                 diary.getDeposit(),
-                diary.getImage_url()
+                s3Service.getFileUrl(diary.getImage_url())
         );
     }
 
@@ -115,18 +150,22 @@ public class DiaryService {
         diary.setHeight(reqDTO.height());
         diary.setWeight(reqDTO.weight());
 
-        if(imageStream != null && imageName != null){
-            String uploadedFileName = s3Service.uploadFile(imageStream, imageName, "img");
-            String imageUrl = s3Service.getFileUrl(uploadedFileName, "img");
-            diary.setImage_url(imageUrl);
-        }
 
-        if(recordStream != null && recordName != null){
-            String uploadedFileName = s3Service.uploadFile(recordStream, recordName, "record");
-            String recordUrl = s3Service.getFileUrl(uploadedFileName, "record");
-            diary.setRecord_url(recordUrl);
-        }
+        diary = uploadFile(imageStream, imageName, "img", diary);
+        diary = uploadFile(recordStream, recordName, "record", diary);
 
+        return diary;
+    }
+
+    private Diary uploadFile(InputStream inputStream, String fileName, String fileType, Diary diary){
+        if(inputStream != null && fileName != null){
+            String uploadFileName = s3Service.uploadFile(inputStream, fileName, fileType);
+            if(fileType.equals("img")){
+                diary.setImage_url(uploadFileName);
+            }else if(fileType.equals("record")){
+                diary.setRecord_url(uploadFileName);
+            }
+        }
         return diary;
     }
 }

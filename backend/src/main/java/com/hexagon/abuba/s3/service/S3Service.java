@@ -7,6 +7,7 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
@@ -36,7 +37,7 @@ public class S3Service {
     }
 
     public String uploadFile(InputStream inputStream, String fileName, String type) {
-        String uniqueFileName = type+"/"+UUID.randomUUID().toString() + "_" + fileName;
+        String uniqueFileName = type + "/" + UUID.randomUUID().toString() + "_" + fileName;
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(uniqueFileName)
@@ -50,7 +51,21 @@ public class S3Service {
         return uniqueFileName;
     }
 
-    public String getFileUrl(String fileName, String type) {
-        return "https://" + bucketName + ".s3.amazonaws.com/" + type + "/" + fileName;
+    public void deleteFile(String fileName) {
+        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                .bucket(bucketName)
+                .key(fileName)
+                .build();
+
+        try {
+            s3Client.deleteObject(deleteObjectRequest);
+        } catch (S3Exception e) {
+            System.err.println(e.awsErrorDetails().errorMessage());
+            throw new RuntimeException("Failed to delete file: " + fileName, e);
+        }
+    }
+
+    public String getFileUrl(String fileName) {
+        return "https://" + bucketName + ".s3.amazonaws.com/" + fileName;
     }
 }
