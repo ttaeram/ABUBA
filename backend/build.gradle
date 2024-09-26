@@ -45,6 +45,14 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+
+	// AWS S3 SDK
+	implementation 'software.amazon.awssdk:s3:2.20.0'
+	implementation 'software.amazon.awssdk:auth:2.20.0'
+
+	// @ConfigureProperties를 사용하기 위해 추가
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 tasks.named('test') {
