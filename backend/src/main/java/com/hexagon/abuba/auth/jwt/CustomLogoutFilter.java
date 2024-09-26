@@ -97,6 +97,8 @@ public class CustomLogoutFilter extends GenericFilterBean {
             return;
         }
 
+        filterChain.doFilter(request, response);
+
         // 로그아웃 진행
         refreshRepository.deleteByRefresh(refresh);
         log.info("Successfully logged out and deleted refresh token."); // 로그아웃 성공 로그
@@ -106,6 +108,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
         cookie.setPath("/");
         response.addCookie(cookie);
         response.setStatus(HttpServletResponse.SC_OK);
+
 
     }
 }

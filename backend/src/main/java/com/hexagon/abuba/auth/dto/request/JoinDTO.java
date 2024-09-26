@@ -9,7 +9,7 @@ import lombok.Setter;
 @Schema(description = "회원가입용 DTO")
 public class JoinDTO {
     @Schema(description = "사용자의 id == email" , required = true)
-    private String username;
+    private String email;
 
     @Schema(description = "비밀번호", required = true)
     private String password;
@@ -20,7 +20,7 @@ public class JoinDTO {
     @Override
     public String toString() {
         return "JoinDTO{" +
-                "username='" + username + '\'' +
+                "username='" +  + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 '}';

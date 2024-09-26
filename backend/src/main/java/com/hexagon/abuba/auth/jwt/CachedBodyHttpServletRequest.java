@@ -7,15 +7,26 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 
 import java.io.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class CachedBodyHttpServletRequest extends HttpServletRequestWrapper {
-
     private final byte[] cachedBody;
 
     public CachedBodyHttpServletRequest(HttpServletRequest request) throws IOException {
         super(request);
-        InputStream inputStream = request.getInputStream();
-        this.cachedBody = inputStream.readAllBytes();
+        InputStreamReader reader = new InputStreamReader(request.getInputStream());
+        BufferedReader bufferedReader = new BufferedReader(reader);
+        StringBuilder body = new StringBuilder();
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            body.append(line);
+        }
+        cachedBody = body.toString().getBytes();
     }
 
     @Override
@@ -29,7 +40,6 @@ public class CachedBodyHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     private static class CachedBodyInputStream extends ServletInputStream {
-
         private final ByteArrayInputStream inputStream;
 
         public CachedBodyInputStream(byte[] cachedBody) {
@@ -48,7 +58,7 @@ public class CachedBodyHttpServletRequest extends HttpServletRequestWrapper {
 
         @Override
         public void setReadListener(ReadListener readListener) {
-            throw new UnsupportedOperationException();
+            // No-op
         }
 
         @Override

@@ -26,7 +26,7 @@ public class AuthService {
 
     public void joinProcess(JoinDTO joinDTO) {
 
-        String username = joinDTO.getUsername();
+        String username = joinDTO.getEmail();
         String password = joinDTO.getPassword();
         String name = joinDTO.getName();
         log.info("joinDTO={}",joinDTO.toString());
@@ -47,8 +47,5 @@ public class AuthService {
         userRepository.save(data);
     }
 
-    public LoginResDTO findUserInfo(LoginDTO loginDTO) {
-        Parent user = userRepository.findByUsername(loginDTO.username());
-        return new LoginResDTO(user.getUsername(), user.getName());
-    }
+
 }
