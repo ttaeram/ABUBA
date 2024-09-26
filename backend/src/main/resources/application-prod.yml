@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:mariadb://stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306/S11P22A106?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
-    username: S11P22A106
+    url: jdbc:mysql://stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306/S11P22A106?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    username: S11P22A106@stg-yswa-kr-practice-db-master
     password: abuba106
-    driver-class-name: org.mariadb.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
