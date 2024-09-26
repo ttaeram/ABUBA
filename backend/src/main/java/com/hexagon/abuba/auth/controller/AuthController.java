@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,5 +45,11 @@ public class AuthController {
         Parent user = (Parent)request.getAttribute("user");
         LoginResDTO  response = new LoginResDTO(user.getUsername(),user.getName());
         return new ResponseEntity<>(DataResponse.of(HttpStatus.OK,"로그인이 완료되었습니다.",response),HttpStatus.OK);
+    }
+
+    @Operation(summary = "로그아웃", description = "로그아웃")
+    @PostMapping("/logout")
+    public ResponseEntity<MessageResponse> logout(){
+        return new ResponseEntity<>(MessageResponse.of(HttpStatus.OK,"로그아웃 되었습니다."),HttpStatus.OK);
     }
 }
