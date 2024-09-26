@@ -10,6 +10,17 @@ spring:
       ddl-auto: update
 
 
+  servlet:
+    multipart:
+      enabled: true
+      max-request-size: 300MB
+      max-file-size: 50MB
 
+aws:
+  s3:
+    access-key: ${AWS_ACCESS_KEY}
+    secret-key: ${AWS_SECRET_KEY}
+    bucket-name: hexagon-abuba
+    region: ap-northeast-2
 
 
