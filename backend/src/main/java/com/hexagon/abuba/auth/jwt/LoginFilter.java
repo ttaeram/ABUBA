@@ -1,11 +1,13 @@
 package com.hexagon.abuba.auth.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hexagon.abuba.auth.dto.CustomUserDetails;
 import com.hexagon.abuba.auth.dto.request.LoginDTO;
 import com.hexagon.abuba.auth.entity.RefreshEntity;
 import com.hexagon.abuba.auth.repository.RefreshRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,8 +20,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -40,16 +44,58 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-
-        // JSON 데이터를 파싱
-        ObjectMapper objectMapper = new ObjectMapper();
-        LoginDTO loginDTO = null;
+//        // JSON 데이터를 파싱
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        LoginDTO loginDTO = null;
+//        try {
+////            // 요청 바디에서 JSON 데이터 읽기
+////            loginDTO = objectMapper.readValue(request.getInputStream(), LoginDTO.class);
+//            ServletInputStream inputStream = request.getInputStream();
+//            String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+//            loginDTO = objectMapper.readValue(messageBody, LoginDTO.class);
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        String username = loginDTO.username();
+//        String password = loginDTO.password();
+//
+//        log.info("username={}", username);
+//        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
+//        return authenticationManager.authenticate(authToken);
+        // 요청을 캐시합니다.
+        CachedBodyHttpServletRequest cachedRequest;
         try {
-            // 요청 바디에서 JSON 데이터 읽기
-            loginDTO = objectMapper.readValue(request.getInputStream(), LoginDTO.class);
+            cachedRequest = new CachedBodyHttpServletRequest(request);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        // JSON 데이터를 파싱
+        ObjectMapper objectMapper = new ObjectMapper();
+        LoginDTO loginDTO;
+        try {
+            // 요청 바디에서 JSON 데이터 읽기
+            loginDTO = objectMapper.readValue(cachedRequest.getInputStream(), LoginDTO.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        LoginDTO loginDTO;
+//        try {
+//            ServletInputStream inputStream = request.getInputStream();
+//            String messageBody = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+//            loginDTO = objectMapper.readValue(messageBody, LoginDTO.class);
+//
+//            // null 체크
+//            if (loginDTO == null || loginDTO.username() == null || loginDTO.password() == null) {
+//                throw new RuntimeException("LoginDTO is null or invalid");
+//            }
+//        } catch (IOException e) {
+//            throw new RuntimeException("Failed to read request body", e);
+//        }
 
         String username = loginDTO.username();
         String password = loginDTO.password();
@@ -84,9 +130,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+//        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+//        request.setAttribute("user", customUserDetails.getUser());
+
         //TODO 원인 분석 필요
-//        chain.doFilter(request, response); // 이 줄을 추가하세요
+        log.info("Request URI: {}", request.getRequestURI());
+        log.info("Request Method: {}", request.getMethod());
         log.info("요청이 로그인 필터에 들어왔습니다. access설정");
+//        chain.doFilter(request, response); // 이 줄을 추가하세요
     }
 
     @Override

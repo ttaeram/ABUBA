@@ -1,6 +1,7 @@
 package com.hexagon.abuba.auth.dto;
 
 import com.hexagon.abuba.user.Parent;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
@@ -68,4 +69,9 @@ public class CustomUserDetails implements UserDetails {
 
         return true;
     }
+
+    public Parent getUser() {
+        return userEntity;
+    }
+
 }
