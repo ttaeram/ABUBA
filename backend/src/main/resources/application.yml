@@ -3,9 +3,18 @@ spring:
     name: abuba
   profiles:
     active: prod
+  jwt:
+    secret: spring.jwt.secret=vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
 
 springdoc:
   swagger-ui:
     path: /swagger # Swagger UI를 표시할 커스텀 경로
   api-docs:
     path: /docs  # API 문서 경로를 커스텀
+
+#security log
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.web.access: DEBUG
+    org.springframework.security.authentication: DEBUG

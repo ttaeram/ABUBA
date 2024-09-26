@@ -59,8 +59,8 @@ const DiaryDetail = () => {
           <StatItem>신장 : {diaryData?.height || 0}</StatItem>
           <StatItem>체중 : {diaryData?.weight || 0}</StatItem>
         </StatsContainer>
-        <h1>{diaryData?.title || "제목 없음"}</h1>
-        <p>{diaryData?.content || "내용 없음"}</p>
+        <Title>{diaryData?.title || "제목 없음"}</Title>
+        <ContentText>{diaryData?.content || "내용 없음"}</ContentText>
         {diaryData?.audioUrl && (
         <>
           <AudioLabel>목소리 듣기</AudioLabel>
@@ -76,7 +76,6 @@ export default DiaryDetail
 
 const DiaryContainer = styled.div`
   padding: 20px;
-  font-family: sans-serif;
 `;
 
 const Header = styled.div`
@@ -112,14 +111,31 @@ const DiaryImage = styled.img`
 const StatsContainer = styled.div`
   display: flex;
   justify-content: space-around;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 `;
 
 const StatItem = styled.div`
+  font-size: 14px;
+  color: #555;
+`;
+
+const Title = styled.h1`
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #333;
+`;
+
+const ContentText = styled.p`
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  color: #444;
 `;
 
 const AudioLabel = styled.p`
   font-weight: bold;
+  margin-top: 20px;
 `;
 
 const Loading = styled.div`
