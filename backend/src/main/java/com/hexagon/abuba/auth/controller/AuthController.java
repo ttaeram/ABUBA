@@ -6,8 +6,12 @@ import com.hexagon.abuba.auth.dto.response.LoginResDTO;
 import com.hexagon.abuba.auth.service.AuthService;
 import com.hexagon.abuba.common.DataResponse;
 import com.hexagon.abuba.common.MessageResponse;
+import com.hexagon.abuba.user.Parent;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,9 +40,9 @@ public class AuthController {
 
     @Operation(summary = "로그인", description = "신규 유저가 회원가입합니다.")
     @PostMapping("/login")
-    public ResponseEntity<DataResponse<LoginResDTO>> login(@RequestBody LoginDTO loginDTO) {
-        log.info("loginDTO={}",loginDTO);
-        LoginResDTO  response = authService.findUserInfo(loginDTO);
+    public ResponseEntity<DataResponse<LoginResDTO>> login(LoginDTO loginDTO,  @Parameter(hidden = true)  HttpServletRequest request) {
+        Parent user = (Parent)request.getAttribute("user");
+        LoginResDTO  response = new LoginResDTO(user.getUsername(),user.getName());
         return new ResponseEntity<>(DataResponse.of(HttpStatus.OK,"로그인이 완료되었습니다.",response),HttpStatus.OK);
     }
 }

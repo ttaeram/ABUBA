@@ -47,8 +47,5 @@ public class AuthService {
         userRepository.save(data);
     }
 
-    public LoginResDTO findUserInfo(LoginDTO loginDTO) {
-        Parent user = userRepository.findByUsername(loginDTO.username());
-        return new LoginResDTO(user.getUsername(), user.getName());
-    }
+
 }
