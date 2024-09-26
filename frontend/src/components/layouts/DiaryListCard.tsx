@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 
-const DiaryListCard = ({ diary }: { diary: { id: number; title: string; content: string; date: string; imageUrl: string } }) => {
+const DiaryListCard = ({ diary }: { diary: { id: number; title: string; content: string; date: string; money: string; imageUrl: string } }) => {
   const navigate = useNavigate()
 
   const toDiaryDetail = () => {
@@ -15,7 +15,10 @@ const DiaryListCard = ({ diary }: { diary: { id: number; title: string; content:
         <Title>{diary.title}</Title>
       </div>
       <Content>{diary.content}</Content>
-      <Date>{diary.date}</Date>
+      <InfoRow>
+        <Date>{diary.date}</Date>
+        <Money>{diary.money}</Money>
+      </InfoRow>
     </Card>
   )
 }
@@ -43,10 +46,18 @@ const Content = styled.p`
   margin: 10px 0;
 `;
 
-const Date = styled.div`
+const InfoRow = styled.div`
+  display: flex;
+  justify-content: space-between; /* 양 끝으로 배치 */
+  align-items: center;
   font-size: 12px;
   color: #999;
-  text-align: right;
+`;
+
+const Date = styled.div`
+`;
+
+const Money = styled.div`
 `;
 
 const DiaryImage = styled.img`

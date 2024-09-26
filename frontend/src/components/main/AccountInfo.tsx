@@ -40,7 +40,7 @@ const TextInfo = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin: 20px auto;
+  margin: 10px auto;
   justify-content: space-between;
 `
 
@@ -53,6 +53,6 @@ const Money = styled.div`
     display: flex;
     justify-content: right;
     text-align: right;
-    font-size:30px;
+    font-size:25px;
 
 `

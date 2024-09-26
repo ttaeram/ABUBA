@@ -5,7 +5,7 @@ import Navbar from "../Navbar";
 const Header = () => {
   const location = useLocation();
 
-  if (location.pathname === '/login' || location.pathname === '/onboard' || location.pathname === '/signup') {
+  if (location.pathname === '/' || location.pathname === '/onboard' || location.pathname === '/signup') {
     return null;
   }
 
