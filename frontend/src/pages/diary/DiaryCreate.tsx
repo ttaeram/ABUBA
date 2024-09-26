@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import BackButton from "../../components/buttons/BackButton"
 import AudioPlayer from "../../components/AudioPlayer"
-import SelectModal from "../../components/deposit/SelectModal"
+import DepositModal from "../../components/deposit/DepostModal"
 import axios from "axios"
 import styled from "styled-components"
 
@@ -29,6 +29,9 @@ const DiaryCreate = () => {
   })
 
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedAccount, setSelectedAccount] = useState("")
+  const [amount, setAmount] = useState<number>(0)
+  const [memo, setMemo] = useState<string>("")
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -47,7 +50,6 @@ const DiaryCreate = () => {
   }
 
   const handleImageClick = () => {
-    // 이미지 클릭 시 파일 업로드 트리거
     document.getElementById('imageInput')?.click();
   }
 
@@ -62,6 +64,13 @@ const DiaryCreate = () => {
     } catch (error) {
       console.error("Failed to create diary", error)
     }
+  }
+
+  const handleConfirm = (memo: string, amount: number) => {
+    setMemo(memo)
+    setAmount(amount)
+    setIsModalOpen(false)
+    console.log(`memo: ${memo}, amount: ${amount}`)
   }
 
   return (
@@ -134,11 +143,16 @@ const DiaryCreate = () => {
       <Label>음성 녹음</Label>
       <AudioPlayer src={diaryData.audioUrl} onNewRecording={handleNewRecording} />
 
-      <Label>저축</Label>
-      <Button onClick={() => setIsModalOpen(true)}>계좌 선택</Button>
+      <DepositContainer>
+        <Label>계좌 송금</Label>
+        <Button onClick={() => setIsModalOpen(true)}>계좌 선택</Button>
+        <DepositModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={handleConfirm}
+        />
+      </DepositContainer>
     </Content>
-
-    <SelectModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onConfirm={() => alert("저축 완료")} />
   </DiaryContainer>
   )
 }
@@ -263,7 +277,7 @@ const Textarea = styled.textarea`
 
 const Button = styled.button`
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #3B6EBA;
   color: white;
   border: none;
   border-radius: 5px;
@@ -271,6 +285,12 @@ const Button = styled.button`
   margin-top: 20px;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #173C91;
   }
 `;
+
+const DepositContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
