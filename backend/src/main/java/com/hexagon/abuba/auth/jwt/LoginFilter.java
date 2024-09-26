@@ -65,7 +65,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         log.info("Parsed LoginDTO: {}", loginDTO);
 
 
-        String username = loginDTO.username();
+        String username = loginDTO.email();
         String password = loginDTO.password();
 
         log.info("username={}", username);

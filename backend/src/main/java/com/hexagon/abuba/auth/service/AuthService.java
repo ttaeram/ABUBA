@@ -26,7 +26,7 @@ public class AuthService {
 
     public void joinProcess(JoinDTO joinDTO) {
 
-        String username = joinDTO.getUsername();
+        String username = joinDTO.getEmail();
         String password = joinDTO.getPassword();
         String name = joinDTO.getName();
         log.info("joinDTO={}",joinDTO.toString());
