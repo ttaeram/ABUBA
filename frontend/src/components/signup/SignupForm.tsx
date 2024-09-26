@@ -139,11 +139,15 @@ export default SignupForm;
 const FormContainer = styled.form`
   background: white;
   border-radius: 12px;
-  width: 400px;
-  padding: 40px;
+  width: 100%;
+  padding: 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0 auto;
+  box-sizing: border-box;
+
+  
 `;
 
 const InputContainer = styled.div`
@@ -156,15 +160,17 @@ const InputContainer = styled.div`
 const FormGroup = styled.div`
   display: flex;
   gap: 10px;
-  width: 100%;
+  flex-wrap: wrap;
 `;
 
 const Input = styled.input`
   flex: 1;
+  min-width: 0;
   padding: 15px;
   border: 1px solid #ddd;
   border-radius: 8px;
   font-size: 16px;
+  box-sizing: border-box;
 `;
 
 const Timer = styled.span`
@@ -177,6 +183,7 @@ const Timer = styled.span`
 const ErrorMessage = styled.div`
   color: red;
   font-size: 14px;
+  margin-top: 10px;
   margin-bottom: 15px;
 `;
 

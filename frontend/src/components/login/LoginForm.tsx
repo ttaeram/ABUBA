@@ -1,27 +1,34 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import {login} from '../../api/auth'
 
 const LoginForm = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
 
-    if (!username || !password) {
+    if (!email || !password) {
       setError('모든 필드를 입력해주세요.');
       return;
-    }  
+    }
+    
+    try {
+      await login(email, password);
+      navigate('/main');
+    } catch (err) {
+      setError('로그인에 실패했습니다. 다시 시도해주세요.');
+    }
 
-    // console.log('로그인 시도:', { username, password });
   };
 
   const handleSignupClick = () => {
-    navigate('/signup'); // 회원가입 페이지로 이동
+    navigate('/signup');
   };
 
   // const handleFindPwdClick = () => {
@@ -34,9 +41,9 @@ const LoginForm = () => {
       <InputContainer>
         <Input
           type="text"
-          id="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <Input
           type="password"
@@ -109,6 +116,7 @@ const Button = styled.button`
 `;
 
 const ErrorMessage = styled.div`
+  font-size: 14px;
   color: red;
   margin-bottom: 15px;
 `;
