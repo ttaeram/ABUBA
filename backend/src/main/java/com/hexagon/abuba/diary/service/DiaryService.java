@@ -2,15 +2,19 @@ package com.hexagon.abuba.diary.service;
 
 import com.hexagon.abuba.diary.Diary;
 import com.hexagon.abuba.diary.dto.request.DiaryDetailReqDTO;
+import com.hexagon.abuba.diary.dto.request.DiaryEditReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryRecentReqDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
 import com.hexagon.abuba.diary.repository.DiaryRepository;
+import com.hexagon.abuba.s3.service.S3Service;
 import com.hexagon.abuba.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +24,12 @@ import java.util.List;
 public class DiaryService {
     private final DiaryRepository diaryRepository;
     private final ParentRepository parentRepository;
+    private final S3Service s3Service;
 
-    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository) {
+    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, S3Service s3Service) {
         this.diaryRepository = diaryRepository;
         this.parentRepository = parentRepository;
+        this.s3Service = s3Service;
     }
 
     public List<DiaryRecentResDTO> recentDiary(DiaryRecentReqDTO reqDTO) {
@@ -36,7 +42,7 @@ public class DiaryService {
 
             DiaryRecentResDTO diaryRecentResDTO = new DiaryRecentResDTO(
                     diary.getId(),
-                    diary.getImage_url()
+                    s3Service.getFileUrl(diary.getImage_url())
             );
 
             diaryRecentResDTOList.add(diaryRecentResDTO);
@@ -57,11 +63,63 @@ public class DiaryService {
         return diaryResDTOList;
     }
 
-    public void addDiary(DiaryDetailReqDTO reqDTO){
-        Diary diary = DTOToEntity(reqDTO);
+    public void addDiary(DiaryDetailReqDTO reqDTO, MultipartFile image, MultipartFile record){
+        InputStream imageStream = null;
+        InputStream recordStream = null;
+        String imageName = null;
+        String recordName = null;
+
+        try {
+            if (image != null) {
+                imageStream = image.getInputStream();
+                imageName = image.getOriginalFilename();
+            }
+            if (record != null) {
+                recordStream = record.getInputStream();
+                recordName = record.getOriginalFilename();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        Diary diary = DTOToEntity(reqDTO, imageStream, imageName, recordStream, recordName);
         diaryRepository.save(diary);
     }
 
+    public void editDiary(DiaryEditReqDTO reqDTO, MultipartFile image, MultipartFile record){
+        Diary diary = diaryRepository.findById(reqDTO.diaryId()).orElseThrow();
+
+        diary.setTitle(reqDTO.title());
+        diary.setContent(reqDTO.content());
+        diary.setCreatedAt(reqDTO.createdAt());
+        diary.setHeight(reqDTO.height());
+        diary.setWeight(reqDTO.weight());
+
+        s3Service.deleteFile(diary.getImage_url());
+        s3Service.deleteFile(diary.getRecord_url());
+
+        InputStream imageStream = null;
+        InputStream recordStream = null;
+        String imageName = null;
+        String recordName = null;
+        try {
+            if (image != null) {
+                imageStream = image.getInputStream();
+                imageName = image.getOriginalFilename();
+            }
+            if (record != null) {
+                recordStream = record.getInputStream();
+                recordName = record.getOriginalFilename();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        diary = uploadFile(imageStream, imageName, "img", diary);
+        diary = uploadFile(recordStream, recordName, "record", diary);
+
+        diaryRepository.save(diary);
+    }
 
 
 
@@ -73,11 +131,13 @@ public class DiaryService {
                 diary.getContent(),
                 diary.getCreatedAt(),
                 diary.getDeposit(),
-                diary.getImage_url()
+                s3Service.getFileUrl(diary.getImage_url())
         );
     }
 
-    private Diary DTOToEntity(DiaryDetailReqDTO reqDTO){
+    private Diary DTOToEntity(DiaryDetailReqDTO reqDTO,
+                              InputStream imageStream, String imageName,
+                              InputStream recordStream, String recordName){
         Diary diary = new Diary();
 
         diary.setParent(parentRepository.findById(reqDTO.parentId()).orElse(null));
@@ -87,11 +147,25 @@ public class DiaryService {
         diary.setCreatedAt(reqDTO.createdAt());
         diary.setAccount(reqDTO.account());
         diary.setDeposit(reqDTO.deposit());
-        diary.setRecord_url(reqDTO.record_url());
-        diary.setImage_url(reqDTO.image_url());
         diary.setHeight(reqDTO.height());
         diary.setWeight(reqDTO.weight());
 
+
+        diary = uploadFile(imageStream, imageName, "img", diary);
+        diary = uploadFile(recordStream, recordName, "record", diary);
+
+        return diary;
+    }
+
+    private Diary uploadFile(InputStream inputStream, String fileName, String fileType, Diary diary){
+        if(inputStream != null && fileName != null){
+            String uploadFileName = s3Service.uploadFile(inputStream, fileName, fileType);
+            if(fileType.equals("img")){
+                diary.setImage_url(uploadFileName);
+            }else if(fileType.equals("record")){
+                diary.setRecord_url(uploadFileName);
+            }
+        }
         return diary;
     }
 }
