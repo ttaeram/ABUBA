@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import BackButton from "../../components/buttons/BackButton"
+import AudioPlayer from "../../components/AudioPlayer"
 import axios from "axios"
 import styled from "styled-components"
 
@@ -24,6 +25,25 @@ const DiaryUpdate = () => {
     setDiaryData({ ...diaryData, [name]: value })
   }
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setDiaryData({ ...diaryData, imageUrl: reader.result as string })
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleImageClick = () => {
+    document.getElementById('imageInput')?.click();
+  }
+
+  const handleNewRecording = (newAudioUrl: string) => {
+    setDiaryData({ ...diaryData, audioUrl: newAudioUrl });
+  };
+
   const handleUpdate = async () => {
     try {
       await axios.put(`/api/v1/diary/${id}`, diaryData)
@@ -42,23 +62,41 @@ const DiaryUpdate = () => {
     </Header>
 
     <Content>
-      <DiaryImage src={diaryData?.imageUrl || 'https://via.placeholder.com/400x300'} alt={diaryData.title} />
+      <ImageContainer onClick={handleImageClick}>
+        <DiaryImage src={diaryData?.imageUrl || 'https://via.placeholder.com/400x300'} alt={diaryData.title} />
+        <ImageText>아이의 사진을 수정하려면 클릭하세요.</ImageText>
+        <input
+          id="imageInput"
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          style={{ display: 'none' }} // 파일 업로드 버튼 숨김
+        />
+      </ImageContainer>
+
       <StatsContainer>
-        <p>신장 </p><StatInput
-          type="number"
-          name="height"
-          value={diaryData.height}
-          onChange={handleChange}
-          placeholder="신장"
-        />
-        <p>체중 </p><StatInput
-          type="number"
-          name="weight"
-          value={diaryData.weight}
-          onChange={handleChange}
-          placeholder="체중"
-        />
+        <StatItem>
+          <StatLabel>신장</StatLabel>
+          <StatInput
+            type="number"
+            name="height"
+            value={diaryData.height}
+            onChange={handleChange}
+            placeholder="신장"
+          />
+        </StatItem>
+        <StatItem>
+          <StatLabel>체중</StatLabel>
+          <StatInput
+            type="number"
+            name="weight"
+            value={diaryData.weight}
+            onChange={handleChange}
+            placeholder="체중"
+          />
+        </StatItem>
       </StatsContainer>
+
       <Label>제목</Label>
       <Input
         type="text"
@@ -73,6 +111,8 @@ const DiaryUpdate = () => {
         onChange={handleChange}
       />
     </Content>
+    <Label>목소리 녹음/듣기</Label>
+    <AudioPlayer src={diaryData.audioUrl} onNewRecording={handleNewRecording} />
   </DiaryContainer>
   )
 }
@@ -81,7 +121,6 @@ export default DiaryUpdate
 
 const DiaryContainer = styled.div`
   padding: 20px;
-  font-family: sans-serif;
 `;
 
 const Header = styled.div`
@@ -107,38 +146,72 @@ const Content = styled.div`
   margin-top: 20px;
 `;
 
+const ImageContainer = styled.div`
+  text-align: center;
+  margin-bottom: 20px;
+  cursor: pointer; /* 클릭 가능하게 표시 */
+`;
+
 const DiaryImage = styled.img`
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 10px;
+`;
+
+const ImageText = styled.p`
+  font-size: 12px;
+  color: #acacac;
 `;
 
 const StatsContainer = styled.div`
   display: flex;
   justify-content: space-around;
+  margin-bottom: 20px;
 `;
 
 const StatItem = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  align-items: center;
 `;
 
+const StatLabel = styled.label`
+  font-size: 14px;
+  font-weight: bold;
+  margin: 10px;
+`;
 
 const StatInput = styled.input`
-  width: 45px;
-  padding: 10px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-`
+  width: 60px;
+  padding: 5px;
+  margin-top: 5px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+`;
 
 const Label = styled.label`
   font-weight: bold;
-`
+  display: block;
+  margin-top: 10px;
+`;
 
 const Input = styled.input`
-  width: calc(100% - 20px);
+  width: calc(100% - 0px);
   padding: 10px;
-`
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+`;
 
 const Textarea = styled.textarea`
-  width: calc(100% - 20px);
+  width: calc(100% - 0px);
   padding: 10px;
-`
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+`;

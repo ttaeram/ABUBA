@@ -28,17 +28,17 @@ export const FormTitle = styled.h2`
   color: #333;
 `;
 
+
 export const Button = styled.button`
   display: flex;
-  justify-content: center;
-  align-items: center;
+  font-size: 12px;
   padding: 15px;
   background-color: #3B6EBA;
-  margin-bottom: 10px;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  flex-shrink: 0;
 
   &:hover {
     background-color: #173C91;
