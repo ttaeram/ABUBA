@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '../../styles/styledComponents';
-import { sendAuthCode,signup } from '../../api/signup';
+import { signup } from '../../api/signup';
 import { useNavigate } from 'react-router-dom';
+import { requestEmailVerificationCode, verifyEmailCode } from '../../api/auth';
 
 const SignupForm = () => {
   const [email, setEmail] = useState('');
@@ -18,7 +19,8 @@ const SignupForm = () => {
 
   const handleSendCode = async () => {
     try {
-      await sendAuthCode(email);
+      await requestEmailVerificationCode(email, 'signup');
+
       setIsCodeSent(true);
       const countdown = setInterval(() => {
         setTimer((prev) => {
@@ -34,12 +36,18 @@ const SignupForm = () => {
     }
   };
 
-  const handleVerifyCode = () => {
-    if (authCode === '123456') {
-      setIsCodeVerified(true);
-      alert('인증번호가 확인되었습니다!');
-    } else {
-      alert('인증번호가 올바르지 않습니다.');
+  // 인증번호 확인
+  const handleVerifyCode = async () => {
+    try {
+      const response = await verifyEmailCode(email, authCode, 'signup'); // signup type 사용
+      if (response.success) {
+        setIsCodeVerified(true);
+        alert('인증번호가 확인되었습니다!');
+      } else {
+        alert('인증번호가 올바르지 않습니다.');
+      }
+    } catch (error: any) {
+      setError('인증번호 확인에 실패했습니다.');
     }
   };
 
