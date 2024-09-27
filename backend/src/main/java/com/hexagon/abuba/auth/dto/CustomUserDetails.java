@@ -73,5 +73,4 @@ public class CustomUserDetails implements UserDetails {
     public Parent getUser() {
         return userEntity;
     }
-
 }

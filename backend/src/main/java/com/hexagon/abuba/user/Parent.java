@@ -67,4 +67,21 @@ public class Parent {
     public void setName(String name) {
         this.name = name;
     }
+
+//    @Override
+//    public String toString() {
+//        return "Parent{" +
+//                "id=" + id +
+//                ", name='" + name + '\'' +
+//                ", username='" + username + '\'' +
+//                ", password='" + password + '\'' +
+//                ", relationship='" + relationship + '\'' +
+//                ", userkey='" + userkey + '\'' +
+//                ", account='" + account + '\'' +
+//                ", role='" + role + '\'' +
+//                ", alarms=" + alarms +
+//                ", diaries=" + diaries +
+//                ", baby=" + baby +
+//                '}';
+//    }
 }

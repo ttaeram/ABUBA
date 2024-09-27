@@ -53,8 +53,8 @@ public class DiaryService {
         return diaryRecentResDTOList;
     }
 
-    public List<DiaryResDTO> getList(DiaryRecentReqDTO reqDTO){
-        List<Diary> diaries = diaryRepository.findByParentId(reqDTO.parentId());
+    public List<DiaryResDTO> getList(Long parentId){
+        List<Diary> diaries = diaryRepository.findByParentId(parentId);
         List<DiaryResDTO> diaryResDTOList = new ArrayList<>();
         for (Diary diary : diaries) {
             DiaryResDTO diaryResDTO = EntityToResDTO(diary);

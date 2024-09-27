@@ -1,5 +1,6 @@
 package com.hexagon.abuba.diary.controller;
 
+import com.hexagon.abuba.auth.dto.CustomUserDetails;
 import com.hexagon.abuba.diary.Diary;
 import com.hexagon.abuba.diary.dto.request.DiaryDetailReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryEditReqDTO;
@@ -8,10 +9,13 @@ import com.hexagon.abuba.diary.dto.response.DiaryDetailResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
 import com.hexagon.abuba.diary.service.DiaryService;
+import com.hexagon.abuba.user.Parent;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,7 +34,7 @@ import java.util.Optional;
 @RequestMapping("/api/v1/diary")
 @CrossOrigin("*")
 @Slf4j
-//@SecurityRequirement(name = "bearerAuth")  // 이 API는 토큰이 필요함
+@SecurityRequirement(name = "access")  // 이 API는 토큰이 필요함
 public class DiaryController {
     /*
     TODO
@@ -66,10 +70,17 @@ public class DiaryController {
      */
     @GetMapping
     @Operation(summary = "작성한 게시글의 목록 조회")
-    public ResponseEntity<List<DiaryResDTO>> getList(@RequestBody DiaryRecentReqDTO diaryRecentReqDTO) {
+    public ResponseEntity<List<DiaryResDTO>> getList(@RequestParam Long parentId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            Parent user = userDetails.getUser();
+            log.info("userId=" + user.getId());
+        }
         log.info("getList");
 
-        List<DiaryResDTO> resDTOList = diaryService.getList(diaryRecentReqDTO);
+        List<DiaryResDTO> resDTOList = diaryService.getList(parentId);
 
         return ResponseEntity.ok(resDTOList);
     }
