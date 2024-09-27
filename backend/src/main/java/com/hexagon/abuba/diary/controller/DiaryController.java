@@ -4,6 +4,7 @@ import com.hexagon.abuba.diary.Diary;
 import com.hexagon.abuba.diary.dto.request.DiaryDetailReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryEditReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryRecentReqDTO;
+import com.hexagon.abuba.diary.dto.response.DiaryDetailResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
 import com.hexagon.abuba.diary.service.DiaryService;
@@ -61,7 +62,7 @@ public class DiaryController {
      * @param diaryRecentReqDTO
      * @return
      */
-    @GetMapping("/")
+    @GetMapping
     @Operation(summary = "작성한 게시글의 목록 조회")
     public ResponseEntity<List<DiaryResDTO>> getList(@RequestBody DiaryRecentReqDTO diaryRecentReqDTO) {
         log.info("getList");
@@ -72,7 +73,15 @@ public class DiaryController {
     }
 
 
-    @PostMapping("/")
+    @GetMapping("/{diary_id}")
+    @Operation(summary = "일기 상세 조회")
+    public ResponseEntity<DiaryDetailResDTO> getDetail(@PathVariable Long diary_id) {
+        log.info("getDetail");
+        DiaryDetailResDTO diaryDetailResDTO = diaryService.getDetail(diary_id);
+        return ResponseEntity.ok(diaryDetailResDTO);
+    }
+
+    @PostMapping
     @Operation(summary = "일기 작성")
     public ResponseEntity<String> addDiary(@RequestParam(value = "image", required = false) MultipartFile image,
                                            @RequestParam(value = "record", required = false) MultipartFile record,
@@ -82,7 +91,7 @@ public class DiaryController {
         return ResponseEntity.ok("add Diary Success");
     }
 
-    @PutMapping("/")
+    @PutMapping
     @Operation(summary = "일기 수정")
     public ResponseEntity<String> editDiary(@RequestParam(value = "image", required = false) MultipartFile image,
                                             @RequestParam(value = "record", required = false) MultipartFile record,

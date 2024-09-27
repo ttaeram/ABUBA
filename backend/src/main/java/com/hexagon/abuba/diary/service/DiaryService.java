@@ -4,6 +4,7 @@ import com.hexagon.abuba.diary.Diary;
 import com.hexagon.abuba.diary.dto.request.DiaryDetailReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryEditReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryRecentReqDTO;
+import com.hexagon.abuba.diary.dto.response.DiaryDetailResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
 import com.hexagon.abuba.diary.repository.DiaryRepository;
@@ -61,6 +62,23 @@ public class DiaryService {
         }
 
         return diaryResDTOList;
+    }
+
+    public DiaryDetailResDTO getDetail(Long diaryId){
+        Diary diary = diaryRepository.findById(diaryId).orElseThrow();
+
+        DiaryDetailResDTO diaryDetailResDTO = new DiaryDetailResDTO(
+                diary.getId(),
+                diary.getTitle(),
+                diary.getContent(),
+                diary.getCreatedAt(),
+                diary.getAccount(),
+                diary.getDeposit(),
+                diary.getHeight(),
+                diary.getWeight()
+        );
+
+        return diaryDetailResDTO;
     }
 
     public void addDiary(DiaryDetailReqDTO reqDTO, MultipartFile image, MultipartFile record){
