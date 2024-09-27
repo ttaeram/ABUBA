@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { FaPlay, FaPause, FaMicrophone, FaStop } from 'react-icons/fa';
 
 interface AudioPlayerProps {
-  src: string;
-  onNewRecording?: (audioUrl: string) => void;
+  src?: string;
+  onNewRecording: (audioFile: Blob) => void;
 }
 
 const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, onNewRecording }) => {
@@ -14,6 +14,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, onNewRecording }) => {
   const [currentTime, setCurrentTime] = useState<number>(0);
   const audioRef = useRef<HTMLAudioElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunks: Blob[] = []
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -55,17 +56,13 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, onNewRecording }) => {
         mediaRecorderRef.current.start();
         setIsRecording(true);
 
-        const audioChunks: Blob[] = [];
         mediaRecorderRef.current.addEventListener("dataavailable", (event: BlobEvent) => {
           audioChunks.push(event.data);
         });
 
         mediaRecorderRef.current.addEventListener("stop", () => {
-          const audioBlob = new Blob(audioChunks);
-          const audioUrl = URL.createObjectURL(audioBlob);
-          if (onNewRecording) {
-            onNewRecording(audioUrl);
-          }
+          const audioBlob = new Blob(audioChunks, { type: 'audio/mpeg' });
+          onNewRecording(audioBlob);
         });
       });
   };
@@ -105,11 +102,9 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, onNewRecording }) => {
         />
         <TimeDisplay>{formatTime(currentTime)} / {formatTime(duration)}</TimeDisplay>
       </ProgressContainer>
-      {onNewRecording && (
-        <ControlButton onClick={isRecording ? stopRecording : startRecording}>
-          {isRecording ? <FaStop /> : <FaMicrophone />}
-        </ControlButton>
-      )}
+      <ControlButton onClick={isRecording ? stopRecording : startRecording}>
+        {isRecording ? <FaStop /> : <FaMicrophone />}
+      </ControlButton>
     </PlayerContainer>
   );
 };

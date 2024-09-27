@@ -7,25 +7,27 @@ import axios from "axios"
 import styled from "styled-components"
 
 interface DiaryData {
-  date: string;
   title: string;
   content: string;
   height: number;
   weight: number;
-  imageUrl: string;
-  audioUrl: string;
+  imageFile?: File | null;
+  audioFile?: File | null;
+  account: string;
+  deposit: number;
 }
 
 const DiaryCreate = () => {
   const navigate = useNavigate()
   const [diaryData, setDiaryData] = useState<DiaryData>({
-    date: new Date().toISOString().split('T')[0],
     title: "",
     content: "",
     height: 0,
     weight: 0,
-    imageUrl: "",
-    audioUrl: ""
+    account: "",
+    deposit: 0,
+    imageFile: null,
+    audioFile: null,
   })
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -41,25 +43,51 @@ const DiaryCreate = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setDiaryData({ ...diaryData, imageUrl: reader.result as string })
-      }
-      reader.readAsDataURL(file)
+      setDiaryData({ ...diaryData, imageFile: file })
     }
+  }
+
+  const handleAudioUpload = (audioBlob: Blob) => {
+  }
+  
+  const handleNewRecording = (audioBlob: Blob) => {
+    const audioFile = new File([audioBlob], 'recording.wav', { type: 'audio/wav' })
+    setDiaryData({ ...diaryData, audioFile })
   }
 
   const handleImageClick = () => {
     document.getElementById('imageInput')?.click();
   }
 
-  const handleNewRecording = (newAudioUrl: string) => {
-    setDiaryData({ ...diaryData, audioUrl: newAudioUrl })
-  }
-
   const handleSubmit = async () => {
+    const formData = new FormData()
+
+    if (diaryData.imageFile) {
+      formData.append('image', diaryData.imageFile)
+    }
+    if (diaryData.audioFile) {
+      formData.append('record', diaryData.audioFile)
+    }
+
+    const diaryJson = JSON.stringify({
+      parnetId: 1,
+      title: diaryData.title,
+      content: diaryData.content,
+      account: diaryData.account,
+      deposit: diaryData.deposit,
+      height: diaryData.height,
+      weight: diaryData.weight,
+    })
+
+    formData.append('diary', new Blob([diaryJson], { type: 'application/json' }))
+
     try {
-      await axios.post('api/v1/diary', diaryData)
+      await axios.post('api/v1/diary', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      console.log('Success')
       navigate('/diary')
     } catch (error) {
       console.error("Failed to create diary", error)
@@ -83,12 +111,14 @@ const DiaryCreate = () => {
 
     <Content>
     <ImageContainer onClick={handleImageClick}>
-      {diaryData.imageUrl ? (
-        <PreviewImage src={diaryData.imageUrl} alt="Uploaded" />
+      {diaryData.imageFile ? (
+        <PreviewImage src={URL.createObjectURL(diaryData.imageFile)} alt="Uploaded" />
       ) : (
-        <ImagePlaceholder>+</ImagePlaceholder>
+        <>
+          <ImagePlaceholder>+</ImagePlaceholder>
+          <ImageText>아이의 사진을 등록해주세요.</ImageText>
+        </>
       )}
-      <ImageText>아이의 사진을 등록해주세요.</ImageText>
       <Input
         id="imageInput"
         type="file"
@@ -138,10 +168,8 @@ const DiaryCreate = () => {
         placeholder="오늘의 일기를 작성해주세요"
       />
 
-      {diaryData.imageUrl && <PreviewImage src={diaryData.imageUrl} alt="Preview" />}
-
       <Label>음성 녹음</Label>
-      <AudioPlayer src={diaryData.audioUrl} onNewRecording={handleNewRecording} />
+      <AudioPlayer onNewRecording={handleNewRecording} />
 
       <DepositContainer>
         <Label>계좌 송금</Label>
