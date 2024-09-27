@@ -8,6 +8,7 @@ import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
 import com.hexagon.abuba.diary.service.DiaryService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,7 @@ import java.util.Optional;
 @RequestMapping("/api/v1/diary")
 @CrossOrigin("*")
 @Slf4j
+//@SecurityRequirement(name = "bearerAuth")  // 이 API는 토큰이 필요함
 public class DiaryController {
     /*
     TODO
@@ -58,10 +60,10 @@ public class DiaryController {
 
     /***
      * 다이어리에 작성한 게시물 목록을 리턴하기
-     * @param diaryRecentReqDTO
+//     * @param diaryRecentReqDTO
      * @return
      */
-    @GetMapping("/")
+    @GetMapping
     @Operation(summary = "작성한 게시글의 목록 조회")
     public ResponseEntity<List<DiaryResDTO>> getList(@RequestBody DiaryRecentReqDTO diaryRecentReqDTO) {
         log.info("getList");

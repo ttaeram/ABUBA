@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.bridge.Message;
@@ -41,12 +42,17 @@ public class AuthController {
 
     @Operation(summary = "로그인", description = "신규 유저가 회원가입합니다.")
     @PostMapping("/login")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Request body for Swagger",
+            required = true
+    )
     public ResponseEntity<DataResponse<LoginResDTO>> login(LoginDTO loginDTO,  @Parameter(hidden = true)  HttpServletRequest request) {
         Parent user = (Parent)request.getAttribute("user");
         LoginResDTO  response = new LoginResDTO(user.getUsername(),user.getName());
         return new ResponseEntity<>(DataResponse.of(HttpStatus.OK,"로그인이 완료되었습니다.",response),HttpStatus.OK);
     }
 
+    @SecurityRequirement(name = "bearerAuth")  // 이 API는 토큰이 필요함
     @Operation(summary = "로그아웃", description = "로그아웃")
     @PostMapping("/logout")
     public ResponseEntity<MessageResponse> logout(){
