@@ -37,7 +37,7 @@ public class RoadmapService {
     }
 
     @Transactional
-    public List<RoadmapResponseDTO> getHealthInformation(String accessToken) {
+    public List<RoadmapResponseDTO> getHealthInformation(final String accessToken) {
 //        Parent parent;  // -> accessToken 기반으로 받아와야 함
 //        Baby baby = parent.getBaby();
 
@@ -47,7 +47,7 @@ public class RoadmapService {
     }
 
     @Transactional
-    public List<RoadmapResponseDTO> getAverageBehaviorInformation(String accessToken) {
+    public List<RoadmapResponseDTO> getAverageBehaviorInformation(final String accessToken) {
 //        Parent parent;  // -> accessToken 기반으로 받아와야 함
 //        Baby baby = parent.getBaby();
 
@@ -57,7 +57,7 @@ public class RoadmapService {
     }
 
     @Transactional
-    public List<RoadmapResponseDTO> getSupportedInformation(String accessToken) {
+    public List<RoadmapResponseDTO> getSupportedInformation(final String accessToken) {
 //        Parent parent;  // -> accessToken 기반으로 받아와야 함
 //        Baby baby = parent.getBaby();
 

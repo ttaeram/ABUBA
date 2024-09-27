@@ -21,7 +21,7 @@ public class RoadmapController {
     private final RoadmapService roadmapService;
 
     @GetMapping
-    public ResponseEntity<List<RoadmapResponseDTO>> getAllInformation(@RequestBody final String accessToken) {
+    public ResponseEntity<List<RoadmapResponseDTO>> getAllInformation(@RequestBody String accessToken) {
         //발생 가능한 예외
         /*
         1. 만료된 토큰 여부 확인 -> Filter처리 되어있을 것으로 전제하면 사실상 없음
@@ -32,19 +32,19 @@ public class RoadmapController {
     }
 
     @GetMapping("/healthInfo")
-    public ResponseEntity<List<RoadmapResponseDTO>> getHealthInformation(@RequestBody final String accessToken) {
+    public ResponseEntity<List<RoadmapResponseDTO>> getHealthInformation(@RequestBody String accessToken) {
         List<RoadmapResponseDTO> healthInformation = roadmapService.getHealthInformation(accessToken);
         return ResponseEntity.status(HttpStatus.OK).body(healthInformation);
     }
 
     @GetMapping("/supportInfo")
-    public ResponseEntity<List<RoadmapResponseDTO>> getSupportedInformation(@RequestBody final String accessToken) {
+    public ResponseEntity<List<RoadmapResponseDTO>> getSupportedInformation(@RequestBody String accessToken) {
         List<RoadmapResponseDTO> supportedInformation = roadmapService.getSupportedInformation(accessToken);
         return ResponseEntity.status(HttpStatus.OK).body(supportedInformation);
     }
 
     @GetMapping("/averageInfo")
-    public ResponseEntity<List<RoadmapResponseDTO>> getAverageBehaviorInformation(@RequestBody final String accessToken) {
+    public ResponseEntity<List<RoadmapResponseDTO>> getAverageBehaviorInformation(@RequestBody String accessToken) {
         List<RoadmapResponseDTO> averageInformation = roadmapService.getAverageBehaviorInformation(accessToken);
         return ResponseEntity.status(HttpStatus.OK).body(averageInformation);
     }
