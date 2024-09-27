@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,14 +52,13 @@ public class DiaryController {
 
     /***
      * 가장 최근에 다이어리에 작성한 사진이 있는 게시물 3개 불러오기
-     * @param diaryRecentReqDTO
      * @return
      */
     @GetMapping("/recents")
     @Operation(summary = "가장 최근에 다이어리에 작성한 사진이 있는 게시물 3개 불러오기")
-    public ResponseEntity<List<DiaryRecentResDTO>> getRecent(@RequestBody DiaryRecentReqDTO diaryRecentReqDTO) {
+    public ResponseEntity<List<DiaryRecentResDTO>> getRecent(@AuthenticationPrincipal(expression = "user") Parent user) {
         log.info("getRecent");
-        List<DiaryRecentResDTO> diaryRecentResDTOList = diaryService.recentDiary(diaryRecentReqDTO);
+        List<DiaryRecentResDTO> diaryRecentResDTOList = diaryService.recentDiary(user.getId());
 
         return ResponseEntity.ok(diaryRecentResDTOList);
     }
@@ -70,17 +70,9 @@ public class DiaryController {
      */
     @GetMapping
     @Operation(summary = "작성한 게시글의 목록 조회")
-    public ResponseEntity<List<DiaryResDTO>> getList(@RequestParam Long parentId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null && authentication.isAuthenticated()) {
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            Parent user = userDetails.getUser();
-            log.info("userId=" + user.getId());
-        }
-        log.info("getList");
-
-        List<DiaryResDTO> resDTOList = diaryService.getList(parentId);
+    public ResponseEntity<List<DiaryResDTO>> getList(@AuthenticationPrincipal(expression = "user") Parent user) {
+        log.info("user_id={}",user.getId());
+        List<DiaryResDTO> resDTOList = diaryService.getList(user.getId());
 
         return ResponseEntity.ok(resDTOList);
     }
@@ -98,9 +90,10 @@ public class DiaryController {
     @Operation(summary = "일기 작성")
     public ResponseEntity<String> addDiary(@RequestParam(value = "image", required = false) MultipartFile image,
                                            @RequestParam(value = "record", required = false) MultipartFile record,
-                                           @ModelAttribute DiaryDetailReqDTO diaryDetailReqDTO){
+                                           @ModelAttribute DiaryDetailReqDTO diaryDetailReqDTO,
+                                           @AuthenticationPrincipal(expression = "user") Parent user){
         log.info("addDiary");
-        diaryService.addDiary(diaryDetailReqDTO, image, record);
+        diaryService.addDiary(user.getId(),diaryDetailReqDTO, image, record);
         return ResponseEntity.ok("add Diary Success");
     }
 
@@ -108,7 +101,8 @@ public class DiaryController {
     @Operation(summary = "일기 수정")
     public ResponseEntity<String> editDiary(@RequestParam(value = "image", required = false) MultipartFile image,
                                             @RequestParam(value = "record", required = false) MultipartFile record,
-                                            @ModelAttribute DiaryEditReqDTO diaryEditReqDTO){
+                                            @ModelAttribute DiaryEditReqDTO diaryEditReqDTO,
+                                            @AuthenticationPrincipal(expression = "user") Parent user){
         log.info("editDiary");
         diaryService.editDiary(diaryEditReqDTO, image, record);
         return ResponseEntity.ok("edit Diary Success");
