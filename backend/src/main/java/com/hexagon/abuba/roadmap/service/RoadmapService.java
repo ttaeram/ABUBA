@@ -33,7 +33,6 @@ public class RoadmapService {
 
         //실제 findall은 아니고, 적절한 갯수의 정보만 식별해서 가져와야 된다.
         List<Roadmap> roadmaps = roadmapRepository.findAll();
-        //로드맵 정보 반환
         return getRoadmapInformation(roadmaps);
     }
 
@@ -44,7 +43,6 @@ public class RoadmapService {
 
         //육아 의료 정보에 대한 최적 항목 몇 개만 반환한다.
         List<Roadmap> roadmaps = roadmapRepository.findAll();
-        //로드맵 정보 반환
         return getRoadmapInformation(roadmaps);
     }
 
@@ -55,7 +53,6 @@ public class RoadmapService {
 
         //평균 행동 정보에 대한 최적 항목 몇 개만 반환한다.
         List<Roadmap> roadmaps = roadmapRepository.findAll();
-        //로드맵 정보 반환
         return getRoadmapInformation(roadmaps);
     }
 
