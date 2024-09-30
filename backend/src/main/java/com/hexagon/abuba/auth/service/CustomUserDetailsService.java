@@ -30,4 +30,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return null;
     }
+
+    public Parent getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+
+    }
 }

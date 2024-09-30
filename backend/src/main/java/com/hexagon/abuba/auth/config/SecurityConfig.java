@@ -5,6 +5,7 @@ import com.hexagon.abuba.auth.jwt.JWTFilter;
 import com.hexagon.abuba.auth.jwt.JWTUtil;
 import com.hexagon.abuba.auth.jwt.LoginFilter;
 import com.hexagon.abuba.auth.repository.RefreshRepository;
+import com.hexagon.abuba.auth.service.CustomUserDetailsService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Collections;
 
@@ -29,12 +31,14 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshRepository refreshRepository) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshRepository refreshRepository, CustomUserDetailsService customUserDetailsService) {
 
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
         this.refreshRepository = refreshRepository;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Bean
@@ -54,6 +58,23 @@ public class SecurityConfig {
         LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository);
         loginFilter.setFilterProcessesUrl("/api/v1/auth/login");
 
+        http
+                .cors((corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
+
+                    @Override
+                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                        CorsConfiguration configuration = new CorsConfiguration();
+
+                        configuration.addAllowedOriginPattern("*");
+//						configuration.setAllowedOrigins(Collections.singletonList("*"));
+                        configuration.setAllowedMethods(Collections.singletonList("*"));
+                        configuration.setAllowCredentials(true);
+                        configuration.setAllowedHeaders(Collections.singletonList("*"));
+                        configuration.setMaxAge(3600L);
+                        configuration.setExposedHeaders(Collections.singletonList("access"));
+                        return configuration;
+                    }
+                })));
 
         //csrf disable
         http
@@ -69,15 +90,14 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger/**").permitAll() // Swagger UI 및 API 문서 접근 허용
+                        .requestMatchers("/v3/**", "/swagger-ui/**","/swagger/**","/docs/**").permitAll()// Swagger UI 및 API 문서 접근 허용
                         .requestMatchers("/api/v1/auth/login", "/", "/api/v1/auth/signup", "/api/v1/auth/logout").permitAll()
                         .requestMatchers("/reissue").permitAll()
                         .anyRequest().authenticated());
         http
-                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil, customUserDetailsService), LoginFilter.class);
         http
                 .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
-//                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
         http
                 .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
         //세션 설정
