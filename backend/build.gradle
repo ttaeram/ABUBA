@@ -53,6 +53,9 @@ dependencies {
 
 	// @ConfigureProperties를 사용하기 위해 추가
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+	//email인증
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 }
 
 tasks.named('test') {
