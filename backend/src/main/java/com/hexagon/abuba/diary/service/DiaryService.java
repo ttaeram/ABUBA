@@ -4,6 +4,7 @@ import com.hexagon.abuba.diary.Diary;
 import com.hexagon.abuba.diary.dto.request.DiaryDetailReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryEditReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryRecentReqDTO;
+import com.hexagon.abuba.diary.dto.response.DiaryDetailResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
 import com.hexagon.abuba.diary.repository.DiaryRepository;
@@ -32,9 +33,9 @@ public class DiaryService {
         this.s3Service = s3Service;
     }
 
-    public List<DiaryRecentResDTO> recentDiary(DiaryRecentReqDTO reqDTO) {
+    public List<DiaryRecentResDTO> recentDiary(Long parentId) {
         List<DiaryRecentResDTO> diaryRecentResDTOList = new ArrayList<>();
-        List<Diary> diaries = diaryRepository.findByParentId(reqDTO.parentId());
+        List<Diary> diaries = diaryRepository.findByParentId(parentId);
 
         for (Diary diary : diaries) {
             // TODO : 이미지 URL 이 Null 로 나올지 빈칸으로 나올지 모르기 때문에 수정할 가능성 있음
@@ -52,8 +53,8 @@ public class DiaryService {
         return diaryRecentResDTOList;
     }
 
-    public List<DiaryResDTO> getList(DiaryRecentReqDTO reqDTO){
-        List<Diary> diaries = diaryRepository.findByParentId(reqDTO.parentId());
+    public List<DiaryResDTO> getList(Long parentId){
+        List<Diary> diaries = diaryRepository.findByParentId(parentId);
         List<DiaryResDTO> diaryResDTOList = new ArrayList<>();
         for (Diary diary : diaries) {
             DiaryResDTO diaryResDTO = EntityToResDTO(diary);
@@ -63,7 +64,24 @@ public class DiaryService {
         return diaryResDTOList;
     }
 
-    public void addDiary(DiaryDetailReqDTO reqDTO, MultipartFile image, MultipartFile record){
+    public DiaryDetailResDTO getDetail(Long diaryId){
+        Diary diary = diaryRepository.findById(diaryId).orElseThrow();
+
+        DiaryDetailResDTO diaryDetailResDTO = new DiaryDetailResDTO(
+                diary.getId(),
+                diary.getTitle(),
+                diary.getContent(),
+                diary.getCreatedAt(),
+                diary.getAccount(),
+                diary.getDeposit(),
+                diary.getHeight(),
+                diary.getWeight()
+        );
+
+        return diaryDetailResDTO;
+    }
+
+    public void addDiary(Long parentId,DiaryDetailReqDTO reqDTO, MultipartFile image, MultipartFile record){
         InputStream imageStream = null;
         InputStream recordStream = null;
         String imageName = null;
@@ -82,7 +100,7 @@ public class DiaryService {
             e.printStackTrace();
         }
 
-        Diary diary = DTOToEntity(reqDTO, imageStream, imageName, recordStream, recordName);
+        Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName);
         diaryRepository.save(diary);
     }
 
@@ -135,12 +153,12 @@ public class DiaryService {
         );
     }
 
-    private Diary DTOToEntity(DiaryDetailReqDTO reqDTO,
+    private Diary DTOToEntity(Long parentId, DiaryDetailReqDTO reqDTO,
                               InputStream imageStream, String imageName,
                               InputStream recordStream, String recordName){
         Diary diary = new Diary();
 
-        diary.setParent(parentRepository.findById(reqDTO.parentId()).orElse(null));
+        diary.setParent(parentRepository.findById(parentId).orElse(null));
 
         diary.setTitle(reqDTO.title());
         diary.setContent(reqDTO.content());
@@ -168,4 +186,5 @@ public class DiaryService {
         }
         return diary;
     }
+
 }

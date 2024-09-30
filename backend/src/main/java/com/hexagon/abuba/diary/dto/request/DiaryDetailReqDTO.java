@@ -15,6 +15,6 @@ import java.time.LocalDateTime;
  * @param weight    몸무게
  */
 @Schema
-public record DiaryDetailReqDTO(Long parentId, String title, String content, LocalDateTime createdAt, String account,
+public record DiaryDetailReqDTO(String title, String content, LocalDateTime createdAt, String account,
                                 BigDecimal deposit, Double height, Double weight) {
 }
