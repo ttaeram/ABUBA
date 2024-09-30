@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import axios from "axios"
 import DiaryListCard from "../../components/layouts/DiaryListCard"
 import BackButton from "../../components/buttons/BackButton"
 import styled from "styled-components"
@@ -8,17 +9,21 @@ const DiaryList = () => {
   const [diaries, setDiaries] = useState<{ id: number; title: string; content: string; date: string; money: string; imageUrl: string }[]>([])
   const navigate = useNavigate()
 
-  // 10개의 임시 데이터 생성
-  const fetchDiaries = () => {
-    const newDiaries = Array.from({ length: 10 }, (_, index) => ({
-      id: index + 1,
-      title: `일기 ${index + 1}`,
-      content: `일기 내용 ${index + 1}`,
-      date: '09/19 10:19',
-      money: '30,000 원',
-      imageUrl: 'https://via.placeholder.com/400x300',
-    }))
-    setDiaries(newDiaries)
+  const fetchDiaries = async () => {
+    // const newDiaries = Array.from({ length: 10 }, (_, index) => ({
+    //   id: index + 1,
+    //   title: `일기 ${index + 1}`,
+    //   content: `일기 내용 ${index + 1}`,
+    //   date: '09/19 10:19',
+    //   money: '30,000 원',
+    //   imageUrl: 'https://via.placeholder.com/400x300',
+    // }))
+    try {
+      const response = await axios.get("http://localhost:8080/api/v1/diary")
+      setDiaries(response.data)
+    } catch (error) {
+      console.log("일기장을 가져오는게 안돼")
+    }
   }
 
   // 컴포넌트가 마운트될 때 데이터 로딩
@@ -38,9 +43,13 @@ const DiaryList = () => {
         <CreateButton onClick={toDiaryCreate}>작성</CreateButton>
       </Header>
       <DiaryContainer>
-        {diaries.map((diary) => (
-          <DiaryListCard key={diary.id} diary={diary} />
-        ))}
+        {diaries.length > 0 ? (
+          diaries.map((diary) => (
+            <DiaryListCard key={diary.id} diary={diary} />
+          ))
+        ) : (
+          <NoDiariesMessage>작성한 일기가 없습니다.</NoDiariesMessage>
+        )}
       </DiaryContainer>
     </Container>
   );
@@ -75,4 +84,11 @@ const CreateButton = styled.button`
   border: none;
   color: blue;
   font-size: 16px;
+`;
+
+const NoDiariesMessage = styled.div`
+  text-align: center;
+  font-size: 16px;
+  color: #999;
+  margin-top: 20px;
 `;

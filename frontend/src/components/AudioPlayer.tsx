@@ -1,13 +1,15 @@
 import React, { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaPlay, FaPause, FaMicrophone, FaStop } from 'react-icons/fa';
+import { disable } from 'workbox-navigation-preload';
 
 interface AudioPlayerProps {
   src?: string;
-  onNewRecording: (audioFile: Blob) => void;
+  onNewRecording?: (audioFile: Blob) => void;
+  disableRecording?: boolean;
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, onNewRecording }) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, onNewRecording, disableRecording }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [duration, setDuration] = useState<number>(0);
@@ -50,6 +52,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, onNewRecording }) => {
   };
 
   const startRecording = () => {
+    if (disableRecording) return;
+    
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(stream => {
         mediaRecorderRef.current = new MediaRecorder(stream);
@@ -62,7 +66,9 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, onNewRecording }) => {
 
         mediaRecorderRef.current.addEventListener("stop", () => {
           const audioBlob = new Blob(audioChunks, { type: 'audio/mpeg' });
-          onNewRecording(audioBlob);
+          if (onNewRecording) {
+            onNewRecording(audioBlob);
+          }
         });
       });
   };
@@ -102,9 +108,11 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, onNewRecording }) => {
         />
         <TimeDisplay>{formatTime(currentTime)} / {formatTime(duration)}</TimeDisplay>
       </ProgressContainer>
-      <ControlButton onClick={isRecording ? stopRecording : startRecording}>
-        {isRecording ? <FaStop /> : <FaMicrophone />}
-      </ControlButton>
+      {!disableRecording && (
+        <ControlButton onClick={isRecording ? stopRecording : startRecording}>
+          {isRecording ? <FaStop /> : <FaMicrophone />}
+        </ControlButton>
+      )}
     </PlayerContainer>
   );
 };

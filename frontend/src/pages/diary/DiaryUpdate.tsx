@@ -1,24 +1,20 @@
-import { useState } from "react"
-import { useParams, useNavigate } from "react-router-dom"
+import { useState,useEffect } from "react"
+import { useParams, useNavigate, useLocation } from "react-router-dom"
 import BackButton from "../../components/buttons/BackButton"
 import AudioPlayer from "../../components/AudioPlayer"
 import axios from "axios"
 import styled from "styled-components"
 
-const mockDiaryData = {
-  date: "2024년 7월 31일",
-  title: "뒤집기 한 날",
-  content: "오늘은 태하가 뒤집기를 했다. 너무나도 사랑스러운 아이다!!",
-  height: 163,
-  weight: 110,
-  imageUrl: "https://via.placeholder.com/400x300", // Placeholder image
-  audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" // Sample audio URL
-}
-
 const DiaryUpdate = () => {
   const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
-  const [diaryData, setDiaryData] = useState<any>(mockDiaryData)
+  const location = useLocation()
+  const [diaryData, setDiaryData] = useState<any>(location.state?.diaryData || null)
+  const [audioFile, setAudioFile] = useState<Blob | null>(null)
+
+  useEffect(() => {
+
+  })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -40,13 +36,38 @@ const DiaryUpdate = () => {
     document.getElementById('imageInput')?.click();
   }
 
-  const handleNewRecording = (newAudioUrl: string) => {
-    setDiaryData({ ...diaryData, audioUrl: newAudioUrl });
+  const handleNewRecording = (audioBlob: Blob) => {
+    setAudioFile(audioBlob)
   };
 
   const handleUpdate = async () => {
+    const formData = new FormData()
+
+    if (diaryData.imageUrl) {
+      const response = await fetch(diaryData.imageurl)
+      const imageBlob = await response.blob()
+      formData.append("image", imageBlob)
+    }
+
+    if (audioFile) {
+      formData.append("record", audioFile)
+    }
+
+    const diaryJson = JSON.stringify({
+      title: diaryData.title,
+      content: diaryData.content,
+      height: diaryData.height,
+      weight: diaryData.weight,
+    })
+
+    formData.append("diary", new Blob([diaryJson], { type: "application/json" }))
+
     try {
-      await axios.put(`/api/v1/diary/${id}`, diaryData)
+      await axios.put(`http://localhost:8080/api/v1/diary/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
       navigate(`/diary/${id}`)
     } catch (e) {
       console.error("Failed to update diary: ", e)

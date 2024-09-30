@@ -82,7 +82,7 @@ const DiaryCreate = () => {
     formData.append('diary', new Blob([diaryJson], { type: 'application/json' }))
 
     try {
-      await axios.post('api/v1/diary', formData, {
+      await axios.post('http://localhost:8080/api/v1/diary', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

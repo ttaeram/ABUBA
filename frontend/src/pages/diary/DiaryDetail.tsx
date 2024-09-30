@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom"
 import BackButton from "../../components/buttons/BackButton"
 import axios from "axios"
 import AudioPlayer from "../../components/AudioPlayer"
-import "react-h5-audio-player/lib/styles.css"
 import styled from "styled-components"
 import { ReactComponent as WonSvg } from "../../assets/images/won.svg"
 
@@ -25,29 +24,24 @@ const DiaryDetail = () => {
   const [diaryData, setDiaryData] = useState<any>(mockDiaryData)
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
-  const [audioUrl, setAudioUrl] = useState<string | null>(diaryData.audioUrl)
 
-  // useEffect(() => {
-  //   const fetchDiaryData = async () => {
-  //     try {
-  //       const response = await axios.get(`/api/v1/diary/${id}`)
-  //       setDiaryData(response.data)
-  //       setLoading(false)
-  //     } catch (e) {
-  //       setError("일기를 불러오는 데 실패했습니다.")
-  //       setLoading(false)
-  //     }
-  //   }
+  useEffect(() => {
+    const fetchDiaryData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/v1/diary/${id}`)
+        setDiaryData(response.data)
+        setLoading(false)
+      } catch (e) {
+        setError("일기를 불러오는 데 실패했습니다.")
+        setLoading(false)
+      }
+    }
 
-  //   fetchDiaryData()
-  // }, [id])
-  
-  const handleNewRecording = (newAudioUrl: string) => {
-    setAudioUrl(newAudioUrl)
-  }
+    fetchDiaryData()
+  }, [id])
 
   const toDiaryUpdate = () => {
-    navigate(`/diary/${id}/update`)
+    navigate(`/diary/${id}/update`, { state: { diaryData } })
   }
 
   if (loading) return <Loading>로딩 중...</Loading>
@@ -72,7 +66,7 @@ const DiaryDetail = () => {
         {diaryData?.audioUrl && (
         <>
           <AudioLabel>목소리 듣기</AudioLabel>
-          <AudioPlayer src={audioUrl || ""} onNewRecording={handleNewRecording} />
+          <AudioPlayer src={diaryData.audioUrl} disableRecording={true} />
         </>
         )}
         {diaryData?.money && (
