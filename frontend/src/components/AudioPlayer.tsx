@@ -1,19 +1,22 @@
 import React, { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaPlay, FaPause, FaMicrophone, FaStop } from 'react-icons/fa';
+import { disable } from 'workbox-navigation-preload';
 
 interface AudioPlayerProps {
-  src: string;
-  onNewRecording?: (audioUrl: string) => void;
+  src?: string;
+  onNewRecording?: (audioFile: Blob) => void;
+  disableRecording?: boolean;
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, onNewRecording }) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, onNewRecording, disableRecording }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [duration, setDuration] = useState<number>(0);
   const [currentTime, setCurrentTime] = useState<number>(0);
   const audioRef = useRef<HTMLAudioElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunks: Blob[] = []
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -49,22 +52,22 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, onNewRecording }) => {
   };
 
   const startRecording = () => {
+    if (disableRecording) return;
+    
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(stream => {
         mediaRecorderRef.current = new MediaRecorder(stream);
         mediaRecorderRef.current.start();
         setIsRecording(true);
 
-        const audioChunks: Blob[] = [];
         mediaRecorderRef.current.addEventListener("dataavailable", (event: BlobEvent) => {
           audioChunks.push(event.data);
         });
 
         mediaRecorderRef.current.addEventListener("stop", () => {
-          const audioBlob = new Blob(audioChunks);
-          const audioUrl = URL.createObjectURL(audioBlob);
+          const audioBlob = new Blob(audioChunks, { type: 'audio/mpeg' });
           if (onNewRecording) {
-            onNewRecording(audioUrl);
+            onNewRecording(audioBlob);
           }
         });
       });
@@ -105,7 +108,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, onNewRecording }) => {
         />
         <TimeDisplay>{formatTime(currentTime)} / {formatTime(duration)}</TimeDisplay>
       </ProgressContainer>
-      {onNewRecording && (
+      {!disableRecording && (
         <ControlButton onClick={isRecording ? stopRecording : startRecording}>
           {isRecording ? <FaStop /> : <FaMicrophone />}
         </ControlButton>
