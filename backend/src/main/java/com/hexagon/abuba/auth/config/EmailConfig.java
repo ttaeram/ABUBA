@@ -14,7 +14,7 @@ public class EmailConfig {
 
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();//JavaMailSender 의 구현체를 생성하고
         mailSender.setHost("smtp.naver.com");// 속성을 넣기 시작합니다. 이메일 전송에 사용할 SMTP 서버 호스트를 설정
-        mailSender.setPort(465);// 465로 포트를 지정
+        mailSender.setPort(587);// 465로 포트를 지정
         mailSender.setUsername("donald819@naver.com");//네이버 ID를 넣습니다.
         mailSender.setPassword("hexagon106!");//네이버 비밀번호를 넣습니다.
 
@@ -25,7 +25,7 @@ public class EmailConfig {
         javaMailProperties.put("mail.smtp.starttls.enable", "true");//STARTTLS(TLS를 시작하는 명령)를 사용하여 암호화된 통신을 활성화
         javaMailProperties.put("mail.debug", "true");//디버깅 정보 출력
         javaMailProperties.put("mail.smtp.ssl.trust", "smtp.naver.com");//smtp 서버의 ssl 인증서를 신뢰
-        javaMailProperties.put("mail.smtp.ssl.protocols", "TLSv1.2");//사용할 ssl 프로토콜 버젼
+//        javaMailProperties.put("mail.smtp.ssl.protocols", "TLSv1.2");//사용할 ssl 프로토콜 버젼
 
         mailSender.setJavaMailProperties(javaMailProperties);//mailSender에 우리가 만든 properties 넣고
 
