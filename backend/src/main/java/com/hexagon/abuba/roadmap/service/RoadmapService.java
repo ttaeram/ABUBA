@@ -27,9 +27,8 @@ public class RoadmapService {
     */
 
     @Transactional
-    public List<RoadmapResponseDTO> getAllInformation(String accessToken) {
-//        Parent parent;  // -> accessToken 기반으로 받아와야 함
-//        Baby baby = parent.getBaby();
+    public List<RoadmapResponseDTO> getAllInformation(final Parent parent) {
+        Baby baby = parent.getBaby();
 
         //실제 findall은 아니고, 적절한 갯수의 정보만 식별해서 가져와야 된다.
         List<Roadmap> roadmaps = roadmapRepository.findAll();
@@ -37,9 +36,8 @@ public class RoadmapService {
     }
 
     @Transactional
-    public List<RoadmapResponseDTO> getHealthInformation(final String accessToken) {
-//        Parent parent;  // -> accessToken 기반으로 받아와야 함
-//        Baby baby = parent.getBaby();
+    public List<RoadmapResponseDTO> getHealthInformation(final Parent parent) {
+        Baby baby = parent.getBaby();
 
         //육아 의료 정보에 대한 최적 항목 몇 개만 반환한다.
         List<Roadmap> roadmaps = roadmapRepository.findAll();
@@ -47,9 +45,8 @@ public class RoadmapService {
     }
 
     @Transactional
-    public List<RoadmapResponseDTO> getAverageBehaviorInformation(final String accessToken) {
-//        Parent parent;  // -> accessToken 기반으로 받아와야 함
-//        Baby baby = parent.getBaby();
+    public List<RoadmapResponseDTO> getAverageBehaviorInformation(final Parent parent) {
+        Baby baby = parent.getBaby();
 
         //평균 행동 정보에 대한 최적 항목 몇 개만 반환한다.
         List<Roadmap> roadmaps = roadmapRepository.findAll();
@@ -57,9 +54,8 @@ public class RoadmapService {
     }
 
     @Transactional
-    public List<RoadmapResponseDTO> getSupportedInformation(final String accessToken) {
-//        Parent parent;  // -> accessToken 기반으로 받아와야 함
-//        Baby baby = parent.getBaby();
+    public List<RoadmapResponseDTO> getSupportedInformation(final Parent parent) {
+        Baby baby = parent.getBaby();
 
         //국가 지원 정보에 대한 최적 항목 몇 개만 반환한다.
         List<Roadmap> roadmaps = roadmapRepository.findAll();
