@@ -7,6 +7,7 @@ import com.hexagon.abuba.account.dto.response.BalanceAmountResponseDTO;
 import com.hexagon.abuba.account.dto.response.HistoryResDTO;
 import com.hexagon.abuba.global.openfeign.FinAPIClient;
 import com.hexagon.abuba.global.openfeign.dto.request.BalanceRequestDTO;
+import com.hexagon.abuba.global.openfeign.dto.request.DepositRequestDTO;
 import com.hexagon.abuba.global.openfeign.dto.request.RequestHeader;
 import com.hexagon.abuba.global.openfeign.dto.response.BalanceResponseDTO;
 import com.hexagon.abuba.user.Parent;
@@ -120,6 +121,26 @@ public class AccountService {
             balanceResponseDTO = finAPIClient.getBalance(new BalanceRequestDTO(header, parent.getBaby().getAccount()));
         }
         return new BalanceAmountResponseDTO(balanceResponseDTO.REC().getBankCode(), balanceResponseDTO.REC().getAccountBalance());
+    }
+
+    public void addBabyMoney(Long parentId, Long amount) {
+        Parent parent = parentRepository.findById(parentId).orElseThrow();
+        RequestHeader header = new RequestHeader();
+        header.setHeader("updateDemandDepositAccountDeposit", apiKey, userKey);
+        DepositRequestDTO depositRequestDTO = new DepositRequestDTO(
+                header, parent.getAccount(), amount.toString(), null
+        );
+        finAPIClient.addDeposit(depositRequestDTO);
+    }
+
+    public void minusParentMoney(Long parentId, Long amount) {
+        Parent parent = parentRepository.findById(parentId).orElseThrow();
+        RequestHeader header = new RequestHeader();
+        header.setHeader("updateDemandDepositAccountWithdrawal", apiKey, userKey);
+        DepositRequestDTO depositRequestDTO = new DepositRequestDTO(
+                header, parent.getAccount(), amount.toString(), null
+        );
+        finAPIClient.withdrawDeposit(depositRequestDTO);
     }
 
     // Header 생성 메서드

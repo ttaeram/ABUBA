@@ -1,5 +1,6 @@
 package com.hexagon.abuba.diary.service;
 
+import com.hexagon.abuba.account.service.AccountService;
 import com.hexagon.abuba.diary.Diary;
 import com.hexagon.abuba.diary.dto.request.DiaryDetailReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryEditReqDTO;
@@ -26,11 +27,13 @@ public class DiaryService {
     private final DiaryRepository diaryRepository;
     private final ParentRepository parentRepository;
     private final S3Service s3Service;
+    private final AccountService accountService;
 
-    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, S3Service s3Service) {
+    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, S3Service s3Service, AccountService accountService) {
         this.diaryRepository = diaryRepository;
         this.parentRepository = parentRepository;
         this.s3Service = s3Service;
+        this.accountService = accountService;
     }
 
     public List<DiaryRecentResDTO> recentDiary(Long parentId) {
@@ -81,12 +84,12 @@ public class DiaryService {
         return diaryDetailResDTO;
     }
 
-    public void addDiary(Long parentId,DiaryDetailReqDTO reqDTO, MultipartFile image, MultipartFile record){
+    public void addDiary(Long parentId, DiaryDetailReqDTO reqDTO, MultipartFile image, MultipartFile record){
         InputStream imageStream = null;
         InputStream recordStream = null;
         String imageName = null;
         String recordName = null;
-
+        log.info(reqDTO.toString());
         try {
             if (image != null) {
                 imageStream = image.getInputStream();
@@ -102,6 +105,9 @@ public class DiaryService {
 
         Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName);
         diaryRepository.save(diary);
+
+        accountService.minusParentMoney(parentId, reqDTO.deposit().longValue());
+        accountService.addBabyMoney(parentId, reqDTO.deposit().longValue());
     }
 
     public void editDiary(DiaryEditReqDTO reqDTO, MultipartFile image, MultipartFile record){
