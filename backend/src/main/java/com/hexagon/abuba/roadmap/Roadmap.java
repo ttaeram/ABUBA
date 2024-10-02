@@ -14,17 +14,15 @@ public class Roadmap {
     @Column(name = "roadmap_id")
     private Long id;
 
-    private String title;
-
-    private String content;
+    private String information;
 
     @Enumerated(EnumType.STRING)
     private RoadmapType type;
 
-    private LocalDateTime startDate, endDate;
+    private Integer startDate, endDate;
 
     public RoadmapResponseDTO toDTO() {
-        return new RoadmapResponseDTO(this.title);
+        return new RoadmapResponseDTO(this.information);
     }
 
 
