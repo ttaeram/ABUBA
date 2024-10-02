@@ -74,8 +74,8 @@ const DiaryCreate = () => {
       parentId: 1,
       title: diaryData.title,
       content: diaryData.content,
-      account: diaryData.account,
-      deposit: diaryData.deposit,
+      account: diaryData.account || "계좌 없음",
+      deposit: diaryData.deposit || 0,
       height: diaryData.height,
       weight: diaryData.weight,
     })
@@ -95,7 +95,7 @@ const DiaryCreate = () => {
         },
       })
       console.log('Success')
-      navigate('/diary')
+      navigate('/diaryList')
     } catch (error) {
       console.error("Failed to create diary", error)
     }
