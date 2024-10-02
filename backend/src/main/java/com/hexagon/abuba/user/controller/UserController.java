@@ -22,17 +22,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/user")
 @CrossOrigin("*")
-@SecurityRequirement(name = "bearerAuth")
+@SecurityRequirement(name = "access")
 @Slf4j
 public class UserController {
 
     private final UserService userService;
-    private final AuthService authService;
 
     @Autowired
     public UserController(UserService userService, AuthService authService) {
         this.userService = userService;
-        this.authService = authService;
     }
 
     @Operation(summary = "아이정보등록", description = "아이정보를 등록합니다.")
