@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
         bearerFormat = "JWT"
 )
 public class SwaggerConfig {
+
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
@@ -23,5 +24,4 @@ public class SwaggerConfig {
                         .version("1.0")
                         .description("This is the API documentation for your project."));
     }
-
 }

@@ -43,4 +43,5 @@ public class UserController {
         OneTransferRequestDTO response = userService.transfer1won(request, user);
         return new ResponseEntity<>(DataResponse.of(HttpStatus.OK,"1원송금이 완료되었습니다." ,response),HttpStatus.OK);
     }
+
 }
