@@ -132,6 +132,7 @@ const TitleText = styled.div`
 const SubText = styled.div`
   display: flex;
   font-size:14px;
+  margin-bottom: 10px;
   justify-content: space-between;
 
 `

@@ -2,16 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
-const vaccinationData = [
-  { age: '0-1', vaccination: 'BCG, HepB' },
-  { age: '1-2', vaccination: 'DTP, Polio' },
-  { age: '2-3', vaccination: null }, 
-  { age: '4-5', vaccination: 'Varicella' },
-  { age: '6-7', vaccination: '6세, 7세 예방접종' },
-  { age: '8-9', vaccination: 'HPV 예방접종' },
-  { age: '10+', vaccination: '추가 예방접종' },
-];
-
 const growthData = [
   { age: '0-1', growth: '신생아 건강 검사' },
   { age: '1-2', growth: '운동 능력 발달' },
@@ -22,12 +12,11 @@ const growthData = [
   { age: '10+', growth: null }, 
 ];
 
-const RoadMap = () => {
+const GrowthRoadMap = () => {
   return (
     <TimelineContainer>
       <Line /> 
-      {vaccinationData.map((vaccinationItem, index) => {
-        const growthItem = growthData.find(growth => growth.age === vaccinationItem.age);
+      {growthData.map((growthItem, index) => {
 
         return (
           <TimelineItem
@@ -36,12 +25,12 @@ const RoadMap = () => {
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5 }}
           >
-            <Dot /> 
             <VaccinationInfo>
-              <div>{vaccinationItem.vaccination || ''}</div>
+ 
             </VaccinationInfo>
+            <Dot /> 
             <GrowthInfo>
-              <div>{growthItem?.growth || ''}</div>
+              <div>{growthItem.growth || ''}</div>
             </GrowthInfo>
           </TimelineItem>
         );
@@ -50,7 +39,7 @@ const RoadMap = () => {
   );
 };
 
-export default RoadMap;
+export default GrowthRoadMap;
 
 const TimelineContainer = styled.div`
   display: flex;
