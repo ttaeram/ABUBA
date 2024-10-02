@@ -19,7 +19,7 @@ const SignupForm = () => {
 
   const handleSendCode = async () => {
     try {
-      await requestEmailVerificationCode(email, 'signup');
+      await requestEmailVerificationCode(email);
 
       setIsCodeSent(true);
       const countdown = setInterval(() => {
@@ -39,7 +39,7 @@ const SignupForm = () => {
   // 인증번호 확인
   const handleVerifyCode = async () => {
     try {
-      const response = await verifyEmailCode(email, authCode, 'signup'); // signup type 사용
+      const response = await verifyEmailCode(email, authCode);
       if (response.success) {
         setIsCodeVerified(true);
         alert('인증번호가 확인되었습니다!');
@@ -54,7 +54,6 @@ const SignupForm = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
-
     if (password !== confirmPassword) {
       setError('비밀번호가 일치하지 않습니다.');
       return;
@@ -64,13 +63,15 @@ const SignupForm = () => {
       setError('인증 코드를 먼저 확인해 주세요.');
       return;
     }
-
+    console.log("!?!")
     try {
       await signup(email, name, password); 
       alert('회원가입 성공!');
+      console.log("!!");
       navigate('/main');
       
     } catch (error: any) {
+
       setError(error.message);
     }
   };
