@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class OneTransferResponseDTO {
-    ResponseHeader Header;
-    REC REC;
+    private ResponseHeader Header;
+    private REC REC;
 }

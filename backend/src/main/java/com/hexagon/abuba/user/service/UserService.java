@@ -27,6 +27,8 @@ public class UserService {
 
     @Value("${api.key}")
     private String apiKey;
+    @Value("${user.key}")
+    private String userKey;
     @Autowired
     public UserService(ParentRepository parentRepository, BabyRepository babyRepository, FinAPIClient finAPIClient) {
         this.parentRepository = parentRepository;
@@ -58,16 +60,12 @@ public class UserService {
     public OneTransferRequestDTO transfer1won(AccountRequestDTO request, Parent user) {
         //1.사용자 계좌에 1원을 송금한다.
         RequestHeader requestHeader = new RequestHeader();
-//        requestHeader.setHeader("openAccountAuth",apiKey,user.getUserkey());
-        requestHeader.setHeader("openAccountAuth",apiKey,"53714417-7f2c-4bed-8608-f7d39353bbd9"
-
-        );
+        requestHeader.setHeader("openAccountAuth", apiKey, userKey);
 
         OneTransferRequestDTO oneRequest = new OneTransferRequestDTO();
         oneRequest.setHeader(requestHeader);
-//        oneRequest.setAccountNo("53714417-7f2c-4bed-8608-f7d39353bbd9");
         oneRequest.setAccountNo(request.accountNo());
-        oneRequest.setAuthText("ABUBA");
+        oneRequest.setAuthText("SSAFY");
 
         log.info("oneRequest: {}", oneRequest);
         OneTransferResponseDTO accountResponse = finAPIClient.accountAuth(oneRequest);
