@@ -1,28 +1,37 @@
 package com.hexagon.abuba.user.service;
 
 
+import com.hexagon.abuba.global.openfeign.FinAPIClient;
+import com.hexagon.abuba.global.openfeign.dto.request.RequestHeader;
+import com.hexagon.abuba.global.openfeign.dto.response.OneTransferResponseDTO;
 import com.hexagon.abuba.user.Baby;
 import com.hexagon.abuba.user.Parent;
-import com.hexagon.abuba.user.dto.request.OneTransferRequestDTO;
+import com.hexagon.abuba.global.openfeign.dto.request.OneTransferRequestDTO;
+import com.hexagon.abuba.user.dto.request.AccountRequestDTO;
 import com.hexagon.abuba.user.dto.request.RegistBabyInfoDTO;
 import com.hexagon.abuba.user.repository.BabyRepository;
 import com.hexagon.abuba.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @Transactional
 public class UserService {
     private final ParentRepository parentRepository;
-    private final BabyRepository userRepository;
     private final BabyRepository babyRepository;
+    private final FinAPIClient finAPIClient;
 
+    @Value("${api.key}")
+    private String apiKey;
     @Autowired
-    public UserService(ParentRepository parentRepository, BabyRepository userRepository, BabyRepository babyRepository) {
+    public UserService(ParentRepository parentRepository, BabyRepository babyRepository, FinAPIClient finAPIClient) {
         this.parentRepository = parentRepository;
-        this.userRepository = userRepository;
         this.babyRepository = babyRepository;
+        this.finAPIClient = finAPIClient;
     }
 
 
@@ -46,7 +55,26 @@ public class UserService {
                 .build();
     }
 
-    public OneTransferRequestDTO transfer1won(RegistBabyInfoDTO babyInfoDTO) {
+    public OneTransferRequestDTO transfer1won(AccountRequestDTO request, Parent user) {
+        //1.사용자 계좌에 1원을 송금한다.
+        RequestHeader requestHeader = new RequestHeader();
+//        requestHeader.setHeader("openAccountAuth",apiKey,user.getUserkey());
+        requestHeader.setHeader("openAccountAuth",apiKey,"53714417-7f2c-4bed-8608-f7d39353bbd9"
+
+        );
+
+        OneTransferRequestDTO oneRequest = new OneTransferRequestDTO();
+        oneRequest.setHeader(requestHeader);
+//        oneRequest.setAccountNo("53714417-7f2c-4bed-8608-f7d39353bbd9");
+        oneRequest.setAccountNo(request.accountNo());
+        oneRequest.setAuthText("ABUBA");
+
+        log.info("oneRequest: {}", oneRequest);
+        OneTransferResponseDTO accountResponse = finAPIClient.accountAuth(oneRequest);
+        log.info("accountResponse {}", accountResponse);
+        //2.사용자 거래 내역을 조회하여 내역을 반환한다.
+
+        //3.입금 일시, 입급내역 등
         return null;
     }
 }
