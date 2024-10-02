@@ -29,7 +29,17 @@ const DiaryDetail = () => {
   useEffect(() => {
     const fetchDiaryData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/v1/diary/${id}`)
+        const accessToken = localStorage.getItem('accessToken')
+
+        // if (!accessToken) {
+        //   throw new Error('Access Token이 없음')
+        // }
+        
+        const response = await api.get(`/api/v1/diary/${id}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          }
+        })
         setDiaryData(response.data)
         setLoading(false)
       } catch (e) {

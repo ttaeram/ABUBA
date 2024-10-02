@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaPlay, FaPause, FaMicrophone, FaStop } from 'react-icons/fa';
-import { disable } from 'workbox-navigation-preload';
 
 interface AudioPlayerProps {
   src?: string;
@@ -14,31 +13,56 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, onNewRecording, disableR
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [duration, setDuration] = useState<number>(0);
   const [currentTime, setCurrentTime] = useState<number>(0);
+  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const audioRef = useRef<HTMLAudioElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunks: Blob[] = []
+  const [recordedAudioUrl, setRecordedAudioUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     const setAudioData = () => {
-      setDuration(audio.duration);
+      if (audio.duration && !isNaN(audio.duration)) {
+        setDuration(audio.duration);
+      }
       setCurrentTime(audio.currentTime);
-    }
+    };
 
     const setAudioTime = () => setCurrentTime(audio.currentTime);
 
-    // 이벤트 리스너 추가
-    audio.addEventListener('loadeddata', setAudioData);
-    audio.addEventListener('timeupdate', setAudioTime);
+    const handleAudioEnd = () => {
+      setIsPlaying(false); // 재생이 끝나면 재생 버튼으로 돌아감
+    };
 
-    // 컴포넌트 언마운트 시 이벤트 리스너 제거
+    audio.addEventListener('loadedmetadata', setAudioData);
+    audio.addEventListener('timeupdate', setAudioTime);
+    audio.addEventListener('ended', handleAudioEnd); // 재생 끝났을 때 상태 업데이트
+
     return () => {
-      audio.removeEventListener('loadeddata', setAudioData);
+      audio.removeEventListener('loadedmetadata', setAudioData);
       audio.removeEventListener('timeupdate', setAudioTime);
-    }
+      audio.removeEventListener('ended', handleAudioEnd);
+    };
   }, []);
+
+  useEffect(() => {
+    if (recordedAudioUrl && audioRef.current) {
+      const audio = audioRef.current;
+      audio.src = recordedAudioUrl;
+
+      const handleLoadedMetadata = () => {
+        setDuration(audio.duration);
+        setCurrentTime(0);
+      };
+
+      audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+
+      return () => {
+        audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      };
+    }
+  }, [recordedAudioUrl]);
 
   const togglePlay = () => {
     if (audioRef.current) {
@@ -51,36 +75,55 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, onNewRecording, disableR
     }
   };
 
+  const handleStopRecording = (audioBlob: Blob) => {
+    const audioUrl = URL.createObjectURL(audioBlob);
+    setRecordedAudioUrl(audioUrl);
+
+    // 새 Audio 객체 생성하여 duration 계산
+    const tempAudio = new Audio(audioUrl);
+    tempAudio.addEventListener('loadedmetadata', () => {
+      setDuration(tempAudio.duration); // 녹음된 파일의 길이 설정
+    });
+
+    if (onNewRecording) {
+      onNewRecording(audioBlob);
+    }
+    setIsRecording(false);
+  };
+
   const startRecording = () => {
-    if (disableRecording) return;
-    
+    if (disableRecording || isRecording) return;
+
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(stream => {
         mediaRecorderRef.current = new MediaRecorder(stream);
+        const chunks: Blob[] = [];
         mediaRecorderRef.current.start();
         setIsRecording(true);
 
-        mediaRecorderRef.current.addEventListener("dataavailable", (event: BlobEvent) => {
-          audioChunks.push(event.data);
+        mediaRecorderRef.current.addEventListener('dataavailable', (event: BlobEvent) => {
+          chunks.push(event.data);
         });
 
-        mediaRecorderRef.current.addEventListener("stop", () => {
-          const audioBlob = new Blob(audioChunks, { type: 'audio/mpeg' });
-          if (onNewRecording) {
-            onNewRecording(audioBlob);
-          }
+        mediaRecorderRef.current.addEventListener('stop', () => {
+          const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+          handleStopRecording(audioBlob);
         });
+      })
+      .catch(err => {
+        console.error("Error starting recording:", err); // 에러 발생 시 로그로 출력
       });
   };
 
   const stopRecording = () => {
-    if (mediaRecorderRef.current) {
+    if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
     }
   };
 
   const formatTime = (time: number) => {
+    if (!isFinite(time)) return "0:00"; // Infinity 문제를 방지
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
@@ -88,8 +131,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, onNewRecording, disableR
 
   return (
     <PlayerContainer>
-      <audio ref={audioRef} src={src} />
-      <ControlButton onClick={togglePlay}>
+      <audio ref={audioRef} src={src || recordedAudioUrl || ""} />
+      <ControlButton onClick={togglePlay} disabled={!recordedAudioUrl && !src}>
         {isPlaying ? <FaPause /> : <FaPlay />}
       </ControlButton>
       <ProgressContainer>

@@ -26,12 +26,12 @@ const DiaryList = () => {
         throw new Error('Access Token이 없음')
       }
 
-      const response = await api.get("/api/v1/diary", {
+      const response = await api.get(`/api/v1/diary?parentId=${1}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       })
-      
+
       setDiaries(response.data)
     } catch (error) {
       console.log("일기장을 가져오는게 안돼")
