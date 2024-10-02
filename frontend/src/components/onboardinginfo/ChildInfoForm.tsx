@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '../../styles/styledComponents';
+import { postBabyInfo } from '../../api/user';
+import { useChildAuthStore } from '../../stores/authStore';
 
 interface Props {
   onNext: () => void;
@@ -14,8 +16,9 @@ const ChildInfoForm = ({ onNext }: Props) => {
   const [birthDate, setBirthDate] = useState('');
   const [gender, setGender] = useState('');
   const [error, setError] = useState('');
+  const setChildInfo = useChildAuthStore.getState().setChildInfo;
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
 
@@ -23,7 +26,25 @@ const ChildInfoForm = ({ onNext }: Props) => {
       setError('모든 필드를 입력해주세요.');
       return;
     }
-    console.log({ childName, relation, height, weight, birthDate, gender });
+    
+    const childinfo = {
+      name: childName,
+      relation,
+      height: Number(height),
+      weight: Number(weight),
+      birthday: birthDate,
+      gender,
+    }
+
+    try {
+
+      await postBabyInfo(childinfo);
+      setChildInfo(childName, relation, Number(height), Number(weight), birthDate, gender);
+      onNext();
+    } catch (err) {
+      console.error('아동 정보 저장 중 오류 발생:', err);
+      setError('아동 정보를 저장하는데 실패했습니다.');
+    }
   };
 
   return (
@@ -96,7 +117,7 @@ const ChildInfoForm = ({ onNext }: Props) => {
       </InputContainer>
 
       {error && <ErrorMessage>{error}</ErrorMessage>}
-      <Button type="submit" onClick={onNext} >다음</Button>
+      <Button type="submit">다음</Button>
     </FormContainer>
   );
 };
