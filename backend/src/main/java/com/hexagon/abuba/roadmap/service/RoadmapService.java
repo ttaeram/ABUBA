@@ -29,7 +29,7 @@ public class RoadmapService {
     @Transactional
     public List<RoadmapResponseDTO> getAllInformation(final Parent parent) {
         Baby baby = parent.getBaby();
-        long birthDay = baby.getBirth_date().toEpochDay();
+        long birthDay = baby.getBirthDate().toEpochDay();
         long today = LocalDate.now().toEpochDay();
 
         //실제 findall은 아니고, 적절한 갯수의 정보만 식별해서 가져와야 된다.
@@ -40,7 +40,7 @@ public class RoadmapService {
     @Transactional
     public List<RoadmapResponseDTO> getHealthInformation(final Parent parent) {
         Baby baby = parent.getBaby();
-        long birthDay = baby.getBirth_date().toEpochDay();
+        long birthDay = baby.getBirthDate().toEpochDay();
         long today = LocalDate.now().toEpochDay();
 
         //육아 의료 정보에 대한 최적 항목 몇 개만 반환한다.
@@ -51,7 +51,7 @@ public class RoadmapService {
     @Transactional
     public List<RoadmapResponseDTO> getAverageBehaviorInformation(final Parent parent) {
         Baby baby = parent.getBaby();
-        long birthDay = baby.getBirth_date().toEpochDay();
+        long birthDay = baby.getBirthDate().toEpochDay();
         long today = LocalDate.now().toEpochDay();
 
         //평균 행동 정보에 대한 최적 항목 몇 개만 반환한다.
@@ -62,7 +62,7 @@ public class RoadmapService {
     @Transactional
     public List<RoadmapResponseDTO> getSupportedInformation(final Parent parent) {
         Baby baby = parent.getBaby();
-        long birthDay = baby.getBirth_date().toEpochDay();
+        long birthDay = baby.getBirthDate().toEpochDay();
         long today = LocalDate.now().toEpochDay();
 
         //국가 지원 정보에 대한 최적 항목 몇 개만 반환한다.
