@@ -10,9 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 @Tag(name = "로드맵 관련 API")
 @Service
 @RequiredArgsConstructor
@@ -27,42 +27,46 @@ public class RoadmapService {
     */
 
     @Transactional
-    public List<RoadmapResponseDTO> getAllInformation(String accessToken) {
-//        Parent parent;  // -> accessToken 기반으로 받아와야 함
-//        Baby baby = parent.getBaby();
+    public List<RoadmapResponseDTO> getAllInformation(final Parent parent) {
+        Baby baby = parent.getBaby();
+        long birthDay = baby.getBirth_date().toEpochDay();
+        long today = LocalDate.now().toEpochDay();
 
         //실제 findall은 아니고, 적절한 갯수의 정보만 식별해서 가져와야 된다.
-        List<Roadmap> roadmaps = roadmapRepository.findAll();
+        List<Roadmap> roadmaps = roadmapRepository.findSomeInformation((int)(today - birthDay));
         return getRoadmapInformation(roadmaps);
     }
 
     @Transactional
-    public List<RoadmapResponseDTO> getHealthInformation(final String accessToken) {
-//        Parent parent;  // -> accessToken 기반으로 받아와야 함
-//        Baby baby = parent.getBaby();
+    public List<RoadmapResponseDTO> getHealthInformation(final Parent parent) {
+        Baby baby = parent.getBaby();
+        long birthDay = baby.getBirth_date().toEpochDay();
+        long today = LocalDate.now().toEpochDay();
 
         //육아 의료 정보에 대한 최적 항목 몇 개만 반환한다.
-        List<Roadmap> roadmaps = roadmapRepository.findAll();
+        List<Roadmap> roadmaps = roadmapRepository.findHealthInformationByBirth((int)(today - birthDay));
         return getRoadmapInformation(roadmaps);
     }
 
     @Transactional
-    public List<RoadmapResponseDTO> getAverageBehaviorInformation(final String accessToken) {
-//        Parent parent;  // -> accessToken 기반으로 받아와야 함
-//        Baby baby = parent.getBaby();
+    public List<RoadmapResponseDTO> getAverageBehaviorInformation(final Parent parent) {
+        Baby baby = parent.getBaby();
+        long birthDay = baby.getBirth_date().toEpochDay();
+        long today = LocalDate.now().toEpochDay();
 
         //평균 행동 정보에 대한 최적 항목 몇 개만 반환한다.
-        List<Roadmap> roadmaps = roadmapRepository.findAll();
+        List<Roadmap> roadmaps = roadmapRepository.findAverageBehaviorInformationByBirth((int)(today - birthDay));
         return getRoadmapInformation(roadmaps);
     }
 
     @Transactional
-    public List<RoadmapResponseDTO> getSupportedInformation(final String accessToken) {
-//        Parent parent;  // -> accessToken 기반으로 받아와야 함
-//        Baby baby = parent.getBaby();
+    public List<RoadmapResponseDTO> getSupportedInformation(final Parent parent) {
+        Baby baby = parent.getBaby();
+        long birthDay = baby.getBirth_date().toEpochDay();
+        long today = LocalDate.now().toEpochDay();
 
         //국가 지원 정보에 대한 최적 항목 몇 개만 반환한다.
-        List<Roadmap> roadmaps = roadmapRepository.findAll();
+        List<Roadmap> roadmaps = roadmapRepository.findSupportInformationByBirth((int)(today - birthDay));
         //로드맵 정보 반환
         return getRoadmapInformation(roadmaps);
     }
