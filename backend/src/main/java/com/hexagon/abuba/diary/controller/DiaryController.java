@@ -90,7 +90,7 @@ public class DiaryController {
     @Operation(summary = "일기 작성")
     public ResponseEntity<String> addDiary(@RequestParam(value = "image", required = false) MultipartFile image,
                                            @RequestParam(value = "record", required = false) MultipartFile record,
-                                           @ModelAttribute DiaryDetailReqDTO diaryDetailReqDTO,
+                                           @RequestBody DiaryDetailReqDTO diaryDetailReqDTO,
                                            @AuthenticationPrincipal(expression = "user") Parent user){
         log.info("addDiary");
         diaryService.addDiary(user.getId(),diaryDetailReqDTO, image, record);

@@ -1,5 +1,6 @@
 package com.hexagon.abuba.diary.service;
 
+import com.hexagon.abuba.account.service.AccountService;
 import com.hexagon.abuba.diary.Diary;
 import com.hexagon.abuba.diary.dto.request.DiaryDetailReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryEditReqDTO;
@@ -9,6 +10,8 @@ import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
 import com.hexagon.abuba.diary.repository.DiaryRepository;
 import com.hexagon.abuba.s3.service.S3Service;
+import com.hexagon.abuba.user.Baby;
+import com.hexagon.abuba.user.Parent;
 import com.hexagon.abuba.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -26,16 +29,21 @@ public class DiaryService {
     private final DiaryRepository diaryRepository;
     private final ParentRepository parentRepository;
     private final S3Service s3Service;
+    private final AccountService accountService;
 
-    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, S3Service s3Service) {
+    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, S3Service s3Service, AccountService accountService) {
         this.diaryRepository = diaryRepository;
         this.parentRepository = parentRepository;
         this.s3Service = s3Service;
+        this.accountService = accountService;
     }
 
     public List<DiaryRecentResDTO> recentDiary(Long parentId) {
         List<DiaryRecentResDTO> diaryRecentResDTOList = new ArrayList<>();
-        List<Diary> diaries = diaryRepository.findByParentId(parentId);
+        Parent parent = parentRepository.findById(parentId).orElseThrow();
+        Baby baby = parent.getBaby();
+        List<Parent> parentList = baby.getParents();
+        List<Diary> diaries = diaryRepository.findByParents(parentList);
 
         for (Diary diary : diaries) {
             // TODO : 이미지 URL 이 Null 로 나올지 빈칸으로 나올지 모르기 때문에 수정할 가능성 있음
@@ -54,7 +62,10 @@ public class DiaryService {
     }
 
     public List<DiaryResDTO> getList(Long parentId){
-        List<Diary> diaries = diaryRepository.findByParentId(parentId);
+        Parent parent = parentRepository.findById(parentId).orElseThrow();
+        Baby baby = parent.getBaby();
+        List<Parent> parentList = baby.getParents();
+        List<Diary> diaries = diaryRepository.findByParents(parentList);
         List<DiaryResDTO> diaryResDTOList = new ArrayList<>();
         for (Diary diary : diaries) {
             DiaryResDTO diaryResDTO = EntityToResDTO(diary);
@@ -81,12 +92,12 @@ public class DiaryService {
         return diaryDetailResDTO;
     }
 
-    public void addDiary(Long parentId,DiaryDetailReqDTO reqDTO, MultipartFile image, MultipartFile record){
+    public void addDiary(Long parentId, DiaryDetailReqDTO reqDTO, MultipartFile image, MultipartFile record){
         InputStream imageStream = null;
         InputStream recordStream = null;
         String imageName = null;
         String recordName = null;
-
+        log.info(reqDTO.toString());
         try {
             if (image != null) {
                 imageStream = image.getInputStream();
@@ -102,6 +113,9 @@ public class DiaryService {
 
         Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName);
         diaryRepository.save(diary);
+
+        accountService.minusParentMoney(parentId, reqDTO.deposit().longValue());
+        accountService.addBabyMoney(parentId, reqDTO.deposit().longValue());
     }
 
     public void editDiary(DiaryEditReqDTO reqDTO, MultipartFile image, MultipartFile record){
