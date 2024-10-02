@@ -1,9 +1,15 @@
 package com.hexagon.abuba.global.openfeign.dto.request;
 
+import lombok.*;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Header {
+@Getter
+@Setter
+@AllArgsConstructor
+@ToString
+public class RequestHeader {
     private String apiName;//path명
     private String transmissionDate; //YYYYMMDD
     private String transmissionTime; //HHMMSS
@@ -14,7 +20,7 @@ public class Header {
     private String apiKey;//app key
     private String userKey;//user key
 
-    public Header() {
+    public RequestHeader() {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
@@ -27,7 +33,8 @@ public class Header {
         this.institutionTransactionUniqueNo = now.format(dateFormatter) + now.format(timeFormatter) + serialNumber;
     }
 
-    public Header(String path, String apiKey, String userKey){
+
+    public void setHeader(String path, String apiKey, String userKey){
         this.apiName = path;
         this.apiServiceCode = path;
         this.apiKey = apiKey;

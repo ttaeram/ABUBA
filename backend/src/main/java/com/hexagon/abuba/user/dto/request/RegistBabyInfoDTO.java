@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 @Schema(description = "아이정보를 등록하는 DTO")
 public record RegistBabyInfoDTO(
-        @Schema(description = "이이이름")
+        @Schema(description = "아이이름")
         String name,
         @Schema(description = "아이와 부모의 관계")
         String relation,
