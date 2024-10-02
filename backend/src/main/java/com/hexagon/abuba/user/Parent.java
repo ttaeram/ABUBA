@@ -44,7 +44,7 @@ public class Parent {
     @JoinColumn(name = "baby_id")
     private Baby baby;
 
-    public void SetBaby(Baby baby) {
+    public void setBaby(Baby baby) {
         if (this.baby != null) {
             this.baby.getParents().remove(this);
         }
@@ -68,20 +68,13 @@ public class Parent {
         this.name = name;
     }
 
-//    @Override
-//    public String toString() {
-//        return "Parent{" +
-//                "id=" + id +
-//                ", name='" + name + '\'' +
-//                ", username='" + username + '\'' +
-//                ", password='" + password + '\'' +
-//                ", relationship='" + relationship + '\'' +
-//                ", userkey='" + userkey + '\'' +
-//                ", account='" + account + '\'' +
-//                ", role='" + role + '\'' +
-//                ", alarms=" + alarms +
-//                ", diaries=" + diaries +
-//                ", baby=" + baby +
-//                '}';
-//    }
+    public void setRelationship(String relationship) {
+        this.relationship = relationship;
+    }
+
+    public void setUserkey(String userkey) {
+        this.userkey = userkey;
+    }
+
+
 }
