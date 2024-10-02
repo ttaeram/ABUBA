@@ -1,5 +1,6 @@
 package com.hexagon.abuba.account.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hexagon.abuba.account.dto.request.HistoryReqDTO;
 import com.hexagon.abuba.account.dto.response.ApiResponseDTO;
 import com.hexagon.abuba.account.dto.response.HistoryResDTO;
@@ -65,21 +66,35 @@ public class AccountService {
 
         // 외부 API 호출
         String apiUrl = "https://finopenapi.ssafy.io/ssafy/api/v1/edu/demandDeposit/inquireTransactionHistoryList"; // 실제 API 엔드포인트로 변경 필요
-        ResponseEntity<ApiResponseDTO> response = restTemplate.exchange(
+        ResponseEntity<String> response = restTemplate.exchange(
                 apiUrl,
                 HttpMethod.POST,
                 entity,
-                ApiResponseDTO.class
+                String.class
         );
 
-        // 응답에서 REC의 list를 가져와 HistoryResDTO로 변환
+        // 응답 본문 로깅
+        String responseBody = response.getBody();
+        log.info("API Response: {}", responseBody);
+        // JSON 파싱
+        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            List<ApiResponseDTO.TransactionDTO> transactions = response.getBody().getREC().getList();
+            ApiResponseDTO apiResponse = objectMapper.readValue(responseBody, ApiResponseDTO.class);
+
+            // 응답에서 REC의 list를 가져와 HistoryResDTO로 변환
+            if (apiResponse.getRec() == null || apiResponse.getRec().getList() == null || apiResponse.getRec().getList().isEmpty()) {
+                log.info("No transactions found. Total count: {}", apiResponse.getRec() != null ? apiResponse.getRec().getTotalCount() : "null");
+                return List.of(); // 빈 리스트 반환
+            }
+
+            List<ApiResponseDTO.TransactionDTO> transactions = apiResponse.getRec().getList();
             return transactions.stream()
-                    .map(this::convertToHistoryResDTO)  // 변환 함수 사용
+                    .map(this::convertToHistoryResDTO)
                     .collect(Collectors.toList());
+
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("Failed to parse API response", e);
+            return List.of(); // 파싱 실패 시 빈 리스트 반환
         }
     }
 
@@ -89,9 +104,9 @@ public class AccountService {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
 
-        // 랜덤한 8자리 숫자 생성
+        // 랜덤한 6자리 숫자 생성
         Random random = new Random();
-        String randomNumber = String.format("%08d", random.nextInt(100000000));
+        String randomNumber = String.format("%06d", random.nextInt(1000000));
 
         Map<String, String> header = new HashMap<>();
         header.put("apiName", apiName);

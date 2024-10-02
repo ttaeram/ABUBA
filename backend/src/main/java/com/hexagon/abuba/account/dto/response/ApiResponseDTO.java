@@ -1,49 +1,92 @@
 package com.hexagon.abuba.account.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
+@Schema
 @Getter
 @Setter
 public class ApiResponseDTO {
-    private HeaderDTO Header;
-    private RecDTO REC;
+
+    @JsonProperty("Header")
+    private HeaderDTO header;
+
+    @JsonProperty("REC")
+    private RecDTO rec;
 
     @Getter
     @Setter
     public static class HeaderDTO {
+        @JsonProperty("responseCode")
         private String responseCode;
+
+        @JsonProperty("responseMessage")
         private String responseMessage;
+
+        @JsonProperty("apiName")
         private String apiName;
+
+        @JsonProperty("transmissionDate")
         private String transmissionDate;
+
+        @JsonProperty("transmissionTime")
         private String transmissionTime;
+
+        @JsonProperty("institutionCode")
         private String institutionCode;
+
+        @JsonProperty("apiKey")
         private String apiKey;
+
+        @JsonProperty("apiServiceCode")
         private String apiServiceCode;
+
+        @JsonProperty("institutionTransactionUniqueNo")
         private String institutionTransactionUniqueNo;
     }
 
     @Getter
     @Setter
     public static class RecDTO {
-        private int totalCount; // 거래 건수
-        private List<TransactionDTO> list; // 거래 내역 리스트
+        @JsonProperty("totalCount")
+        private String totalCount;
+
+        @JsonProperty("list")
+        private List<TransactionDTO> list;
     }
 
     @Getter
     @Setter
     public static class TransactionDTO {
-        private String transactionUniqueNo;
-        private String transactionDate; // 거래일자
-        private String transactionTime; // 거래시각
-        private String transactionType; // 입금출금구분
-        private String transactionTypeName; // 입금출금구분명
-        private String transactionAccountName; // 거래계좌번호
-        private String transactionBalance; // 거래금액
-        private String transactionAfterBalance; // 거래후잔액
-        private String transactionSummary; // 거래 요약내용
-        private String transactionMemo; // 거래 메모
+        @JsonProperty("transactionDate")
+        private String transactionDate;
+
+        @JsonProperty("transactionTime")
+        private String transactionTime;
+
+        @JsonProperty("transactionType")
+        private String transactionType;
+
+        @JsonProperty("transactionTypeName")
+        private String transactionTypeName;
+
+        @JsonProperty("transactionAccountName")
+        private String transactionAccountName;
+
+        @JsonProperty("transactionBalance")
+        private String transactionBalance;
+
+        @JsonProperty("transactionAfterBalance")
+        private String transactionAfterBalance;
+
+        @JsonProperty("transactionSummary")
+        private String transactionSummary;
+
+        @JsonProperty("transactionMemo")
+        private String transactionMemo;
     }
 }

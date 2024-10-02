@@ -35,8 +35,9 @@ public class AccountController {
 
     @GetMapping
     @Operation(summary = "아이 계좌 거래내역 조회")
-    public ResponseEntity<List<HistoryResDTO>> getHistory(@ModelAttribute HistoryReqDTO historyReqDTO,
+    public ResponseEntity<List<HistoryResDTO>> getHistory(@RequestBody HistoryReqDTO historyReqDTO,
                                              @AuthenticationPrincipal(expression = "user") Parent user) {
+        System.out.println(historyReqDTO.getStartDate());
         List<HistoryResDTO> historyResDTOList = accountService.getHistory(user.getId(), historyReqDTO);
 
         return ResponseEntity.ok(historyResDTOList);
