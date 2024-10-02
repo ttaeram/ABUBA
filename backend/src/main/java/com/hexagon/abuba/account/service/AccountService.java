@@ -36,9 +36,6 @@ public class AccountService {
     @Value("${api.key}")
     private String apiKey;
 
-    @Value("${user.key}")
-    private String userKey;
-
     public AccountService(ParentRepository parentRepository, RestTemplate restTemplate) {
         this.parentRepository = parentRepository;
         this.restTemplate = restTemplate;
@@ -50,7 +47,7 @@ public class AccountService {
 
         // 요청 바디 생성
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("Header", createHeader("inquireTransactionHistoryList"));
+        requestBody.put("Header", createHeader("inquireTransactionHistoryList", parent.getUserkey()));
         requestBody.put("accountNo", babyAccount);
         requestBody.put("startDate", historyReqDTO.getStartDate());
         requestBody.put("endDate", historyReqDTO.getEndDate());
@@ -99,7 +96,7 @@ public class AccountService {
     }
 
     // Header 생성 메서드
-    private Map<String, String> createHeader(String apiName) {
+    private Map<String, String> createHeader(String apiName, String userKey) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HHmmss");
@@ -117,7 +114,7 @@ public class AccountService {
         header.put("apiServiceCode", apiName);
         header.put("institutionTransactionUniqueNo", now.format(dateFormatter) + now.format(timeFormatter) + randomNumber);
         header.put("apiKey", apiKey);  // 환경변수 사용
-        header.put("userKey", userKey);  // 환경변수 사용
+        header.put("userKey", userKey);
 
         return header;
     }
