@@ -5,6 +5,7 @@ import axios from "axios"
 import AudioPlayer from "../../components/AudioPlayer"
 import styled from "styled-components"
 import { ReactComponent as WonSvg } from "../../assets/images/won.svg"
+import api from "../../api/index"
 
 const mockDiaryData = {
   date: "2024년 7월 31일",
