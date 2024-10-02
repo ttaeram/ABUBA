@@ -24,7 +24,7 @@ public class AuthService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final FinAPIClient finAPIClient;
 
-    @Value("${api.Key}")
+    @Value("${api.key}")
     private String apikey;
     public AuthService(ParentRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, FinAPIClient finAPIClient) {
         this.userRepository = userRepository;
@@ -47,7 +47,6 @@ public class AuthService {
 
         //금융api로 user키를 발급 받는다.
         SignupResponseDTO response = finAPIClient.signup(new SignupRequestDTO(apikey, joinDTO.getEmail()));
-
 
         Parent data = new Parent();
 
