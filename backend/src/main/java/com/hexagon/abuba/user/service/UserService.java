@@ -3,6 +3,7 @@ package com.hexagon.abuba.user.service;
 
 import com.hexagon.abuba.user.Baby;
 import com.hexagon.abuba.user.Parent;
+import com.hexagon.abuba.user.dto.request.OneTransferRequestDTO;
 import com.hexagon.abuba.user.dto.request.RegistBabyInfoDTO;
 import com.hexagon.abuba.user.repository.BabyRepository;
 import com.hexagon.abuba.user.repository.ParentRepository;
@@ -43,5 +44,9 @@ public class UserService {
                 .height(babyInfoDTO.height())
                 .weight(babyInfoDTO.weight())
                 .build();
+    }
+
+    public OneTransferRequestDTO transfer1won(RegistBabyInfoDTO babyInfoDTO) {
+        return null;
     }
 }
