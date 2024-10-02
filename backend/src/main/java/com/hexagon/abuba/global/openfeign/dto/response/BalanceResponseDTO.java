@@ -1,4 +1,4 @@
 package com.hexagon.abuba.global.openfeign.dto.response;
 
-public record BalanceResponseDTO(String bankCode, String accountBalance) {
+public record BalanceResponseDTO(ResponseHeader Header, BalanceREC REC) {
 }

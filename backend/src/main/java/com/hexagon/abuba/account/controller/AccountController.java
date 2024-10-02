@@ -3,6 +3,7 @@ package com.hexagon.abuba.account.controller;
 
 import com.hexagon.abuba.account.dto.request.BalanceRequestDTO;
 import com.hexagon.abuba.account.dto.request.HistoryReqDTO;
+import com.hexagon.abuba.account.dto.response.BalanceAmountResponseDTO;
 import com.hexagon.abuba.account.dto.response.HistoryResDTO;
 import com.hexagon.abuba.account.service.AccountService;
 import com.hexagon.abuba.global.openfeign.dto.response.BalanceResponseDTO;
@@ -46,8 +47,8 @@ public class AccountController {
 
     @GetMapping("/balance")
     @Operation(summary = "잔액 조회")
-    public ResponseEntity<BalanceResponseDTO> getBalance(@RequestBody BalanceRequestDTO balanceRequestDTO, @AuthenticationPrincipal(expression = "user") Parent user) {
-        BalanceResponseDTO balanceResponseDTO = accountService.getBalance(user.getId(), balanceRequestDTO.isParent());
-        return ResponseEntity.ok(balanceResponseDTO);
+    public ResponseEntity<BalanceAmountResponseDTO> getBalance(@RequestBody BalanceRequestDTO balanceRequestDTO, @AuthenticationPrincipal(expression = "user") Parent user) {
+        BalanceAmountResponseDTO balanceAmountResponseDTO = accountService.getBalance(user.getId(), balanceRequestDTO.isParent());
+        return ResponseEntity.ok(balanceAmountResponseDTO);
     }
 }

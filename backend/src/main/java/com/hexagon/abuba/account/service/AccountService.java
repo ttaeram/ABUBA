@@ -3,9 +3,11 @@ package com.hexagon.abuba.account.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hexagon.abuba.account.dto.request.HistoryReqDTO;
 import com.hexagon.abuba.account.dto.response.ApiResponseDTO;
+import com.hexagon.abuba.account.dto.response.BalanceAmountResponseDTO;
 import com.hexagon.abuba.account.dto.response.HistoryResDTO;
 import com.hexagon.abuba.global.openfeign.FinAPIClient;
 import com.hexagon.abuba.global.openfeign.dto.request.BalanceRequestDTO;
+import com.hexagon.abuba.global.openfeign.dto.request.RequestHeader;
 import com.hexagon.abuba.global.openfeign.dto.response.BalanceResponseDTO;
 import com.hexagon.abuba.user.Parent;
 import com.hexagon.abuba.user.repository.ParentRepository;
@@ -39,6 +41,9 @@ public class AccountService {
 
     @Value("${api.key}")
     private String apiKey;
+
+    @Value("${user.key}")
+    private String userKey;
 
     public AccountService(ParentRepository parentRepository, RestTemplate restTemplate, FinAPIClient finAPIClient) {
         this.parentRepository = parentRepository;
@@ -100,18 +105,21 @@ public class AccountService {
         }
     }
 
-    public BalanceResponseDTO getBalance(Long parentId, boolean isParent) {
+    public BalanceAmountResponseDTO getBalance(Long parentId, boolean isParent) {
         Parent parent = parentRepository.findById(parentId).orElseThrow();
         BalanceResponseDTO balanceResponseDTO = null;
 
+        RequestHeader header = new RequestHeader();
+        header.setHeader("inquireDemandDepositAccountBalance", apiKey, userKey);
+
 
         if(isParent) {
-            balanceResponseDTO = finAPIClient.getBalance(new BalanceRequestDTO(apiKey, parent.getAccount()));
+            balanceResponseDTO = finAPIClient.getBalance(new BalanceRequestDTO(header, parent.getAccount()));
         }
         else {
-            balanceResponseDTO = finAPIClient.getBalance(new BalanceRequestDTO(apiKey, parent.getBaby().getAccount()));
+            balanceResponseDTO = finAPIClient.getBalance(new BalanceRequestDTO(header, parent.getBaby().getAccount()));
         }
-        return balanceResponseDTO;
+        return new BalanceAmountResponseDTO(balanceResponseDTO.REC().getBankCode(), balanceResponseDTO.REC().getAccountBalance());
     }
 
     // Header 생성 메서드
