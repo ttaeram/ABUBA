@@ -53,6 +53,10 @@ dependencies {
 
 	// @ConfigureProperties를 사용하기 위해 추가
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-openfeign
+	implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.3")
+
 }
 
 tasks.named('test') {
