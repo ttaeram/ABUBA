@@ -12,22 +12,11 @@ const vaccinationData = [
   { age: '10+', vaccination: '추가 예방접종' },
 ];
 
-const growthData = [
-  { age: '0-1', growth: '신생아 건강 검사' },
-  { age: '1-2', growth: '운동 능력 발달' },
-  { age: '2-3', growth: '사회성 발달' },
-  { age: '4-5', growth: null },
-  { age: '6-7', growth: '언어 발달' },
-  { age: '8-9', growth: '정신적 성숙' },
-  { age: '10+', growth: null }, 
-];
-
-const RoadMap = () => {
+const VaccinationRoadMap = () => {
   return (
     <TimelineContainer>
       <Line /> 
       {vaccinationData.map((vaccinationItem, index) => {
-        const growthItem = growthData.find(growth => growth.age === vaccinationItem.age);
 
         return (
           <TimelineItem
@@ -40,9 +29,7 @@ const RoadMap = () => {
             <VaccinationInfo>
               <div>{vaccinationItem.vaccination || ''}</div>
             </VaccinationInfo>
-            <GrowthInfo>
-              <div>{growthItem?.growth || ''}</div>
-            </GrowthInfo>
+
           </TimelineItem>
         );
       })}
@@ -50,7 +37,7 @@ const RoadMap = () => {
   );
 };
 
-export default RoadMap;
+export default VaccinationRoadMap;
 
 const TimelineContainer = styled.div`
   display: flex;
@@ -99,13 +86,4 @@ const VaccinationInfo = styled.div`
   z-index: 1;
   width: 45%;
   color: #c9ab05;
-`;
-
-const GrowthInfo = styled.div`
-  display: flex;
-  justify-content: left;
-  padding: 10px;
-  z-index: 1;
-  width: 45%;
-  color: #940404;
 `;
