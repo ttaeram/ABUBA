@@ -10,6 +10,8 @@ import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
 import com.hexagon.abuba.diary.repository.DiaryRepository;
 import com.hexagon.abuba.s3.service.S3Service;
+import com.hexagon.abuba.user.Baby;
+import com.hexagon.abuba.user.Parent;
 import com.hexagon.abuba.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +40,10 @@ public class DiaryService {
 
     public List<DiaryRecentResDTO> recentDiary(Long parentId) {
         List<DiaryRecentResDTO> diaryRecentResDTOList = new ArrayList<>();
-        List<Diary> diaries = diaryRepository.findByParentId(parentId);
+        Parent parent = parentRepository.findById(parentId).orElseThrow();
+        Baby baby = parent.getBaby();
+        List<Parent> parentList = baby.getParents();
+        List<Diary> diaries = diaryRepository.findByParents(parentList);
 
         for (Diary diary : diaries) {
             // TODO : 이미지 URL 이 Null 로 나올지 빈칸으로 나올지 모르기 때문에 수정할 가능성 있음
@@ -57,7 +62,10 @@ public class DiaryService {
     }
 
     public List<DiaryResDTO> getList(Long parentId){
-        List<Diary> diaries = diaryRepository.findByParentId(parentId);
+        Parent parent = parentRepository.findById(parentId).orElseThrow();
+        Baby baby = parent.getBaby();
+        List<Parent> parentList = baby.getParents();
+        List<Diary> diaries = diaryRepository.findByParents(parentList);
         List<DiaryResDTO> diaryResDTOList = new ArrayList<>();
         for (Diary diary : diaries) {
             DiaryResDTO diaryResDTO = EntityToResDTO(diary);
