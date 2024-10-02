@@ -23,6 +23,7 @@ export const FormContainer = styled.div`
 `;
 
 export const FormTitle = styled.h2`
+  margin-top: 10px;
   margin-bottom: 20px;
   font-size: 24px;
   color: #333;
