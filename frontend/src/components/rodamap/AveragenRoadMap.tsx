@@ -1,18 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import { averagendata } from '../../api/roadmap';
 
-const vaccinationData = [
-  { age: '0-1', vaccination: 'BCG, HepB' },
-  { age: '1-2', vaccination: 'DTP, Polio' },
-  { age: '2-3', vaccination: null }, 
-  { age: '4-5', vaccination: 'Varicella' },
-  { age: '6-7', vaccination: '6세, 7세 예방접종' },
-  { age: '8-9', vaccination: 'HPV 예방접종' },
-  { age: '10+', vaccination: '추가 예방접종' },
-];
+interface Vaccination {
+  information: string;
+}
 
 const VaccinationRoadMap = () => {
+  const [vaccinationData, setVaccinationData] = useState<Vaccination[]>([]);
+
+  useEffect(() => {
+    const getVaccinationData = async () => {
+      try {
+        const data = await averagendata();
+        console.log(data);
+        setVaccinationData(data);
+      } catch (error) {
+        console.error('Failed to fetch vaccination data', error);
+      }
+    };
+ 
+    getVaccinationData(); 
+  }, []);
+
   return (
     <TimelineContainer>
       <Line /> 
@@ -27,7 +38,7 @@ const VaccinationRoadMap = () => {
           >
             <Dot /> 
             <VaccinationInfo>
-              <div>{vaccinationItem.vaccination || ''}</div>
+              <div>{vaccinationItem.information || ''}</div>
             </VaccinationInfo>
 
           </TimelineItem>

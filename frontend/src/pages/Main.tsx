@@ -3,10 +3,14 @@ import styled from "styled-components"
 import DiaryInfo from '../components/main/DiaryInfo'
 import AccountInfo from "../components/main/AccountInfo"
 import RoadMap from "../components/rodamap/RoadMap"
+import { useAuthStore, useChildAuthStore } from "../stores/authStore"
+import { calculateAge } from "../utils/calculateAge"
 
 const Main = () => {
 
   const navigate = useNavigate();
+  const { email, name } = useAuthStore();
+  const { childname, relation, height, weight, birthdate, gender } = useChildAuthStore();
   const handleAccountClick = () => {
     navigate('/account'); 
   };
@@ -15,19 +19,21 @@ const Main = () => {
     navigate('/roadmap'); 
   };
 
+  const age = calculateAge(birthdate);
+
   return (
     <div>
       <ChildInfoContainer>
         <TextInfo>
           <Name>
-            유태람
+            {childname}
           </Name>
           <BirthContainer>
             <Age>
-              만 2세
+              만 {age}세 ({gender})
             </Age>
             <BirthDay>
-              출생 2022.03.11
+              출생 {birthdate}
             </BirthDay>
           </BirthContainer>
       

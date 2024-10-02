@@ -1,15 +1,21 @@
 import React, { useState } from 'react'
 import RoadMap from '../../components/rodamap/RoadMap'
 import styled from "styled-components"
-import VaccinationRoadMap from '../../components/rodamap/VaccinationRoadMap';
+import VaccinationRoadMap from '../../components/rodamap/AveragenRoadMap';
 import GrowthRoadMap from '../../components/rodamap/GrowthRoadMap';
+import { useChildAuthStore } from '../../stores/authStore';
+import { calculateAge } from '../../utils/calculateAge';
+import { changeShortName } from '../../utils/changeShortName';
 
 const ChildRoadMap = () => {
   const [selectedTab, setSelectedTab] = useState('전체');
+  const {childname, birthdate} = useChildAuthStore();
+  const age = calculateAge(birthdate);
+  const shortname = changeShortName(childname);
   return (
     <InfoContainer>
       <All>
-        태람(이)는 지금 2 살
+        {shortname}(이)는 지금 만 {age} 살
       </All>
 
       <TabContainer>
@@ -42,6 +48,7 @@ const All = styled.div`
   display: flex;
   justify-content: right;
   text-align: right;
+  margin-bottom: 20px;
 `
 const TabContainer = styled.div`
   display: flex;

@@ -53,6 +53,6 @@ const Money = styled.div`
     display: flex;
     justify-content: right;
     text-align: right;
-    font-size:25px;
+    font-size:px;
 
 `
