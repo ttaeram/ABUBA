@@ -17,6 +17,7 @@ public interface FinAPIClient {
     @PostMapping("/member")
     SignupResponseDTO signup(@RequestBody SignupRequestDTO signupRequestDTO);
 
-    @PostMapping("/edu/accountAuth/openAccountAuth")
+    @PostMapping(value = "/edu/accountAuth/openAccountAuth", consumes = "application/json")
     OneTransferResponseDTO accountAuth(@RequestBody OneTransferRequestDTO oneTransferRequestDTO);
+
 }

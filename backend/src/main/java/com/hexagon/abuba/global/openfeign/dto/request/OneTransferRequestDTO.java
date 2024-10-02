@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 public class OneTransferRequestDTO {
     @Schema(description = "공통해더")
-    private RequestHeader requestHeader;
+    private RequestHeader Header;
     @Schema(description = "계좌번호")
     private String accountNo;
     @Schema(description = "회사명")

@@ -58,14 +58,17 @@ public class UserService {
     public OneTransferRequestDTO transfer1won(AccountRequestDTO request, Parent user) {
         //1.사용자 계좌에 1원을 송금한다.
         RequestHeader requestHeader = new RequestHeader();
-        requestHeader.setHeader("openAccountAuth",apiKey,user.getUserkey());
+//        requestHeader.setHeader("openAccountAuth",apiKey,user.getUserkey());
+        requestHeader.setHeader("openAccountAuth",apiKey,"53714417-7f2c-4bed-8608-f7d39353bbd9"
+
+        );
 
         OneTransferRequestDTO oneRequest = new OneTransferRequestDTO();
-        oneRequest.setRequestHeader(requestHeader);
+        oneRequest.setHeader(requestHeader);
+//        oneRequest.setAccountNo("53714417-7f2c-4bed-8608-f7d39353bbd9");
         oneRequest.setAccountNo(request.accountNo());
         oneRequest.setAuthText("ABUBA");
 
-        log.info("oneRequest.header: {}", oneRequest.getRequestHeader());
         log.info("oneRequest: {}", oneRequest);
         OneTransferResponseDTO accountResponse = finAPIClient.accountAuth(oneRequest);
         log.info("accountResponse {}", accountResponse);
