@@ -59,16 +59,15 @@ const SignupForm = () => {
       return;
     }
 
-    if (!isCodeVerified) {
-      setError('인증 코드를 먼저 확인해 주세요.');
-      return;
-    }
-    console.log("!?!")
+    // if (!isCodeVerified) {
+    //   setError('인증 코드를 먼저 확인해 주세요.');
+    //   return;
+    // }
+
     try {
       await signup(email, name, password); 
-      alert('회원가입 성공!');
-      console.log("!!");
-      navigate('/main');
+      alert('회원가입이 완료되었습니다.');
+      navigate('/');
       
     } catch (error: any) {
 

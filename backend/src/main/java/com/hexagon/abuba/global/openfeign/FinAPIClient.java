@@ -1,8 +1,10 @@
 package com.hexagon.abuba.global.openfeign;
 
 import com.hexagon.abuba.common.DataResponse;
+import com.hexagon.abuba.global.openfeign.dto.request.BalanceRequestDTO;
 import com.hexagon.abuba.global.openfeign.dto.request.OneTransferRequestDTO;
 import com.hexagon.abuba.global.openfeign.dto.request.SignupRequestDTO;
+import com.hexagon.abuba.global.openfeign.dto.response.BalanceResponseDTO;
 import com.hexagon.abuba.global.openfeign.dto.response.OneTransferResponseDTO;
 import com.hexagon.abuba.global.openfeign.dto.response.SignupResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -16,6 +18,9 @@ public interface FinAPIClient {
 
     @PostMapping("/member")
     SignupResponseDTO signup(@RequestBody SignupRequestDTO signupRequestDTO);
+
+    @PostMapping("/edu/demandDeposit/inquireDemandDepositAccountBalance")
+    BalanceResponseDTO getBalance(@RequestBody BalanceRequestDTO balanceRequestDTO);
 
     @PostMapping(value = "/edu/accountAuth/openAccountAuth", consumes = "application/json")
     OneTransferResponseDTO accountAuth(@RequestBody OneTransferRequestDTO oneTransferRequestDTO);
