@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 
-const DiaryListCard = ({ diary }: { diary: { id: number; title: string; content: string; date: string; money: string; imageUrl: string } }) => {
+const DiaryListCard = ({ diary }: { diary: { id: number; title: string; content: string; createdAt: string; deposit: number; imageUrl: string } }) => {
   const navigate = useNavigate()
-
+  console.log(diary.imageUrl)
   const toDiaryDetail = () => {
     navigate(`/diary/${diary.id}`)
   }
@@ -16,8 +16,8 @@ const DiaryListCard = ({ diary }: { diary: { id: number; title: string; content:
       </div>
       <Content>{diary.content}</Content>
       <InfoRow>
-        <Date>{diary.date}</Date>
-        <Money>{diary.money}</Money>
+        <Date>{diary.createdAt}</Date>
+        <Money>{diary.deposit}</Money>
       </InfoRow>
     </Card>
   )

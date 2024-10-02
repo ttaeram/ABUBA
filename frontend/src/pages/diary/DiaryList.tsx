@@ -7,18 +7,10 @@ import styled from "styled-components"
 import api from "../../api/index";
 
 const DiaryList = () => {
-  const [diaries, setDiaries] = useState<{ id: number; title: string; content: string; date: string; money: string; imageUrl: string }[]>([])
+  const [diaries, setDiaries] = useState<{ id: number; title: string; content: string; createdAt: string; deposit: number; imageUrl: string }[]>([])
   const navigate = useNavigate()
 
   const fetchDiaries = async () => {
-    // const newDiaries = Array.from({ length: 10 }, (_, index) => ({
-    //   id: index + 1,
-    //   title: `일기 ${index + 1}`,
-    //   content: `일기 내용 ${index + 1}`,
-    //   date: '09/19 10:19',
-    //   money: '30,000 원',
-    //   imageUrl: 'https://via.placeholder.com/400x300',
-    // }))
     try {
       const accessToken = localStorage.getItem('accessToken')
 
@@ -26,7 +18,7 @@ const DiaryList = () => {
         throw new Error('Access Token이 없음')
       }
 
-      const response = await api.get(`/api/v1/diary?parentId=${1}`, {
+      const response = await api.get(`/api/v1/diary`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
