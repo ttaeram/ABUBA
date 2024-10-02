@@ -24,7 +24,7 @@ public class AuthService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final FinAPIClient finAPIClient;
 
-    @Value("${finApiKey}")
+    @Value("${api.Key}")
     private String apikey;
     public AuthService(ParentRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, FinAPIClient finAPIClient) {
         this.userRepository = userRepository;
