@@ -72,5 +72,9 @@ public class Parent {
         this.relationship = relationship;
     }
 
+    public void setUserkey(String userkey) {
+        this.userkey = userkey;
+    }
+
 
 }
