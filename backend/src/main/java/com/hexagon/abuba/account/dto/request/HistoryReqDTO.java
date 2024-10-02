@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @Schema
 public class HistoryReqDTO {
-    String startDate;
-    String endDate;
+    private String startDate;
+    private String endDate;
 }
