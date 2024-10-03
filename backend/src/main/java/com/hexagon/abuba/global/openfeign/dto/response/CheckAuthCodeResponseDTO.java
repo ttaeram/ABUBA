@@ -1,8 +1,6 @@
 package com.hexagon.abuba.global.openfeign.dto.response;
 
-import lombok.*;
-
-public record OneTransferResponseDTO (
+public record CheckAuthCodeResponseDTO(
     ResponseHeader Header,
-    REC REC
-){}
+    CheckAuthREC REC
+    ){}

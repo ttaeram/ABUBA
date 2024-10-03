@@ -35,7 +35,6 @@ import java.util.Optional;
 @RequestMapping("/api/v1/diary")
 @CrossOrigin("*")
 @Slf4j
-@SecurityRequirement(name = "access")  // 이 API는 토큰이 필요함
 public class DiaryController {
     /*
     TODO
@@ -54,6 +53,7 @@ public class DiaryController {
      * 가장 최근에 다이어리에 작성한 사진이 있는 게시물 3개 불러오기
      * @return
      */
+    @SecurityRequirement(name = "access")  // 이 API는 토큰이 필요함
     @GetMapping("/recents")
     @Operation(summary = "가장 최근에 다이어리에 작성한 사진이 있는 게시물 3개 불러오기")
     public ResponseEntity<List<DiaryRecentResDTO>> getRecent(@AuthenticationPrincipal(expression = "user") Parent user) {
@@ -68,6 +68,7 @@ public class DiaryController {
 //     * @param diaryRecentReqDTO
      * @return
      */
+    @SecurityRequirement(name = "access")  // 이 API는 토큰이 필요함
     @GetMapping
     @Operation(summary = "작성한 게시글의 목록 조회")
     public ResponseEntity<List<DiaryResDTO>> getList(@AuthenticationPrincipal(expression = "user") Parent user) {
@@ -77,7 +78,7 @@ public class DiaryController {
         return ResponseEntity.ok(resDTOList);
     }
 
-
+    @SecurityRequirement(name = "access")  // 이 API는 토큰이 필요함
     @GetMapping("/{diary_id}")
     @Operation(summary = "일기 상세 조회")
     public ResponseEntity<DiaryDetailResDTO> getDetail(@PathVariable Long diary_id) {
@@ -86,6 +87,7 @@ public class DiaryController {
         return ResponseEntity.ok(diaryDetailResDTO);
     }
 
+    @SecurityRequirement(name = "access")  // 이 API는 토큰이 필요함
     @PostMapping
     @Operation(summary = "일기 작성")
     public ResponseEntity<String> addDiary(@RequestParam(value = "image", required = false) MultipartFile image,
@@ -97,6 +99,7 @@ public class DiaryController {
         return ResponseEntity.ok("add Diary Success");
     }
 
+    @SecurityRequirement(name = "access")  // 이 API는 토큰이 필요함
     @PutMapping
     @Operation(summary = "일기 수정")
     public ResponseEntity<String> editDiary(@RequestParam(value = "image", required = false) MultipartFile image,

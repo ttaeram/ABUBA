@@ -28,7 +28,7 @@ public class RequestHeader {
         this.transmissionDate = now.format(dateFormatter);
         this.transmissionTime = now.format(timeFormatter);
 
-        // Generate a unique transaction ID (YYYYMMDDHHMMSS + 6-digit serial number)
+        //(YYYYMMDDHHMMSS + 6-digit serial number)
         String serialNumber = String.format("%06d", (int) (Math.random() * 1000000)); // 6자리 랜덤 숫자
         this.institutionTransactionUniqueNo = now.format(dateFormatter) + now.format(timeFormatter) + serialNumber;
     }
