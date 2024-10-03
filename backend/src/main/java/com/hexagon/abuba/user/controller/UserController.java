@@ -6,12 +6,15 @@ import com.hexagon.abuba.common.MessageResponse;
 import com.hexagon.abuba.user.Baby;
 import com.hexagon.abuba.user.Parent;
 import com.hexagon.abuba.user.dto.request.AccountRequestDTO;
+import com.hexagon.abuba.user.dto.request.AuthCodeCheckDTO;
 import com.hexagon.abuba.user.dto.request.RegistBabyInfoDTO;
 import com.hexagon.abuba.user.dto.response.AccountAuthResponseDTO;
 import com.hexagon.abuba.user.dto.response.BabyInfoResponseDTO;
 import com.hexagon.abuba.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,7 +48,17 @@ public class UserController {
     @PostMapping("/1won")
     public ResponseEntity<DataResponse<AccountAuthResponseDTO>> send1won(@AuthenticationPrincipal(expression = "user") Parent user, @RequestBody AccountRequestDTO request){
         AccountAuthResponseDTO response = userService.transfer1won(request, user);
-        return new ResponseEntity<>(DataResponse.of(HttpStatus.OK,"1원송금이 완료되었습니다." ,response),HttpStatus.OK);
+        return new ResponseEntity<>(DataResponse.of(HttpStatus.OK,"1원송금이 완료되었습니다" ,response),HttpStatus.OK);
+    }
+
+    @SecurityRequirement(name = "access")
+    @Operation(summary = "1원송금 인증번호 유효성 검사", description = "계좌로 송금된 1원의 유효성을 검사합니다.")
+    @PostMapping("/authcode")
+    public ResponseEntity<DataResponse<?>> validAccount(@AuthenticationPrincipal(expression = "user") Parent user, @RequestBody AuthCodeCheckDTO request){
+        String status = userService.checkAuthCode(request, user);
+        Map<String, String> response = new HashMap<>();
+        response.putIfAbsent("status",status);
+        return new ResponseEntity<>(DataResponse.of(HttpStatus.OK,"검증요청이 완료되었습니다." ,response),HttpStatus.OK);
     }
 
     @SecurityRequirement(name = "access")

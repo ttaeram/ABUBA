@@ -2,14 +2,17 @@ package com.hexagon.abuba.user.service;
 
 
 import com.hexagon.abuba.global.openfeign.FinAPIClient;
+import com.hexagon.abuba.global.openfeign.dto.request.CheckAuthCodeRequestDTO;
 import com.hexagon.abuba.global.openfeign.dto.request.InQuireTransactionHistoryRequestDTO;
 import com.hexagon.abuba.global.openfeign.dto.request.RequestHeader;
+import com.hexagon.abuba.global.openfeign.dto.response.CheckAuthCodeResponseDTO;
 import com.hexagon.abuba.global.openfeign.dto.response.InQuireTransactionHistoryResponseDTO;
 import com.hexagon.abuba.global.openfeign.dto.response.OneTransferResponseDTO;
 import com.hexagon.abuba.user.Baby;
 import com.hexagon.abuba.user.Parent;
 import com.hexagon.abuba.global.openfeign.dto.request.OneTransferRequestDTO;
 import com.hexagon.abuba.user.dto.request.AccountRequestDTO;
+import com.hexagon.abuba.user.dto.request.AuthCodeCheckDTO;
 import com.hexagon.abuba.user.dto.request.RegistBabyInfoDTO;
 import com.hexagon.abuba.user.dto.response.AccountAuthResponseDTO;
 import com.hexagon.abuba.user.repository.BabyRepository;
@@ -63,6 +66,12 @@ public class UserService {
                 .build();
     }
 
+    /**
+     * 사용자가 요청한 계좌로 1원을 송금하는 메서드
+     * @param request
+     * @param user
+     * @return
+     */
     public AccountAuthResponseDTO transfer1won(AccountRequestDTO request, Parent user) {
         //1.사용자 계좌에 1원을 송금한다.
         RequestHeader requestHeader = new RequestHeader();
@@ -107,5 +116,25 @@ public class UserService {
 
         // LocalDateTime으로 변환
         return LocalDateTime.parse(dateTimeString, formatter);
+    }
+
+    /**
+     * 사용자가 보낸 값이 유효한지 확인하는 메서드
+     * @param authCodeCheckDTO
+     * @param user
+     * @return
+     */
+    public String checkAuthCode(AuthCodeCheckDTO authCodeCheckDTO, Parent user) {
+        RequestHeader requestHeader = new RequestHeader();
+        requestHeader.setHeader("checkAuthCode", apiKey, userKey);
+        CheckAuthCodeRequestDTO request = new CheckAuthCodeRequestDTO(requestHeader, authCodeCheckDTO.accountNo(),
+                authCodeCheckDTO.authText(), authCodeCheckDTO.authCode());
+        CheckAuthCodeResponseDTO response = null;
+        try {
+            response = finAPIClient.checkAuthCode(request);
+        }catch (Exception e){
+            return "Fail";
+        }
+        return response.REC().status();
     }
 }

@@ -2,11 +2,13 @@ package com.hexagon.abuba.global.openfeign;
 
 import com.hexagon.abuba.common.DataResponse;
 import com.hexagon.abuba.global.openfeign.dto.request.BalanceRequestDTO;
+import com.hexagon.abuba.global.openfeign.dto.request.CheckAuthCodeRequestDTO;
 import com.hexagon.abuba.global.openfeign.dto.request.DepositRequestDTO;
 import com.hexagon.abuba.global.openfeign.dto.request.InQuireTransactionHistoryRequestDTO;
 import com.hexagon.abuba.global.openfeign.dto.request.OneTransferRequestDTO;
 import com.hexagon.abuba.global.openfeign.dto.request.SignupRequestDTO;
 import com.hexagon.abuba.global.openfeign.dto.response.BalanceResponseDTO;
+import com.hexagon.abuba.global.openfeign.dto.response.CheckAuthCodeResponseDTO;
 import com.hexagon.abuba.global.openfeign.dto.response.DepositResponseDTO;
 import com.hexagon.abuba.global.openfeign.dto.response.InQuireTransactionHistoryResponseDTO;
 import com.hexagon.abuba.global.openfeign.dto.response.OneTransferResponseDTO;
@@ -37,4 +39,7 @@ public interface FinAPIClient {
 
     @PostMapping(value = "edu/demandDeposit/inquireTransactionHistory")
     InQuireTransactionHistoryResponseDTO inquireTransactionHistory(@RequestBody InQuireTransactionHistoryRequestDTO inQuireTransactionHistoryRequestDTO);
+
+    @PostMapping(value="edu/accountAuth/checkAuthCode")
+    CheckAuthCodeResponseDTO checkAuthCode(@RequestBody CheckAuthCodeRequestDTO checkAuthCodeRequestDTO);
 }
