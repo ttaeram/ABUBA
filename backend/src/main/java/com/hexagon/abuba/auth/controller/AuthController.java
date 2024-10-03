@@ -48,7 +48,8 @@ public class AuthController {
     )
     public ResponseEntity<DataResponse<LoginResDTO>> login(LoginDTO loginDTO,  @Parameter(hidden = true)  HttpServletRequest request) {
         Parent user = (Parent)request.getAttribute("user");
-        LoginResDTO  response = new LoginResDTO(user.getUsername(),user.getName());
+        boolean isEmpty = authService.checkOnboarding(user.getId());
+        LoginResDTO  response = new LoginResDTO(user.getUsername(),user.getName(), isEmpty);
         return new ResponseEntity<>(DataResponse.of(HttpStatus.OK,"로그인이 완료되었습니다.",response),HttpStatus.OK);
     }
 

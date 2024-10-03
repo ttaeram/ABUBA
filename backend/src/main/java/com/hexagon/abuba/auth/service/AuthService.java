@@ -2,12 +2,13 @@ package com.hexagon.abuba.auth.service;
 
 
 import com.hexagon.abuba.auth.dto.request.JoinDTO;
-import com.hexagon.abuba.auth.dto.request.LoginDTO;
-import com.hexagon.abuba.auth.dto.response.LoginResDTO;
 import com.hexagon.abuba.global.openfeign.FinAPIClient;
 import com.hexagon.abuba.global.openfeign.dto.request.SignupRequestDTO;
 import com.hexagon.abuba.global.openfeign.dto.response.SignupResponseDTO;
+import com.hexagon.abuba.user.Baby;
 import com.hexagon.abuba.user.Parent;
+import com.hexagon.abuba.user.dto.response.BabyInfoResponseDTO;
+import com.hexagon.abuba.user.repository.BabyRepository;
 import com.hexagon.abuba.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +24,15 @@ public class AuthService {
     private final ParentRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final FinAPIClient finAPIClient;
+    private final BabyRepository babyRepository;
 
     @Value("${api.key}")
     private String apikey;
-    public AuthService(ParentRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, FinAPIClient finAPIClient) {
+    public AuthService(ParentRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, FinAPIClient finAPIClient, BabyRepository babyRepository) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.finAPIClient = finAPIClient;
+        this.babyRepository = babyRepository;
     }
 
     public void joinProcess(JoinDTO joinDTO) {
@@ -59,5 +62,13 @@ public class AuthService {
         userRepository.save(data);
     }
 
+
+    public boolean checkOnboarding(Long parentId) {
+        Parent user = userRepository.findById(parentId).orElseThrow();
+        if(user.getBaby() == null){
+            return true;
+        }
+        return false;
+    }
 
 }
