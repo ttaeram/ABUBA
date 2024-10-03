@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class REC {
-    private String transactionUniqueNo;
+    private Long transactionUniqueNo;
     private String accountNo;
 }

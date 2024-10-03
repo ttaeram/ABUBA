@@ -6,18 +6,19 @@ import com.hexagon.abuba.auth.dto.response.LoginResDTO;
 import com.hexagon.abuba.auth.service.AuthService;
 import com.hexagon.abuba.common.DataResponse;
 import com.hexagon.abuba.common.MessageResponse;
+import com.hexagon.abuba.global.openfeign.dto.request.OneTransferRequestDTO;
 import com.hexagon.abuba.user.Parent;
-import io.swagger.v3.oas.annotations.Hidden;
+import com.hexagon.abuba.user.dto.request.AccountRequestDTO;
+import com.hexagon.abuba.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-
     @Autowired
     public AuthController(AuthService authService) {
         this.authService = authService;
@@ -40,7 +40,7 @@ public class AuthController {
         return new ResponseEntity<>(MessageResponse.of(HttpStatus.OK,"회원가입이 완료되었습니다."),HttpStatus.OK);
     }
 
-    @Operation(summary = "로그인", description = "신규 유저가 회원가입합니다.")
+    @Operation(summary = "로그인", description = "신규 유저가 로그인합니다.")
     @PostMapping("/login")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Request body for Swagger",

@@ -5,9 +5,9 @@ import com.hexagon.abuba.common.DataResponse;
 import com.hexagon.abuba.common.MessageResponse;
 import com.hexagon.abuba.user.Baby;
 import com.hexagon.abuba.user.Parent;
-import com.hexagon.abuba.global.openfeign.dto.request.OneTransferRequestDTO;
 import com.hexagon.abuba.user.dto.request.AccountRequestDTO;
 import com.hexagon.abuba.user.dto.request.RegistBabyInfoDTO;
+import com.hexagon.abuba.user.dto.response.AccountAuthResponseDTO;
 import com.hexagon.abuba.user.dto.response.BabyInfoResponseDTO;
 import com.hexagon.abuba.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/user")
 @CrossOrigin("*")
-@SecurityRequirement(name = "access")
 @Slf4j
 public class UserController {
 
@@ -33,6 +32,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    @SecurityRequirement(name = "access")
     @Operation(summary = "아이정보등록", description = "아이정보를 등록합니다.")
     @PostMapping("/babyInfo")
     public ResponseEntity<MessageResponse> registBabyInfo(@AuthenticationPrincipal(expression = "user") Parent user,@RequestBody RegistBabyInfoDTO babyInfoDTO){
@@ -40,13 +40,15 @@ public class UserController {
         return new ResponseEntity<>(MessageResponse.of(HttpStatus.OK, "아이정보등록이 완료됬습니다."), HttpStatus.OK);
     }
 
+    @SecurityRequirement(name = "access")
     @Operation(summary = "1원송금", description = "계좌번호로 1원을 송금합니다.")
     @PostMapping("/1won")
-    public ResponseEntity<DataResponse<?>> send1won(@AuthenticationPrincipal(expression = "user") Parent user, @RequestBody AccountRequestDTO request){
-        OneTransferRequestDTO response = userService.transfer1won(request, user);
+    public ResponseEntity<DataResponse<AccountAuthResponseDTO>> send1won(@AuthenticationPrincipal(expression = "user") Parent user, @RequestBody AccountRequestDTO request){
+        AccountAuthResponseDTO response = userService.transfer1won(request, user);
         return new ResponseEntity<>(DataResponse.of(HttpStatus.OK,"1원송금이 완료되었습니다." ,response),HttpStatus.OK);
     }
 
+    @SecurityRequirement(name = "access")
     @Operation(summary = "아이정보 조회", description = "아이정보를 조회합니다.")
     @GetMapping("/baby")
     public ResponseEntity<DataResponse<BabyInfoResponseDTO>> getBaby(@AuthenticationPrincipal(expression = "user") Parent user){
