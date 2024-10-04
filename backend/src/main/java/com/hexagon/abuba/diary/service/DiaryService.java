@@ -113,9 +113,10 @@ public class DiaryService {
 
         Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName);
         diaryRepository.save(diary);
-
-        accountService.minusParentMoney(parentId, reqDTO.deposit().longValue());
-        accountService.addBabyMoney(parentId, reqDTO.deposit().longValue());
+        if(reqDTO.deposit() != null && reqDTO.deposit().intValue() != 0){
+            accountService.minusParentMoney(parentId, reqDTO.deposit().longValue());
+            accountService.addBabyMoney(parentId, reqDTO.deposit().longValue());
+        }
     }
 
     public void editDiary(DiaryEditReqDTO reqDTO, MultipartFile image, MultipartFile record){
