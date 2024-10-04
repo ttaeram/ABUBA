@@ -1,4 +1,4 @@
-package com.hexagon.abuba.alarm;
+package com.hexagon.abuba.alarm.entity;
 
 import com.hexagon.abuba.user.Parent;
 import jakarta.persistence.*;

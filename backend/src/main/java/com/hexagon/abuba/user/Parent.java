@@ -1,6 +1,6 @@
 package com.hexagon.abuba.user;
 
-import com.hexagon.abuba.alarm.Alarm;
+import com.hexagon.abuba.alarm.entity.Alarm;
 import com.hexagon.abuba.diary.Diary;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -31,6 +31,8 @@ public class Parent {
     private String userkey;
 
     private String account;
+
+    private String bankName;
 
     private String role;
 
@@ -74,6 +76,13 @@ public class Parent {
 
     public void setUserkey(String userkey) {
         this.userkey = userkey;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
     }
 
 

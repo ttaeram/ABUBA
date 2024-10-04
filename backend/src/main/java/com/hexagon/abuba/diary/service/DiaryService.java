@@ -15,6 +15,7 @@ import com.hexagon.abuba.user.Parent;
 import com.hexagon.abuba.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,12 +31,14 @@ public class DiaryService {
     private final ParentRepository parentRepository;
     private final S3Service s3Service;
     private final AccountService accountService;
+    private final Tika tika;
 
     public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, S3Service s3Service, AccountService accountService) {
         this.diaryRepository = diaryRepository;
         this.parentRepository = parentRepository;
         this.s3Service = s3Service;
         this.accountService = accountService;
+        this.tika = new Tika();
     }
 
     public List<DiaryRecentResDTO> recentDiary(Long parentId) {
@@ -97,28 +100,36 @@ public class DiaryService {
         InputStream recordStream = null;
         String imageName = null;
         String recordName = null;
+        String imgMimeType = null;
+        String recordMimeType = null;
         log.info(reqDTO.toString());
         try {
             if (image != null) {
                 imageStream = image.getInputStream();
                 imageName = image.getOriginalFilename();
+                InputStream tmp = image.getInputStream();
+                imgMimeType = tika.detect(tmp);
             }
             if (record != null) {
                 recordStream = record.getInputStream();
                 recordName = record.getOriginalFilename();
+                InputStream tmp = record.getInputStream();
+                recordMimeType = tika.detect(tmp);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName);
+        Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
         diaryRepository.save(diary);
-
-        accountService.minusParentMoney(parentId, reqDTO.deposit().longValue());
-        accountService.addBabyMoney(parentId, reqDTO.deposit().longValue());
+        if(reqDTO.deposit() != null && reqDTO.deposit().intValue() != 0){
+            accountService.minusParentMoney(parentId, reqDTO.deposit().longValue());
+            accountService.addBabyMoney(parentId, reqDTO.deposit().longValue());
+        }
     }
 
     public void editDiary(DiaryEditReqDTO reqDTO, MultipartFile image, MultipartFile record){
+        log.info(reqDTO.toString());
         Diary diary = diaryRepository.findById(reqDTO.diaryId()).orElseThrow();
 
         diary.setTitle(reqDTO.title());
@@ -127,28 +138,36 @@ public class DiaryService {
         diary.setHeight(reqDTO.height());
         diary.setWeight(reqDTO.weight());
 
-        s3Service.deleteFile(diary.getImage_url());
-        s3Service.deleteFile(diary.getRecord_url());
+        if(diary.getImage_url() != null)
+            s3Service.deleteFile(diary.getImage_url());
+        if(diary.getRecord_url() != null)
+            s3Service.deleteFile(diary.getRecord_url());
 
         InputStream imageStream = null;
         InputStream recordStream = null;
         String imageName = null;
         String recordName = null;
+        String imgMimeType = null;
+        String recordMimeType = null;
         try {
             if (image != null) {
                 imageStream = image.getInputStream();
                 imageName = image.getOriginalFilename();
+                InputStream tmp = image.getInputStream();
+                imgMimeType = tika.detect(tmp);
             }
             if (record != null) {
                 recordStream = record.getInputStream();
                 recordName = record.getOriginalFilename();
+                InputStream tmp = record.getInputStream();
+                recordMimeType = tika.detect(tmp);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        diary = uploadFile(imageStream, imageName, "img", diary);
-        diary = uploadFile(recordStream, recordName, "record", diary);
+        diary = uploadFile(imageStream, imageName, "img", diary, imgMimeType);
+        diary = uploadFile(recordStream, recordName, "record", diary, recordMimeType);
 
         diaryRepository.save(diary);
     }
@@ -169,7 +188,8 @@ public class DiaryService {
 
     private Diary DTOToEntity(Long parentId, DiaryDetailReqDTO reqDTO,
                               InputStream imageStream, String imageName,
-                              InputStream recordStream, String recordName){
+                              InputStream recordStream, String recordName,
+                              String imgMimeType, String recordMimeType){
         Diary diary = new Diary();
 
         diary.setParent(parentRepository.findById(parentId).orElse(null));
@@ -183,19 +203,25 @@ public class DiaryService {
         diary.setWeight(reqDTO.weight());
 
 
-        diary = uploadFile(imageStream, imageName, "img", diary);
-        diary = uploadFile(recordStream, recordName, "record", diary);
+        diary = uploadFile(imageStream, imageName, "img", diary, imgMimeType);
+        diary = uploadFile(recordStream, recordName, "record", diary, recordMimeType);
 
         return diary;
     }
 
-    private Diary uploadFile(InputStream inputStream, String fileName, String fileType, Diary diary){
+    private Diary uploadFile(InputStream inputStream, String fileName, String fileType, Diary diary, String mimeType){
         if(inputStream != null && fileName != null){
-            String uploadFileName = s3Service.uploadFile(inputStream, fileName, fileType);
+            String uploadFileName = s3Service.uploadFile(inputStream, fileName, fileType, mimeType);
             if(fileType.equals("img")){
                 diary.setImage_url(uploadFileName);
             }else if(fileType.equals("record")){
                 diary.setRecord_url(uploadFileName);
+            }
+        }else{
+            if(fileType.equals("img")){
+                diary.setImage_url(null);
+            }else{
+                diary.setRecord_url(null);
             }
         }
         return diary;
