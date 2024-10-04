@@ -1,5 +1,6 @@
 package com.hexagon.abuba.s3.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -18,6 +19,7 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class S3Service {
 
     private final S3Client s3Client;
@@ -36,11 +38,13 @@ public class S3Service {
                 .build();
     }
 
-    public String uploadFile(InputStream inputStream, String fileName, String type) {
+    public String uploadFile(InputStream inputStream, String fileName, String type, String mimeType) {
+        log.info(mimeType);
         String uniqueFileName = type + "/" + UUID.randomUUID().toString() + "_" + fileName;
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(uniqueFileName)
+                .contentType(mimeType)
                 .build();
 
         try {
