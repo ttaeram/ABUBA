@@ -75,7 +75,6 @@ public class DiaryController {
     public ResponseEntity<List<DiaryResDTO>> getList(@AuthenticationPrincipal(expression = "user") Parent user) {
         log.info("user_id={}", user.getId());
         List<DiaryResDTO> resDTOList = diaryService.getList(user.getId());
-
         return ResponseEntity.ok(resDTOList);
     }
 
