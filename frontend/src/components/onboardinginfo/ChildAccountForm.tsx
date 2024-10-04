@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '../../styles/styledComponents';
+import { sendMoney, verifyAuthCode, submitAccountInfo  } from '../../api/auth';
 
 interface ChildAccountFormProps {
   onNext: () => void;
@@ -13,21 +14,30 @@ interface Bank {
 }
 
 const banks: Bank[] = [
-  { name: '신한은행', logo: '/banklogo/PNG/금융아이콘_PNG_신한.png' },
-  { name: '국민은행', logo: '/banklogo/PNG/금융아이콘_PNG_KB.png' },
-  { name: '하나은행', logo: '/banklogo/PNG/금융아이콘_PNG_하나.png' },
-  { name: '우리은행', logo: '/banklogo/PNG/금융아이콘_PNG_우리.png' },
-  { name: '농협은행', logo: '/banklogo/PNG/금융아이콘_PNG_농협.png' },
-  { name: '토스뱅크', logo: '/banklogo/PNG/금융아이콘_PNG_토스.png' },
+  { name: '농협', logo: '/banklogo/PNG/금융아이콘_PNG_농협.png' },
+  { name: '국민', logo: '/banklogo/PNG/금융아이콘_PNG_KB.png' },
   { name: '카카오뱅크', logo: '/banklogo/PNG/금융아이콘_PNG_카카오뱅크.png' },
+  { name: '신한', logo: '/banklogo/PNG/금융아이콘_PNG_신한.png' },
+  { name: '우리', logo: '/banklogo/PNG/금융아이콘_PNG_우리.png' },
+  { name: 'IBK기업', logo: '/banklogo/PNG/금융아이콘_PNG_IBK.png' },
+  { name: '하나', logo: '/banklogo/PNG/금융아이콘_PNG_하나.png' },
+  { name: '새마을', logo: '/banklogo/PNG/금융아이콘_PNG_MG새마을금고.png' },
+  { name: '대구', logo: '/banklogo/PNG/금융아이콘_PNG_DGB.png' },
+  { name: '부산', logo: '/banklogo/PNG/금융아이콘_PNG_BNK.png' },
+  { name: '토스뱅크', logo: '/banklogo/PNG/금융아이콘_PNG_토스.png' },
   { name: '저축은행', logo: '/banklogo/PNG/금융아이콘_PNG_저축은행.png' },
 ];
+
 
 const ChildAccountForm = ({ onNext, onPrevious }: ChildAccountFormProps) => {
   const [selectedBank, setSelectedBank] = useState<Bank | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [accountNumber, setAccountNumber] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
+  const [authCode, setAuthCode] = useState('');
+  const [authText, setAuthText] = useState('');
+  const [responseMessage, setResponseMessage] = useState('');
+  const [isVerified, setIsVerified] = useState(false);
 
   const toggleDropdown = () => setIsOpen(!isOpen);
 
@@ -36,8 +46,64 @@ const ChildAccountForm = ({ onNext, onPrevious }: ChildAccountFormProps) => {
     setIsOpen(false);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isVerified && selectedBank) {
+      try {
+        const response = await submitAccountInfo({
+          isParent: true, 
+          accountNo: accountNumber,
+          bankName: selectedBank.name,
+        });
+
+        if (response.status === 0) { 
+          alert('계좌 정보 전송 성공!');
+          onNext(); 
+        } else {
+          alert('계좌 정보 전송 실패: ' + response.message);
+        }
+      } catch (error) {
+        alert('계좌 정보 전송 중 오류가 발생했습니다.');
+      }
+    } else {
+      alert('인증번호를 확인해주세요.'); 
+    }
+  };
+
+  const handleSendMoney = async () => {
+    if (selectedBank && accountNumber) {
+      try {
+        const response = await sendMoney(accountNumber, selectedBank.name);
+
+        setAuthCode(response.data.authCode);
+        setAuthText(response.data.authText);
+
+        setResponseMessage(response.message); 
+        alert(JSON.stringify(response));
+      } catch (error) {
+        setResponseMessage('전송 실패');
+      }
+    } else {
+      setResponseMessage('은행과 계좌번호를 입력해주세요.');
+    }
+  };
+
+  const handleVerifyAuthCode = async () => {
+    if (verificationCode && accountNumber) {
+      try {
+        const response = await verifyAuthCode(authCode, authText, accountNumber);
+        setResponseMessage(response.message); 
+        if (response.data.status === "SUCCESS") {
+          alert('인증 성공!');
+        } else {
+          alert('인증 실패');
+        }
+      } catch (error) {
+        setResponseMessage('인증 실패');
+      }
+    } else {
+      setResponseMessage('인증번호와 계좌번호를 입력해주세요.');
+    }
   };
 
   return (
@@ -74,9 +140,9 @@ const ChildAccountForm = ({ onNext, onPrevious }: ChildAccountFormProps) => {
           onChange={(e) => setAccountNumber(e.target.value)}
           required
         />
-        <Button type="submit">확인</Button>
+        <Button type="submit" onClick={handleSendMoney}>전송</Button>
         </AccountContainer>
-
+        {responseMessage && <ResponseMessage>{responseMessage}</ResponseMessage>}
       <Description>
       입금자명 네자리를 입력해주세요.
       </Description>
@@ -92,13 +158,15 @@ const ChildAccountForm = ({ onNext, onPrevious }: ChildAccountFormProps) => {
           onChange={(e) => setVerificationCode(e.target.value)}
           required
         />
-        <Button type="submit">확인</Button>
+        <Button type="submit" onClick={handleVerifyAuthCode}>확인</Button>
       </InputRow>
 
       <ButtonContainer>
         <Button type="button" onClick={onPrevious}>이전</Button>
         <Button type="submit" onClick={onNext}>다음</Button>
       </ButtonContainer>
+
+      
     </FormContainer>
   );
 };
@@ -141,13 +209,15 @@ const DropdownList = styled.div`
 
 const BankGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   padding: 10px;
 `;
 
 const BankItem = styled.div`
   display: flex;
+  flex-direction: column;
+  font-size: 14px;
   gap:10px;
   align-items: center;
   justify-content: left;
@@ -209,3 +279,9 @@ const SubDescription = styled.div`
   margin-bottom: 60px;
 `;
 
+const ResponseMessage = styled.div`
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ff0000dc;
+`

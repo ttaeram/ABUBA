@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '../../styles/styledComponents';
 import { postBabyInfo } from '../../api/user';
-import { useChildAuthStore } from '../../stores/authStore';
 
 interface Props {
   onNext: () => void;
@@ -16,7 +15,6 @@ const ChildInfoForm = ({ onNext }: Props) => {
   const [birthDate, setBirthDate] = useState('');
   const [gender, setGender] = useState('');
   const [error, setError] = useState('');
-  const setChildInfo = useChildAuthStore.getState().setChildInfo;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -39,7 +37,6 @@ const ChildInfoForm = ({ onNext }: Props) => {
     try {
 
       await postBabyInfo(childinfo);
-      setChildInfo(childName, relation, Number(height), Number(weight), birthDate, gender);
       onNext();
     } catch (err) {
       console.error('아동 정보 저장 중 오류 발생:', err);
