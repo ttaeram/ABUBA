@@ -45,6 +45,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+
         CachedBodyHttpServletRequest cachedRequest;
         try {
             cachedRequest = new CachedBodyHttpServletRequest(request);

@@ -92,9 +92,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/alram/**").permitAll()
                         .requestMatchers("/v3/**", "/swagger-ui/**","/swagger/**","/docs/**").permitAll()// Swagger UI 및 API 문서 접근 허용
-                        .requestMatchers("/api/v1/auth/login", "/",
-                                "/api/v1/auth/signup", "/api/v1/auth/logout",
-                                "/api/v1/auth/verify-email","/api/v1/auth/send-email").permitAll()
+                        .requestMatchers("/api/v1/auth/login", "/", "/api/v1/auth/signup", "/api/v1/auth/logout").permitAll()
                         .requestMatchers("/reissue").permitAll()
                         .anyRequest().authenticated());
         http
