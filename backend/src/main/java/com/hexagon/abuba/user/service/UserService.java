@@ -145,7 +145,7 @@ public class UserService {
         try {
             response = finAPIClient.checkAuthCode(request);
         } catch (Exception e) {
-            return "Fail";
+            return "FAIL";
         }
         return response.REC().status();
     }
