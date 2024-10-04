@@ -1,22 +1,22 @@
 import styled from "styled-components";
 
 interface AmountModalProps {
-  amount: number;
-  setAmount: (value: number) => void;
+  deposit: number;
+  setDeposit: (value: number) => void;
   memo: string;
   setMemo: (value: string) => void;
   onNext: () => void;
   onBack: () => void;
 }
 
-const AmountModal: React.FC<AmountModalProps> = ({ amount, setAmount, memo, setMemo, onNext, onBack }) => {
+const AmountModal: React.FC<AmountModalProps> = ({ deposit, setDeposit, memo, setMemo, onNext, onBack }) => {
   return (
     <div>
       <Title>금액 입력</Title>
       <Input
         type="number"
-        value={amount}
-        onChange={(e) => setAmount(Number(e.target.value))}
+        value={deposit}
+        onChange={(e) => setDeposit(Number(e.target.value))}
         placeholder="송금할 금액"
       />
       <Title>메모 입력</Title>

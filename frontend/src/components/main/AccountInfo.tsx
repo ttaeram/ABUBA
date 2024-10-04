@@ -1,21 +1,60 @@
-import React from 'react'
+import { useState, useEffect } from 'react'
 import styled from 'styled-components';
+import api from '../../api/index'
 
-type Props = {}
+interface AccountInfoProps {
+  onSelectAccount?: (accountNo: string) => void
+}
 
-const AccountInfo = (props: Props) => {
+const AccountInfo: React.FC<AccountInfoProps> = ({ onSelectAccount }) => {
+  const [accountNo, setAccountNo] = useState<string>('')
+  const [accountBalance, setAccountBalance] = useState<string>('')
+
+  useEffect(() => {
+    const fetchAccountInfo = async () => {
+      try {
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) {
+          throw new Error('Access Token이 없음');
+        }
+
+        const response = await api.get('/api/v1/account/balance', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          params:{
+            isParent: true,
+          },
+        })
+        
+        setAccountNo(response.data.accountNo)
+        setAccountBalance(response.data.accountBalance)
+      } catch (error) {
+        console.error('Failed to fetch balance:', error)
+      }
+    }
+
+    fetchAccountInfo()
+  }, [])
+
+  const handleSelect = () => {
+    if (onSelectAccount) {
+      onSelectAccount(accountNo)
+    }
+  }
+
   return (
-    <Container>
+    <Container onClick={onSelectAccount ? handleSelect : undefined}>
         <TextInfo>
             <Name>
-                [아이미래적금] 신한 주거래 통장
+                신한 주거래 통장
             </Name>
             <Name>
-                110-432-363235
+                {accountNo}
             </Name>
         </TextInfo>
         <Money>
-            5,000,000 원
+            {accountBalance} 원
         </Money>
     </Container>
   )

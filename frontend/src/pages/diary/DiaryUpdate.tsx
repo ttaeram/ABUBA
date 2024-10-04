@@ -4,17 +4,37 @@ import BackButton from "../../components/buttons/BackButton"
 import AudioPlayer from "../../components/AudioPlayer"
 import axios from "axios"
 import styled from "styled-components"
+import api from "../../api/index"
 
 const DiaryUpdate = () => {
   const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
   const location = useLocation()
   const [diaryData, setDiaryData] = useState<any>(location.state?.diaryData || null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
   const [audioFile, setAudioFile] = useState<Blob | null>(null)
 
   useEffect(() => {
-
-  })
+    if (!diaryData) {
+      const fetchDiaryData = async () => {
+        try {
+          const accessToken = localStorage.getItem('accessToken');
+          if (!accessToken) {
+            throw new Error('Access Token이 없음');
+          }
+          const response = await api.get(`/api/v1/diary/${id}`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+          setDiaryData(response.data);
+        } catch (e) {
+          console.error("Failed to load diary data:", e);
+        }
+      };
+      fetchDiaryData();
+    }
+  }, [diaryData, id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -24,6 +44,7 @@ const DiaryUpdate = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
+      setImageFile(file)
       const reader = new FileReader()
       reader.onloadend = () => {
         setDiaryData({ ...diaryData, imageUrl: reader.result as string })
@@ -43,14 +64,13 @@ const DiaryUpdate = () => {
   const handleUpdate = async () => {
     const formData = new FormData()
 
-    if (diaryData.imageUrl) {
-      const response = await fetch(diaryData.imageurl)
-      const imageBlob = await response.blob()
-      formData.append("image", imageBlob)
+    if (imageFile) {
+      formData.append("image", imageFile);
     }
 
+    // 새로 녹음된 오디오 파일이 있으면 추가
     if (audioFile) {
-      formData.append("record", audioFile)
+      formData.append("record", audioFile);
     }
 
     const diaryJson = JSON.stringify({
@@ -63,9 +83,14 @@ const DiaryUpdate = () => {
     formData.append("diary", new Blob([diaryJson], { type: "application/json" }))
 
     try {
-      await axios.put(`http://localhost:8080/api/v1/diary/${id}`, formData, {
+      const accessToken = localStorage.getItem('accessToken');
+      if (!accessToken) {
+        throw new Error('Access Token이 없음');
+      }
+
+      await api.put(`/api/v1/diary/${id}`, formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken}`,
         },
       })
       navigate(`/diary/${id}`)
@@ -73,6 +98,8 @@ const DiaryUpdate = () => {
       console.error("Failed to update diary: ", e)
     }
   }
+
+  if (!diaryData) return <div>Loading...</div>;
 
   return (
     <DiaryContainer>

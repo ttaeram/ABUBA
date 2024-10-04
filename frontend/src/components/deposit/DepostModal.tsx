@@ -3,17 +3,17 @@ import SelectModal from "./SelectModal"
 import AmountModal from "./AmountModal"
 import MemoModal from "./MemoModal"
 import styled from "styled-components"
-import { keyframes, css } from "styled-components"
 
 interface DepositModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (memo: string, amount: number) => void;
+  onConfirm: (account: string, memo: string, deposit: number) => void;
 }
 
 const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose, onConfirm }) => {
   const [step, setStep] = useState(1)
-  const [amount, setAmount] = useState<number>(0)
+  const [account, setAccount] = useState<string>("")
+  const [deposit, setDeposit] = useState<number>(0)
   const [memo, setMemo] = useState<string>("")
 
   useEffect(() => {
@@ -25,6 +25,11 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose, onConfirm 
   const handleNext = () => setStep((prevStep) => prevStep + 1)
   const handleBack = () => setStep((prevStep) => prevStep - 1)
 
+  const handleSelectAccount = (selectedAccount: string) => {
+    setAccount(selectedAccount)
+    handleNext()
+  }
+
   if (!isOpen) return null
 
   return (
@@ -33,11 +38,11 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose, onConfirm 
         <CloseButton onClick={onClose}>x</CloseButton>
         
         {/* 상태에 따른 내용물 변경 */}
-        {step === 1 && <SelectModal onNext={handleNext} />}  {/* 계좌 선택 */}
+        {step === 1 && <SelectModal onNext={handleSelectAccount} />}  {/* 계좌 선택 */}
         {step === 2 && (
           <AmountModal
-            amount={amount}
-            setAmount={setAmount}
+            deposit={deposit}
+            setDeposit={setDeposit}
             memo={memo}
             setMemo={setMemo}
             onNext={handleNext}
@@ -48,7 +53,7 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose, onConfirm 
           <MemoModal
             memo={memo}
             setMemo={setMemo}
-            onConfirm={() => onConfirm(memo, amount)}
+            onConfirm={() => onConfirm(account, memo, deposit)}
             onBack={handleBack}
           />
         )}  {/* 메모 입력 */}

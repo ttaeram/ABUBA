@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom"
 import BackButton from "../../components/buttons/BackButton"
 import AudioPlayer from "../../components/AudioPlayer"
 import DepositModal from "../../components/deposit/DepostModal"
-import axios from "axios"
 import api from '../../api/index'
 import styled from "styled-components"
 
@@ -32,9 +31,6 @@ const DiaryCreate = () => {
   })
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedAccount, setSelectedAccount] = useState("")
-  const [amount, setAmount] = useState<number>(0)
-  const [memo, setMemo] = useState<string>("")
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -46,9 +42,6 @@ const DiaryCreate = () => {
     if (file) {
       setDiaryData({ ...diaryData, imageFile: file })
     }
-  }
-
-  const handleAudioUpload = (audioBlob: Blob) => {
   }
   
   const handleNewRecording = (audioBlob: Blob) => {
@@ -70,17 +63,17 @@ const DiaryCreate = () => {
       formData.append('record', diaryData.audioFile)
     }
 
-    const diaryJson = JSON.stringify({
-      parentId: 1,
-      title: diaryData.title,
-      content: diaryData.content,
-      account: diaryData.account || "계좌 없음",
+    const info = {
+      title: diaryData.title || '제목 없음',  // 기본값 추가
+      content: diaryData.content || '내용 없음',  // 기본값 추가
+      account: diaryData.account || '계좌 없음',  // 기본값 추가
       deposit: diaryData.deposit || 0,
-      height: diaryData.height,
-      weight: diaryData.weight,
-    })
+      height: diaryData.height || 0,  // 기본값 추가
+      weight: diaryData.weight || 0,  // 기본값 추가
+    };
 
-    formData.append('diary', new Blob([diaryJson], { type: 'application/json' }))
+    // 'info'를 문자열로 변환하여 FormData에 추가
+    formData.append('info', new Blob([JSON.stringify(info)], { type: 'application/json' }))
 
     try {
       const accessToken = localStorage.getItem('accessToken')
@@ -88,10 +81,15 @@ const DiaryCreate = () => {
       if (!accessToken) {
         throw new Error('Access Token이 없음')
       }
+      
+      formData.forEach((value, key) => {
+        console.log(key, value);
+      });
 
       await api.post('/api/v1/diary', formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data',
         },
       })
       console.log('Success')
@@ -101,11 +99,13 @@ const DiaryCreate = () => {
     }
   }
 
-  const handleConfirm = (memo: string, amount: number) => {
-    setMemo(memo)
-    setAmount(amount)
+  const handleConfirm = (memo: string, deposit: number, selectedAccount: string) => {
+    setDiaryData({
+      ...diaryData,
+      account: selectedAccount,
+      deposit: deposit,
+    })
     setIsModalOpen(false)
-    console.log(`memo: ${memo}, amount: ${amount}`)
   }
 
   return (
@@ -184,7 +184,7 @@ const DiaryCreate = () => {
         <DepositModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onConfirm={handleConfirm}
+          onConfirm={(memo, deposit, selectedAccount) => handleConfirm(memo, deposit, selectedAccount)}
         />
       </DepositContainer>
     </Content>
