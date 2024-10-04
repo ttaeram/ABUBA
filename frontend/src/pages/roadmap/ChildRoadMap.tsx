@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import RoadMap from '../../components/rodamap/RoadMap'
 import styled from "styled-components"
-import VaccinationRoadMap from '../../components/rodamap/AveragenRoadMap';
-import GrowthRoadMap from '../../components/rodamap/GrowthRoadMap';
 import { useChildAuthStore } from '../../stores/authStore';
 import { calculateAge } from '../../utils/calculateAge';
 import { changeShortName } from '../../utils/changeShortName';
+import AverageRoadMap from '../../components/rodamap/AverageRoadMap';
+import SupportRoadMap from '../../components/rodamap/SupportRoadMap';
+import HealthRoadMap from '../../components/rodamap/HealthRoadMap';
 
 const ChildRoadMap = () => {
   const [selectedTab, setSelectedTab] = useState('전체');
@@ -19,14 +19,14 @@ const ChildRoadMap = () => {
       </All>
 
       <TabContainer>
-        <Tab onClick={() => setSelectedTab('전체')} isSelected={selectedTab === '전체'}>전체</Tab>
-        <Tab onClick={() => setSelectedTab('백신')} isSelected={selectedTab === '백신'}>백신</Tab>
-        <Tab onClick={() => setSelectedTab('발달정보')} isSelected={selectedTab === '발달정보'}>발달정보</Tab>
+        <Tab onClick={() => setSelectedTab('성장 발달')} isSelected={selectedTab === '성장 발달'}>성장 발달</Tab>
+        <Tab onClick={() => setSelectedTab('정부 지원')} isSelected={selectedTab === '정부 지원'}>정부 지원</Tab>
+        <Tab onClick={() => setSelectedTab('의료 정보')} isSelected={selectedTab === '의료 정보'}>의료 정보</Tab>
       </TabContainer>
 
-      {selectedTab === '전체' && <RoadMap />}
-      {selectedTab === '백신' && <VaccinationRoadMap />}
-      {selectedTab === '발달정보' && <GrowthRoadMap />}
+      {selectedTab === '성장 발달' && <AverageRoadMap />}
+      {selectedTab === '정부 지원' && <SupportRoadMap />}
+      {selectedTab === '의료 정보' && <HealthRoadMap/>}
 
     </InfoContainer>
   )
