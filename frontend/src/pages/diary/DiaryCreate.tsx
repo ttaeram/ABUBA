@@ -4,6 +4,7 @@ import BackButton from "../../components/buttons/BackButton"
 import AudioPlayer from "../../components/AudioPlayer"
 import DepositModal from "../../components/deposit/DepostModal"
 import axios from "axios"
+import api from '../../api/index'
 import styled from "styled-components"
 
 interface DiaryData {
@@ -70,11 +71,11 @@ const DiaryCreate = () => {
     }
 
     const diaryJson = JSON.stringify({
-      parnetId: 1,
+      parentId: 1,
       title: diaryData.title,
       content: diaryData.content,
-      account: diaryData.account,
-      deposit: diaryData.deposit,
+      account: diaryData.account || "계좌 없음",
+      deposit: diaryData.deposit || 0,
       height: diaryData.height,
       weight: diaryData.weight,
     })
@@ -82,13 +83,19 @@ const DiaryCreate = () => {
     formData.append('diary', new Blob([diaryJson], { type: 'application/json' }))
 
     try {
-      await axios.post('http://localhost:8080/api/v1/diary', formData, {
+      const accessToken = localStorage.getItem('accessToken')
+
+      if (!accessToken) {
+        throw new Error('Access Token이 없음')
+      }
+
+      await api.post('/api/v1/diary', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${accessToken}`,
         },
       })
       console.log('Success')
-      navigate('/diary')
+      navigate('/diaryList')
     } catch (error) {
       console.error("Failed to create diary", error)
     }

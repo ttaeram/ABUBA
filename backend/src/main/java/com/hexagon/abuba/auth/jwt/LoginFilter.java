@@ -45,6 +45,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+
         CachedBodyHttpServletRequest cachedRequest;
         try {
             cachedRequest = new CachedBodyHttpServletRequest(request);
@@ -84,7 +85,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String role = auth.getAuthority();
 
         //토큰 생성
-        String access = jwtUtil.createJwt("access", username, role, 600000L * 100);
+        String access = jwtUtil.createJwt("access", username, role, 600000L);
 //        String access = jwtUtil.createJwt("access", username, role, 600000L);
         String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
@@ -92,11 +93,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         addRefreshEntity(username, refresh, 86400000L);
 
         //응답 설정
-        response.setHeader("Authorization", "Bearer "+access);
+        response.setHeader("Authorization", access);
+//        response.setHeader("Authorization", "Bearer "+access);
 //        response.setHeader("access", access);
         response.addCookie(createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());
 
+
+        // 브라우저에서 Authorization 헤더를 사용할 수 있도록 설정
+        response.setHeader("Access-Control-Expose-Headers", "Authorization");
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();

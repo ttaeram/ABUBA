@@ -2,20 +2,24 @@ import axios from 'axios';
 import config from '../config/config';
 
 const api = axios.create({
-    baseURL: config.apiUrl,
+    baseURL: process.env.REACT_APP_API_URL,
     headers: {
       'Content-Type': 'application/json',
     },
-    withCredentials: true,
 });
 
-api.interceptors.response.use(
-(response) => {
-    return response;
-},
-(error) => {
-    return Promise.reject(error);
-}
+api.interceptors.request.use(
+  (config) => {
+      const accessToken = localStorage.getItem('accessToken');
+      if (accessToken) {
+          config.headers.Authorization = `Bearer ${accessToken}`; 
+      }
+      return config; 
+  },
+  (error) => {
+      return Promise.reject(error);
+  }
 );
+
 
 export default api;

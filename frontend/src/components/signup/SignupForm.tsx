@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '../../styles/styledComponents';
-import { sendAuthCode,signup } from '../../api/signup';
+import { signup } from '../../api/signup';
 import { useNavigate } from 'react-router-dom';
+import { requestEmailVerificationCode, verifyEmailCode } from '../../api/auth';
 
 const SignupForm = () => {
   const [email, setEmail] = useState('');
@@ -18,7 +19,8 @@ const SignupForm = () => {
 
   const handleSendCode = async () => {
     try {
-      await sendAuthCode(email);
+      await requestEmailVerificationCode(email);
+
       setIsCodeSent(true);
       const countdown = setInterval(() => {
         setTimer((prev) => {
@@ -34,35 +36,41 @@ const SignupForm = () => {
     }
   };
 
-  const handleVerifyCode = () => {
-    if (authCode === '123456') {
-      setIsCodeVerified(true);
-      alert('인증번호가 확인되었습니다!');
-    } else {
-      alert('인증번호가 올바르지 않습니다.');
+  // 인증번호 확인
+  const handleVerifyCode = async () => {
+    try {
+      const response = await verifyEmailCode(email, authCode);
+      if (response.success) {
+        setIsCodeVerified(true);
+        alert('인증번호가 확인되었습니다!');
+      } else {
+        alert('인증번호가 올바르지 않습니다.');
+      }
+    } catch (error: any) {
+      setError('인증번호 확인에 실패했습니다.');
     }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
-
     if (password !== confirmPassword) {
       setError('비밀번호가 일치하지 않습니다.');
       return;
     }
 
-    if (!isCodeVerified) {
-      setError('인증 코드를 먼저 확인해 주세요.');
-      return;
-    }
+    // if (!isCodeVerified) {
+    //   setError('인증 코드를 먼저 확인해 주세요.');
+    //   return;
+    // }
 
     try {
       await signup(email, name, password); 
-      alert('회원가입 성공!');
-      navigate('/main');
+      alert('회원가입이 완료되었습니다.');
+      navigate('/');
       
     } catch (error: any) {
+
       setError(error.message);
     }
   };

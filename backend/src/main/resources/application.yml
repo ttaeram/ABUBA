@@ -2,7 +2,7 @@ spring:
   application:
     name: abuba
   profiles:
-    active: prod
+    active: local
   jwt:
     secret: spring.jwt.secret=vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
   jpa:
@@ -16,6 +16,11 @@ springdoc:
   api-docs:
     path: /docs  # API 문서 경로를 커스텀
 
+accountNo: 0010307956085451
+api:
+  key: 50f3e70a64074c42a5905b877ea1b194
+user:
+  key: 53714417-7f2c-4bed-8608-f7d39353bbd9
 #security log
 logging:
   level:

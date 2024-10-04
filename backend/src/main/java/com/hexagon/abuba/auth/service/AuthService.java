@@ -4,17 +4,12 @@ package com.hexagon.abuba.auth.service;
 import com.hexagon.abuba.auth.dto.request.JoinDTO;
 import com.hexagon.abuba.auth.dto.request.LoginDTO;
 import com.hexagon.abuba.auth.dto.response.LoginResDTO;
-import com.hexagon.abuba.auth.entity.VerificationToken;
-import com.hexagon.abuba.auth.repository.VerificationTokenRepository;
 import com.hexagon.abuba.user.Parent;
 import com.hexagon.abuba.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Transactional
 @Service
@@ -23,16 +18,23 @@ public class AuthService {
 
     private final ParentRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final FinAPIClient finAPIClient;
+    private final BabyRepository babyRepository;
     private final VerificationTokenRepository tokenRepository;
     private final EmailService emailService;
 
 
+    @Value("${api.key}")
+    private String apikey;
+    public AuthService(ParentRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, FinAPIClient finAPIClient, BabyRepository babyRepository) {
     @Value("${app.email.verification-url}")
     private String verificationUrl; // 이메일 인증 링크에 사용할 URL
 
     public AuthService(ParentRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, VerificationTokenRepository tokenRepository, EmailService emailService) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.finAPIClient = finAPIClient;
+        this.babyRepository = babyRepository;
         this.tokenRepository = tokenRepository;
         this.emailService = emailService;
     }
@@ -50,12 +52,16 @@ public class AuthService {
             return;
         }
 
+        //금융api로 user키를 발급 받는다.
+        SignupResponseDTO response = finAPIClient.signup(new SignupRequestDTO(apikey, joinDTO.getEmail()));
+
         Parent data = new Parent();
 
         data.setUsername(username);
         data.setPassword(bCryptPasswordEncoder.encode(password));
         data.setName(name);
         data.setRole("ROLE_USER");
+        data.setUserkey(response.getUserKey());
 
         userRepository.save(data);
     }
@@ -94,6 +100,14 @@ public class AuthService {
     public boolean isEmailVerified(String email) {
         VerificationToken token = tokenRepository.findByEmail(email);
         return token != null && token.isVerified();
+    }
+
+    public boolean checkOnboarding(Long parentId) {
+        Parent user = userRepository.findById(parentId).orElseThrow();
+        if(user.getBaby() == null){
+            return true;
+        }
+        return false;
     }
 
 }

@@ -2,8 +2,6 @@ package com.hexagon.abuba.auth.controller;
 
 import com.hexagon.abuba.auth.dto.request.JoinDTO;
 import com.hexagon.abuba.auth.dto.request.LoginDTO;
-import com.hexagon.abuba.auth.dto.request.SendEmailDTO;
-import com.hexagon.abuba.auth.dto.request.VerifyEmailDTO;
 import com.hexagon.abuba.auth.dto.response.LoginResDTO;
 import com.hexagon.abuba.auth.service.AuthService;
 import com.hexagon.abuba.common.DataResponse;
@@ -42,7 +40,7 @@ public class AuthController {
         return new ResponseEntity<>(MessageResponse.of(HttpStatus.OK,"회원가입이 완료되었습니다."),HttpStatus.OK);
     }
 
-    @Operation(summary = "로그인", description = "유저가 로그인합니다.")
+    @Operation(summary = "로그인", description = "신규 유저가 회원가입합니다.")
     @PostMapping("/login")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Request body for Swagger",
@@ -50,7 +48,8 @@ public class AuthController {
     )
     public ResponseEntity<DataResponse<LoginResDTO>> login(LoginDTO loginDTO,  @Parameter(hidden = true)  HttpServletRequest request) {
         Parent user = (Parent)request.getAttribute("user");
-        LoginResDTO  response = new LoginResDTO(user.getUsername(),user.getName());
+        boolean isEmpty = authService.checkOnboarding(user.getId());
+        LoginResDTO  response = new LoginResDTO(user.getUsername(),user.getName(), isEmpty);
         return new ResponseEntity<>(DataResponse.of(HttpStatus.OK,"로그인이 완료되었습니다.",response),HttpStatus.OK);
     }
 
