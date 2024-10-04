@@ -15,6 +15,7 @@ import com.hexagon.abuba.user.Parent;
 import com.hexagon.abuba.global.openfeign.dto.request.OneTransferRequestDTO;
 import com.hexagon.abuba.user.dto.request.AccountRequestDTO;
 import com.hexagon.abuba.user.dto.request.AuthCodeCheckDTO;
+import com.hexagon.abuba.user.dto.request.RegistAccountRequestDTO;
 import com.hexagon.abuba.user.dto.request.RegistBabyInfoDTO;
 import com.hexagon.abuba.user.dto.response.AccountAuthResponseDTO;
 import com.hexagon.abuba.user.repository.BabyRepository;
@@ -144,8 +145,28 @@ public class UserService {
         try {
             response = finAPIClient.checkAuthCode(request);
         } catch (Exception e) {
-            return "Fail";
+            return "FAIL";
         }
         return response.REC().status();
+    }
+
+    /**
+     * 계좌정보를 등록하는 api
+     * @param user
+     * @param registAccountRequestDTO
+     */
+    public void registAccount(Parent user, RegistAccountRequestDTO registAccountRequestDTO) {
+        if(registAccountRequestDTO.isParent()) {
+            //부모인경우
+            user.setAccount(registAccountRequestDTO.accountNo());
+            user.setBankName(registAccountRequestDTO.bankName());
+            parentRepository.save(user);
+        }else{
+            //아이인 경우
+            Baby baby = user.getBaby();
+            baby.setAccount(registAccountRequestDTO.accountNo());
+            baby.setBankName(registAccountRequestDTO.bankName());
+            babyRepository.save(baby);
+        }
     }
 }
