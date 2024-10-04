@@ -1,6 +1,6 @@
 package com.hexagon.abuba.user;
 
-import com.hexagon.abuba.alarm.Alarm;
+import com.hexagon.abuba.alarm.entity.Alarm;
 import com.hexagon.abuba.diary.Diary;
 import jakarta.persistence.*;
 import lombok.Getter;
