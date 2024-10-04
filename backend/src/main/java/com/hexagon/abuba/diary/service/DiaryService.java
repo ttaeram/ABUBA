@@ -15,6 +15,7 @@ import com.hexagon.abuba.user.Parent;
 import com.hexagon.abuba.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,12 +31,14 @@ public class DiaryService {
     private final ParentRepository parentRepository;
     private final S3Service s3Service;
     private final AccountService accountService;
+    private final Tika tika;
 
     public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, S3Service s3Service, AccountService accountService) {
         this.diaryRepository = diaryRepository;
         this.parentRepository = parentRepository;
         this.s3Service = s3Service;
         this.accountService = accountService;
+        this.tika = new Tika();
     }
 
     public List<DiaryRecentResDTO> recentDiary(Long parentId) {
@@ -104,12 +107,14 @@ public class DiaryService {
             if (image != null) {
                 imageStream = image.getInputStream();
                 imageName = image.getOriginalFilename();
-                imgMimeType = image.getContentType();
+                InputStream tmp = image.getInputStream();
+                imgMimeType = tika.detect(tmp);
             }
             if (record != null) {
                 recordStream = record.getInputStream();
                 recordName = record.getOriginalFilename();
-                recordMimeType = record.getContentType();
+                InputStream tmp = record.getInputStream();
+                recordMimeType = tika.detect(tmp);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -148,12 +153,14 @@ public class DiaryService {
             if (image != null) {
                 imageStream = image.getInputStream();
                 imageName = image.getOriginalFilename();
-                imgMimeType = image.getContentType();
+                InputStream tmp = image.getInputStream();
+                imgMimeType = tika.detect(tmp);
             }
             if (record != null) {
                 recordStream = record.getInputStream();
                 recordName = record.getOriginalFilename();
-                recordMimeType = record.getContentType();
+                InputStream tmp = record.getInputStream();
+                recordMimeType = tika.detect(tmp);
             }
         }catch (Exception e){
             e.printStackTrace();

@@ -18,11 +18,7 @@ import java.time.LocalDateTime;
  * @param weight    몸무게
  */
 @Schema
-public record DiaryDetailReqDTO(String title, String content, LocalDateTime createdAt, String account,
-                                BigDecimal deposit, Double height, Double weight,
-                                MultipartFile image,
-                                MultipartFile record
-                                ) {
 public record DiaryDetailReqDTO(String title, String content, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)LocalDateTime createdAt, String account,
-                                BigDecimal deposit, Double height, Double weight) {
+                                BigDecimal deposit, Double height, Double weight
+                                ) {
 }
