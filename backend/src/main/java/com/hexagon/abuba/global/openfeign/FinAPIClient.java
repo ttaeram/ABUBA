@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Optional;
+
 @FeignClient(name = "FinAPI", url = "https://finopenapi.ssafy.io/ssafy/api/v1")
 public interface FinAPIClient {
 
@@ -29,7 +31,7 @@ public interface FinAPIClient {
     BalanceResponseDTO getBalance(@RequestBody BalanceRequestDTO balanceRequestDTO);
 
     @PostMapping(value = "/edu/accountAuth/openAccountAuth")
-    OneTransferResponseDTO accountAuth(@RequestBody OneTransferRequestDTO oneTransferRequestDTO);
+    Optional<OneTransferResponseDTO> accountAuth(@RequestBody OneTransferRequestDTO oneTransferRequestDTO);
 
     @PostMapping(value = "edu/demandDeposit/updateDemandDepositAccountWithdrawal")
     DepositResponseDTO withdrawDeposit(@RequestBody DepositRequestDTO depositRequestDTO);
