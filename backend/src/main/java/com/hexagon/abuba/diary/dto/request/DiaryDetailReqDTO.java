@@ -1,6 +1,8 @@
 package com.hexagon.abuba.diary.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,5 +18,8 @@ import java.time.LocalDateTime;
  */
 @Schema
 public record DiaryDetailReqDTO(String title, String content, LocalDateTime createdAt, String account,
-                                BigDecimal deposit, Double height, Double weight) {
+                                BigDecimal deposit, Double height, Double weight,
+                                MultipartFile image,
+                                MultipartFile record
+                                ) {
 }
