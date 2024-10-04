@@ -15,6 +15,7 @@ import com.hexagon.abuba.user.Parent;
 import com.hexagon.abuba.global.openfeign.dto.request.OneTransferRequestDTO;
 import com.hexagon.abuba.user.dto.request.AccountRequestDTO;
 import com.hexagon.abuba.user.dto.request.AuthCodeCheckDTO;
+import com.hexagon.abuba.user.dto.request.RegistAccountRequestDTO;
 import com.hexagon.abuba.user.dto.request.RegistBabyInfoDTO;
 import com.hexagon.abuba.user.dto.response.AccountAuthResponseDTO;
 import com.hexagon.abuba.user.repository.BabyRepository;
@@ -147,5 +148,9 @@ public class UserService {
             return "Fail";
         }
         return response.REC().status();
+    }
+
+
+    public void registAccount(Parent user, RegistAccountRequestDTO registAccountRequestDTO) {
     }
 }

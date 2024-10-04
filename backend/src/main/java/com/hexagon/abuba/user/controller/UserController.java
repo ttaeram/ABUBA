@@ -7,6 +7,7 @@ import com.hexagon.abuba.user.Baby;
 import com.hexagon.abuba.user.Parent;
 import com.hexagon.abuba.user.dto.request.AccountRequestDTO;
 import com.hexagon.abuba.user.dto.request.AuthCodeCheckDTO;
+import com.hexagon.abuba.user.dto.request.RegistAccountRequestDTO;
 import com.hexagon.abuba.user.dto.request.RegistBabyInfoDTO;
 import com.hexagon.abuba.user.dto.response.AccountAuthResponseDTO;
 import com.hexagon.abuba.user.dto.response.BabyInfoResponseDTO;
@@ -16,6 +17,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,5 +74,14 @@ public class UserController {
         return new ResponseEntity<>(DataResponse.of(HttpStatus.OK,"아이정보 조회가 완료됬습니다.",response),HttpStatus.OK);
     }
 
+    @SecurityRequirement(name = "access")
+    @Operation(summary = "계좌 등록", description = "계좌번호를 등록합니다.(아이,부모)")
+    @PostMapping("/account")
+    public ResponseEntity<MessageResponse> registAccount(@AuthenticationPrincipal(expression = "user") Parent user,
+                                                               @RequestBody RegistAccountRequestDTO registAccountRequestDTO){
+
+        userService.registAccount(user, registAccountRequestDTO);
+        return new ResponseEntity<>(MessageResponse.of(HttpStatus.OK,"아이정보 조회가 완료됬습니다."),HttpStatus.OK);
+    }
 
 }
