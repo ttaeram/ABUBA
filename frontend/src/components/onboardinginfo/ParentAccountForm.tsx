@@ -13,13 +13,17 @@ interface Bank {
 }
 
 const banks: Bank[] = [
-  { name: '신한은행', logo: '/banklogo/PNG/금융아이콘_PNG_신한.png' },
-  { name: '국민은행', logo: '/banklogo/PNG/금융아이콘_PNG_KB.png' },
-  { name: '하나은행', logo: '/banklogo/PNG/금융아이콘_PNG_하나.png' },
-  { name: '우리은행', logo: '/banklogo/PNG/금융아이콘_PNG_우리.png' },
-  { name: '농협은행', logo: '/banklogo/PNG/금융아이콘_PNG_농협.png' },
-  { name: '토스뱅크', logo: '/banklogo/PNG/금융아이콘_PNG_토스.png' },
+  { name: '농협', logo: '/banklogo/PNG/금융아이콘_PNG_농협.png' },
+  { name: '국민', logo: '/banklogo/PNG/금융아이콘_PNG_KB.png' },
   { name: '카카오뱅크', logo: '/banklogo/PNG/금융아이콘_PNG_카카오뱅크.png' },
+  { name: '신한', logo: '/banklogo/PNG/금융아이콘_PNG_신한.png' },
+  { name: '우리', logo: '/banklogo/PNG/금융아이콘_PNG_우리.png' },
+  { name: 'IBK기업', logo: '/banklogo/PNG/금융아이콘_PNG_IBK.png' },
+  { name: '하나', logo: '/banklogo/PNG/금융아이콘_PNG_하나.png' },
+  { name: '새마을', logo: '/banklogo/PNG/금융아이콘_PNG_MG새마을금고.png' },
+  { name: '대구', logo: '/banklogo/PNG/금융아이콘_PNG_DGB.png' },
+  { name: '부산', logo: '/banklogo/PNG/금융아이콘_PNG_BNK.png' },
+  { name: '토스뱅크', logo: '/banklogo/PNG/금융아이콘_PNG_토스.png' },
   { name: '저축은행', logo: '/banklogo/PNG/금융아이콘_PNG_저축은행.png' },
 ];
 
@@ -141,13 +145,15 @@ const DropdownList = styled.div`
 
 const BankGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   padding: 10px;
 `;
 
 const BankItem = styled.div`
   display: flex;
+  flex-direction: column;
+  font-size: 14px;
   gap:10px;
   align-items: center;
   justify-content: left;

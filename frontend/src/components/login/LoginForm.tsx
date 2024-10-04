@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import {login} from '../../api/auth'
+import { getBabyInfo } from '../../api/user';
+import { useChildAuthStore } from '../../stores/authStore';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -19,8 +21,23 @@ const LoginForm = () => {
     }
     
     try {
-      await login(email, password);
-      navigate('/main');
+      const userData = await login(email, password);
+      const {isEmpty} = userData.data;
+      if (isEmpty) {
+        navigate('/onboard');  //true면 온보딩 페이지로 이동
+      } else {
+
+        const babyInfoData = await getBabyInfo();
+        const { name, relation, height, weight, birthday, gender } = babyInfoData.data;
+
+        const setBabyInfo = useChildAuthStore.getState().setChildInfo;
+        setBabyInfo(name, relation, height, weight, birthday, gender);
+
+        navigate('/main');  //false면 메인 페이지로 이동
+        
+      }
+
+
     } catch (err) {
       setError('로그인에 실패했습니다. 다시 시도해주세요.');
     }
