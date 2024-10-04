@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 import DiaryInfo from '../components/main/DiaryInfo'
 import AccountInfo from "../components/main/AccountInfo"
-import RoadMap from "../components/rodamap/RoadMap"
+import RoadMap from "../components/rodamap/SupportRoadMap"
 import { useAuthStore, useChildAuthStore } from "../stores/authStore"
 import { calculateAge } from "../utils/calculateAge"
 

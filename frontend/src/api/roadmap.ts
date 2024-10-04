@@ -1,7 +1,7 @@
 import api from ".";
 
 // 성장 발달 정보
-export const averagendata = async () => {
+export const averagedata = async () => {
     try {
       const response = await api.get('/api/v1/roadmap/averageInfo');
       return response.data;
