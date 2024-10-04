@@ -13,6 +13,7 @@ spring:
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
+      mail.smtp.ssl.enable: true
 
 
 #ec2 주소
