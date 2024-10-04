@@ -5,6 +5,10 @@ spring:
     active: prod
   jwt:
     secret: spring.jwt.secret=vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
 
 springdoc:
   swagger-ui:
