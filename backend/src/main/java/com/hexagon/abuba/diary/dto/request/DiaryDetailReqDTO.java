@@ -1,6 +1,7 @@
 package com.hexagon.abuba.diary.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,6 +16,6 @@ import java.time.LocalDateTime;
  * @param weight    몸무게
  */
 @Schema
-public record DiaryDetailReqDTO(String title, String content, LocalDateTime createdAt, String account,
+public record DiaryDetailReqDTO(String title, String content, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)LocalDateTime createdAt, String account,
                                 BigDecimal deposit, Double height, Double weight) {
 }

@@ -97,21 +97,25 @@ public class DiaryService {
         InputStream recordStream = null;
         String imageName = null;
         String recordName = null;
+        String imgMimeType = null;
+        String recordMimeType = null;
         log.info(reqDTO.toString());
         try {
             if (image != null) {
                 imageStream = image.getInputStream();
                 imageName = image.getOriginalFilename();
+                imgMimeType = image.getContentType();
             }
             if (record != null) {
                 recordStream = record.getInputStream();
                 recordName = record.getOriginalFilename();
+                recordMimeType = record.getContentType();
             }
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName);
+        Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
         diaryRepository.save(diary);
         if(reqDTO.deposit() != null && reqDTO.deposit().intValue() != 0){
             accountService.minusParentMoney(parentId, reqDTO.deposit().longValue());
@@ -120,6 +124,7 @@ public class DiaryService {
     }
 
     public void editDiary(DiaryEditReqDTO reqDTO, MultipartFile image, MultipartFile record){
+        log.info(reqDTO.toString());
         Diary diary = diaryRepository.findById(reqDTO.diaryId()).orElseThrow();
 
         diary.setTitle(reqDTO.title());
@@ -128,28 +133,34 @@ public class DiaryService {
         diary.setHeight(reqDTO.height());
         diary.setWeight(reqDTO.weight());
 
-        s3Service.deleteFile(diary.getImage_url());
-        s3Service.deleteFile(diary.getRecord_url());
+        if(diary.getImage_url() != null)
+            s3Service.deleteFile(diary.getImage_url());
+        if(diary.getRecord_url() != null)
+            s3Service.deleteFile(diary.getRecord_url());
 
         InputStream imageStream = null;
         InputStream recordStream = null;
         String imageName = null;
         String recordName = null;
+        String imgMimeType = null;
+        String recordMimeType = null;
         try {
             if (image != null) {
                 imageStream = image.getInputStream();
                 imageName = image.getOriginalFilename();
+                imgMimeType = image.getContentType();
             }
             if (record != null) {
                 recordStream = record.getInputStream();
                 recordName = record.getOriginalFilename();
+                recordMimeType = record.getContentType();
             }
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        diary = uploadFile(imageStream, imageName, "img", diary);
-        diary = uploadFile(recordStream, recordName, "record", diary);
+        diary = uploadFile(imageStream, imageName, "img", diary, imgMimeType);
+        diary = uploadFile(recordStream, recordName, "record", diary, recordMimeType);
 
         diaryRepository.save(diary);
     }
@@ -170,7 +181,8 @@ public class DiaryService {
 
     private Diary DTOToEntity(Long parentId, DiaryDetailReqDTO reqDTO,
                               InputStream imageStream, String imageName,
-                              InputStream recordStream, String recordName){
+                              InputStream recordStream, String recordName,
+                              String imgMimeType, String recordMimeType){
         Diary diary = new Diary();
 
         diary.setParent(parentRepository.findById(parentId).orElse(null));
@@ -184,15 +196,15 @@ public class DiaryService {
         diary.setWeight(reqDTO.weight());
 
 
-        diary = uploadFile(imageStream, imageName, "img", diary);
-        diary = uploadFile(recordStream, recordName, "record", diary);
+        diary = uploadFile(imageStream, imageName, "img", diary, imgMimeType);
+        diary = uploadFile(recordStream, recordName, "record", diary, recordMimeType);
 
         return diary;
     }
 
-    private Diary uploadFile(InputStream inputStream, String fileName, String fileType, Diary diary){
+    private Diary uploadFile(InputStream inputStream, String fileName, String fileType, Diary diary, String mimeType){
         if(inputStream != null && fileName != null){
-            String uploadFileName = s3Service.uploadFile(inputStream, fileName, fileType);
+            String uploadFileName = s3Service.uploadFile(inputStream, fileName, fileType, mimeType);
             if(fileType.equals("img")){
                 diary.setImage_url(uploadFileName);
             }else if(fileType.equals("record")){

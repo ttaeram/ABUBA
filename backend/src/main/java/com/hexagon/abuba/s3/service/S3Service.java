@@ -36,11 +36,13 @@ public class S3Service {
                 .build();
     }
 
-    public String uploadFile(InputStream inputStream, String fileName, String type) {
+    public String uploadFile(InputStream inputStream, String fileName, String type, String mimeType) {
         String uniqueFileName = type + "/" + UUID.randomUUID().toString() + "_" + fileName;
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(uniqueFileName)
+                .contentType(mimeType)
+                .contentDisposition("inline")
                 .build();
 
         try {
