@@ -7,23 +7,11 @@ import styled from "styled-components"
 import { ReactComponent as WonSvg } from "../../assets/images/won.svg"
 import api from "../../api/index"
 
-const mockDiaryData = {
-  date: "2024년 7월 31일",
-  title: "뒤집기 한 날",
-  content: "오늘은 태하가 뒤집기를 했다. 너무나도 사랑스러운 아이다!!",
-  height: 163,
-  weight: 110,
-  money: "30,000 원",
-  account: "5,000,000 원",
-  imageUrl: "https://via.placeholder.com/400x300", // Placeholder image
-  audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" // Sample audio URL
-}
-
 const DiaryDetail = () => {
   const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
-  const [diaryData, setDiaryData] = useState<any>(mockDiaryData)
-  const [loading, setLoading] = useState<boolean>(false)
+  const [diaryData, setDiaryData] = useState<any>(null)
+  const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -31,13 +19,17 @@ const DiaryDetail = () => {
       try {
         const accessToken = localStorage.getItem('accessToken')
 
-        // if (!accessToken) {
-        //   throw new Error('Access Token이 없음')
-        // }
+        if (!accessToken) {
+          console.error('Access Token이 없음')
+          return
+        }
         
         const response = await api.get(`/api/v1/diary/${id}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
+          },
+          params: {
+            diaryId: id,
           }
         })
         setDiaryData(response.data)
@@ -58,11 +50,13 @@ const DiaryDetail = () => {
   if (loading) return <Loading>로딩 중...</Loading>
   if (error) return <Error>{error}</Error>
   
+  if (!diaryData) return null;
+
   return (
     <DiaryContainer>
       <Header>
         <BackButton label="이전"/>
-        <Date>{diaryData?.date || "날짜  없음"}</Date>
+        <Date>{diaryData?.createdAt || "날짜  없음"}</Date>
         <UpdateButton onClick={toDiaryUpdate}>수정</UpdateButton>
       </Header>
 
@@ -80,7 +74,7 @@ const DiaryDetail = () => {
           <AudioPlayer src={diaryData.audioUrl} disableRecording={true} />
         </>
         )}
-        {diaryData?.money && (
+        {diaryData?.deposit && (
           <>
             <AudioLabel>계좌 송금</AudioLabel>
             <AccountContainer>
@@ -90,7 +84,7 @@ const DiaryDetail = () => {
               <ContentContainer>
                 <TransferTitle>{diaryData.title}</TransferTitle>
                 <MoneyAndAccount>
-                  <Money>+ {diaryData.money}</Money>
+                  <Money>+ {diaryData.deposit}</Money>
                   <Account>{diaryData.account}</Account>
                 </MoneyAndAccount>
               </ContentContainer>

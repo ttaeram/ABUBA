@@ -3,7 +3,6 @@ import styled from "styled-components"
 
 const DiaryListCard = ({ diary }: { diary: { id: number; title: string; content: string; createdAt: string; deposit: number; imageUrl: string } }) => {
   const navigate = useNavigate()
-  console.log(diary.imageUrl)
   const toDiaryDetail = () => {
     navigate(`/diary/${diary.id}`)
   }

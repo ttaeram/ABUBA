@@ -2,15 +2,15 @@ import AccountInfo from "../main/AccountInfo";
 import styled from "styled-components"
 
 interface SelectModalProps {
-  onNext: () => void;
+  onNext: (selectedAccount: string) => void;
 }
 
 const SelectModal: React.FC<SelectModalProps> = ({ onNext }) => {
   return (
     <div>
       <Title>계좌 선택</Title>
-      <Content onClick={onNext}>
-        <AccountInfo />
+      <Content>
+        <AccountInfo onSelectAccount={onNext} />
       </Content>
     </div>
   )
