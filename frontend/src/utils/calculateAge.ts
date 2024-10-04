@@ -9,6 +9,10 @@ export const calculateAge = (birthdate: string) => {
     if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
       age--;
     }
+
+    if(age < 0){
+      age = 0;
+    }
   
     return age;
   };
