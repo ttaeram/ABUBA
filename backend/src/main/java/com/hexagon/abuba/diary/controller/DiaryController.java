@@ -13,6 +13,7 @@ import com.hexagon.abuba.user.Parent;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -65,14 +66,14 @@ public class DiaryController {
 
     /***
      * 다이어리에 작성한 게시물 목록을 리턴하기
-//     * @param diaryRecentReqDTO
+     //     * @param diaryRecentReqDTO
      * @return
      */
     @SecurityRequirement(name = "access")  // 이 API는 토큰이 필요함
     @GetMapping
     @Operation(summary = "작성한 게시글의 목록 조회")
     public ResponseEntity<List<DiaryResDTO>> getList(@AuthenticationPrincipal(expression = "user") Parent user) {
-        log.info("user_id={}",user.getId());
+        log.info("user_id={}", user.getId());
         List<DiaryResDTO> resDTOList = diaryService.getList(user.getId());
 
         return ResponseEntity.ok(resDTOList);
@@ -87,25 +88,29 @@ public class DiaryController {
         return ResponseEntity.ok(diaryDetailResDTO);
     }
 
+
     @SecurityRequirement(name = "access")  // 이 API는 토큰이 필요함
-    @PostMapping
+    @PostMapping(consumes = {MediaType.ALL_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "일기 작성")
-    public ResponseEntity<String> addDiary(@RequestParam(value = "image", required = false) MultipartFile image,
-                                           @RequestParam(value = "record", required = false) MultipartFile record,
-                                           @RequestBody DiaryDetailReqDTO diaryDetailReqDTO,
-                                           @AuthenticationPrincipal(expression = "user") Parent user){
+    public ResponseEntity<String> addDiary(
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @RequestPart(value = "record", required = false) MultipartFile record,
+            @RequestPart("info") DiaryDetailReqDTO diaryDetailReqDTO,
+            @AuthenticationPrincipal(expression = "user") Parent user) {
+
         log.info("addDiary");
-        diaryService.addDiary(user.getId(),diaryDetailReqDTO, image, record);
+        diaryService.addDiary(user.getId(), diaryDetailReqDTO, image, record);
         return ResponseEntity.ok("add Diary Success");
     }
 
+
     @SecurityRequirement(name = "access")  // 이 API는 토큰이 필요함
-    @PutMapping
+    @PutMapping(consumes = {MediaType.ALL_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "일기 수정")
-    public ResponseEntity<String> editDiary(@RequestParam(value = "image", required = false) MultipartFile image,
-                                            @RequestParam(value = "record", required = false) MultipartFile record,
-                                            @ModelAttribute DiaryEditReqDTO diaryEditReqDTO,
-                                            @AuthenticationPrincipal(expression = "user") Parent user){
+    public ResponseEntity<String> editDiary(@RequestPart(value = "image", required = false) MultipartFile image,
+                                            @RequestPart(value = "record", required = false) MultipartFile record,
+                                            @RequestPart("info") DiaryEditReqDTO diaryEditReqDTO,
+                                            @AuthenticationPrincipal(expression = "user") Parent user) {
         log.info("editDiary");
         diaryService.editDiary(diaryEditReqDTO, image, record);
         return ResponseEntity.ok("edit Diary Success");
