@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/members")
+@RequestMapping("/api/v1/account")
 @CrossOrigin("*")
 @Slf4j
 @SecurityRequirement(name = "access")
@@ -47,8 +47,8 @@ public class AccountController {
 
     @GetMapping("/balance")
     @Operation(summary = "잔액 조회")
-    public ResponseEntity<BalanceAmountResponseDTO> getBalance(@RequestBody BalanceRequestDTO balanceRequestDTO, @AuthenticationPrincipal(expression = "user") Parent user) {
-        BalanceAmountResponseDTO balanceAmountResponseDTO = accountService.getBalance(user.getId(), balanceRequestDTO.isParent());
+    public ResponseEntity<BalanceAmountResponseDTO> getBalance(@RequestParam(name = "isParent", defaultValue = "false") Boolean isParent , @AuthenticationPrincipal(expression = "user") Parent user) {
+        BalanceAmountResponseDTO balanceAmountResponseDTO = accountService.getBalance(user.getId(), isParent);
         return ResponseEntity.ok(balanceAmountResponseDTO);
     }
 }
