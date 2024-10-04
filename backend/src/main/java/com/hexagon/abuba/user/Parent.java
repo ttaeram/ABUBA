@@ -32,6 +32,8 @@ public class Parent {
 
     private String account;
 
+    private String bankName;
+
     private String role;
 
     @OneToMany(mappedBy = "parent")
@@ -74,6 +76,13 @@ public class Parent {
 
     public void setUserkey(String userkey) {
         this.userkey = userkey;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
     }
 
 

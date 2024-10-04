@@ -150,7 +150,23 @@ public class UserService {
         return response.REC().status();
     }
 
-
+    /**
+     * 계좌정보를 등록하는 api
+     * @param user
+     * @param registAccountRequestDTO
+     */
     public void registAccount(Parent user, RegistAccountRequestDTO registAccountRequestDTO) {
+        if(registAccountRequestDTO.isParent()) {
+            //부모인경우
+            user.setAccount(registAccountRequestDTO.accountNo());
+            user.setBankName(registAccountRequestDTO.bankName());
+            parentRepository.save(user);
+        }else{
+            //아이인 경우
+            Baby baby = user.getBaby();
+            baby.setAccount(registAccountRequestDTO.accountNo());
+            baby.setBankName(registAccountRequestDTO.bankName());
+            babyRepository.save(baby);
+        }
     }
 }
