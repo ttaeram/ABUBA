@@ -1,15 +1,21 @@
 package com.hexagon.abuba.auth.service;
 
-
 import com.hexagon.abuba.auth.dto.request.JoinDTO;
-import com.hexagon.abuba.auth.dto.request.LoginDTO;
-import com.hexagon.abuba.auth.dto.response.LoginResDTO;
+import com.hexagon.abuba.auth.entity.VerificationToken;
+import com.hexagon.abuba.auth.repository.VerificationTokenRepository;
+import com.hexagon.abuba.global.openfeign.FinAPIClient;
+import com.hexagon.abuba.global.openfeign.dto.request.SignupRequestDTO;
+import com.hexagon.abuba.global.openfeign.dto.response.SignupResponseDTO;
 import com.hexagon.abuba.user.Parent;
+import com.hexagon.abuba.user.repository.BabyRepository;
 import com.hexagon.abuba.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Transactional
 @Service
@@ -23,14 +29,13 @@ public class AuthService {
     private final VerificationTokenRepository tokenRepository;
     private final EmailService emailService;
 
-
     @Value("${api.key}")
     private String apikey;
-    public AuthService(ParentRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, FinAPIClient finAPIClient, BabyRepository babyRepository) {
+
     @Value("${app.email.verification-url}")
     private String verificationUrl; // 이메일 인증 링크에 사용할 URL
 
-    public AuthService(ParentRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, VerificationTokenRepository tokenRepository, EmailService emailService) {
+    public AuthService(ParentRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, FinAPIClient finAPIClient, BabyRepository babyRepository, VerificationTokenRepository tokenRepository, EmailService emailService) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.finAPIClient = finAPIClient;
@@ -44,7 +49,7 @@ public class AuthService {
         String username = joinDTO.getEmail();
         String password = joinDTO.getPassword();
         String name = joinDTO.getName();
-        log.info("joinDTO={}",joinDTO.toString());
+        log.info("joinDTO={}", joinDTO.toString());
         Boolean isExist = userRepository.existsByUsername(username);
 
         if (isExist) {
@@ -104,10 +109,7 @@ public class AuthService {
 
     public boolean checkOnboarding(Long parentId) {
         Parent user = userRepository.findById(parentId).orElseThrow();
-        if(user.getBaby() == null){
-            return true;
-        }
-        return false;
+        return user.getBaby() == null;
     }
 
 }
