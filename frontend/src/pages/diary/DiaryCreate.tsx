@@ -99,14 +99,14 @@ const DiaryCreate = () => {
     }
   }
 
-  // const handleConfirm = (memo: string, deposit: number, selectedAccount: string) => {
-  //   setDiaryData({
-  //     ...diaryData,
-  //     account: selectedAccount,
-  //     deposit: deposit,
-  //   })
-  //   setIsModalOpen(false)
-  // }
+  const handleConfirm = (selectedAccount: string, memo: string, deposit: number) => {
+    setDiaryData({
+      ...diaryData,
+      account: selectedAccount,
+      deposit: deposit,
+    })
+    setIsModalOpen(false)
+  }
 
   return (
     <DiaryContainer>
@@ -181,11 +181,11 @@ const DiaryCreate = () => {
       <DepositContainer>
         <Label>계좌 송금</Label>
         <Button onClick={() => setIsModalOpen(true)}>계좌 선택</Button>
-        // <DepositModal
-        //   isOpen={isModalOpen}
-        //   onClose={() => setIsModalOpen(false)}
-        //   onConfirm={(memo, deposit, selectedAccount) => handleConfirm(memo, deposit, selectedAccount)}
-        // />
+        <DepositModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={(selectedAccount, memo, deposit) => handleConfirm(selectedAccount, memo, deposit)}
+        />
       </DepositContainer>
     </Content>
   </DiaryContainer>
