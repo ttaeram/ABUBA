@@ -99,7 +99,7 @@ const DiaryCreate = () => {
     }
   }
 
-  const handleConfirm = (memo: string, deposit: number, selectedAccount: string) => {
+  const handleConfirm = (selectedAccount: string, memo: string, deposit: number) => {
     setDiaryData({
       ...diaryData,
       account: selectedAccount,
@@ -184,7 +184,7 @@ const DiaryCreate = () => {
         <DepositModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onConfirm={(memo, deposit, selectedAccount) => handleConfirm(memo, deposit, selectedAccount)}
+          onConfirm={(selectedAccount, memo, deposit) => handleConfirm(selectedAccount, memo, deposit)}
         />
       </DepositContainer>
     </Content>
