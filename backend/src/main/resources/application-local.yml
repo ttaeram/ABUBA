@@ -5,10 +5,18 @@ spring:
     password: abuba
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: 106hexagon@gmail.com
+    password: wuya kvvf iebm ouko
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
   servlet:
     multipart:
@@ -28,11 +36,3 @@ app:
   email:
     verification-url: http://localhost:8080/api/v1/auth/verify-email
 
-#  mail:
-#    host: smtp.gmail.com
-#    port: 587
-#    username: 106hexagon@gmail.com
-#    password: wuya kvvf iebm ouko
-#    properties:
-#      mail.smtp.auth: true
-#      mail.smtp.starttls.enable: true
