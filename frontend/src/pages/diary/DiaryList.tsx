@@ -46,7 +46,7 @@ const DiaryList = () => {
         <Title>일기장</Title>
         <CreateButton onClick={toDiaryCreate}>작성</CreateButton>
       </Header>
-      <DiaryContainer>
+      <DiaryContainer isEmpty={diaries.length === 0}>
         {diaries.length > 0 ? (
           diaries.map((diary) => (
             <DiaryListCard key={diary.id} diary={diary} />
@@ -77,22 +77,25 @@ const Title = styled.div`
   font-weight: bold;
 `;
 
-const DiaryContainer = styled.div`
+const DiaryContainer = styled.div<{ isEmpty: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  justify-content: ${(props) => (props.isEmpty ? "center" : "flex-start")};
+  align-items: ${(props) => (props.isEmpty ? "center" : "stretch")};
+  height: ${(props) => (props.isEmpty ? "100vh" : "auto")};
 `;
 
 const CreateButton = styled.button`
   background: none;
   border: none;
-  color: blue;
+  color: #3B6EBA;
   font-size: 16px;
+  font-weight: bold;
 `;
 
 const NoDiariesMessage = styled.div`
   text-align: center;
   font-size: 16px;
   color: #999;
-  margin-top: 20px;
 `;

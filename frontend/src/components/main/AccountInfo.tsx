@@ -7,7 +7,7 @@ interface AccountInfoProps {
 }
 
 const AccountInfo: React.FC<AccountInfoProps> = ({ onSelectAccount }) => {
-  const [accountNo, setAccountNo] = useState<string>('')
+  const [account, setAccount] = useState<string>('')
   const [accountBalance, setAccountBalance] = useState<string>('')
 
   useEffect(() => {
@@ -27,7 +27,8 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ onSelectAccount }) => {
           },
         })
         
-        setAccountNo(response.data.accountNo)
+        console.log(response.data.account, response.data.accountBalance)
+        setAccount(response.data.account)
         setAccountBalance(response.data.accountBalance)
       } catch (error) {
         console.error('Failed to fetch balance:', error)
@@ -39,7 +40,7 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ onSelectAccount }) => {
 
   const handleSelect = () => {
     if (onSelectAccount) {
-      onSelectAccount(accountNo)
+      onSelectAccount(account)
     }
   }
 
@@ -50,7 +51,7 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ onSelectAccount }) => {
                 신한 주거래 통장
             </Name>
             <Name>
-                {accountNo}
+                {account}
             </Name>
         </TextInfo>
         <Money>

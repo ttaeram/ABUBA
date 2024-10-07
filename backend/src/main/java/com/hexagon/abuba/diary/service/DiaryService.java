@@ -15,6 +15,7 @@ import com.hexagon.abuba.global.exception.ErrorCode;
 import com.hexagon.abuba.s3.service.S3Service;
 import com.hexagon.abuba.user.Baby;
 import com.hexagon.abuba.user.Parent;
+import com.hexagon.abuba.user.repository.BabyRepository;
 import com.hexagon.abuba.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -37,14 +38,16 @@ public class DiaryService {
     private final S3Service s3Service;
     private final AccountService accountService;
     private final Tika tika;
+    private final BabyRepository babyRepository;
 
-    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, DiaryAndReadRepository diaryAndReadRepository, S3Service s3Service, AccountService accountService) {
+    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, DiaryAndReadRepository diaryAndReadRepository, S3Service s3Service, AccountService accountService, BabyRepository babyRepository) {
         this.diaryRepository = diaryRepository;
         this.parentRepository = parentRepository;
         this.diaryAndReadRepository = diaryAndReadRepository;
         this.s3Service = s3Service;
         this.accountService = accountService;
         this.tika = new Tika();
+        this.babyRepository = babyRepository;
     }
 
     public List<DiaryRecentResDTO> recentDiary(Long parentId) {
@@ -73,7 +76,14 @@ public class DiaryService {
     public List<DiaryResDTO> getList(Long parentId){
         Parent parent = parentRepository.findById(parentId).orElseThrow();
         Baby baby = parent.getBaby();
-        List<Parent> parentList = baby.getParents();
+        List<Baby> babyList = babyRepository.findAllByAccount(baby.getAccount());
+
+        List<Parent> parentList = new ArrayList<>();
+
+        for(Baby b: babyList){
+            parentList.addAll(b.getParents());
+        }
+
         List<Diary> diaries = diaryRepository.findByParents(parentList);
         List<DiaryResDTO> diaryResDTOList = new ArrayList<>();
         for (Diary diary : diaries) {
@@ -95,7 +105,9 @@ public class DiaryService {
                 diary.getAccount(),
                 diary.getDeposit(),
                 diary.getHeight(),
-                diary.getWeight()
+                diary.getWeight(),
+                s3Service.getFileUrl(diary.getImage_url()),
+                s3Service.getFileUrl(diary.getRecord_url())
         );
 
         return diaryDetailResDTO;
