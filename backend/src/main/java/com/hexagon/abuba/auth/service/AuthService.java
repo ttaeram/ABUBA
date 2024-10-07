@@ -58,7 +58,7 @@ public class AuthService {
         }
 
         //금융api로 user키를 발급 받는다.
-        SignupResponseDTO response = finAPIClient.signup(new SignupRequestDTO(apikey, joinDTO.getEmail()));
+//        SignupResponseDTO response = finAPIClient.signup(new SignupRequestDTO(apikey, joinDTO.getEmail()));
 
         Parent data = new Parent();
 
@@ -66,7 +66,7 @@ public class AuthService {
         data.setPassword(bCryptPasswordEncoder.encode(password));
         data.setName(name);
         data.setRole("ROLE_USER");
-        data.setUserkey(response.getUserKey());
+//        data.setUserkey(response.getUserKey());
 
         userRepository.save(data);
     }
