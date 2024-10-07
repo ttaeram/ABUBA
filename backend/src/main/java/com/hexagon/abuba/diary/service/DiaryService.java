@@ -1,10 +1,9 @@
 package com.hexagon.abuba.diary.service;
 
 import com.hexagon.abuba.account.service.AccountService;
-import com.hexagon.abuba.diary.Diary;
+import com.hexagon.abuba.diary.entity.Diary;
 import com.hexagon.abuba.diary.dto.request.DiaryDetailReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryEditReqDTO;
-import com.hexagon.abuba.diary.dto.request.DiaryRecentReqDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryDetailResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;

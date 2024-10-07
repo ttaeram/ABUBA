@@ -81,9 +81,9 @@ public class UserController {
                                                                @RequestBody RegistAccountRequestDTO registAccountRequestDTO){
         userService.registAccount(user, registAccountRequestDTO);
         if(registAccountRequestDTO.isParent()){
-            return new ResponseEntity<>(MessageResponse.of(HttpStatus.OK,"부모 계좌정보 등록이 완료됬습니다."),HttpStatus.OK);
+            return new ResponseEntity<>(MessageResponse.of(HttpStatus.OK,"부모 계좌정보 등록이 완료됐습니다."),HttpStatus.OK);
         }
-        return new ResponseEntity<>(MessageResponse.of(HttpStatus.OK,"아이 계좌정보 등록이 완료됬습니다."),HttpStatus.OK);
+        return new ResponseEntity<>(MessageResponse.of(HttpStatus.OK,"아이 계좌정보 등록이 완료됐습니다."),HttpStatus.OK);
     }
 
 }
