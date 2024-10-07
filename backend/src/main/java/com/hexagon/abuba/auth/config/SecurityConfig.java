@@ -90,7 +90,6 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/alarm/**").permitAll()
                         .requestMatchers("/v3/**", "/swagger-ui/**","/swagger/**","/docs/**").permitAll()// Swagger UI 및 API 문서 접근 허용
                         .requestMatchers("/api/v1/auth/login", "/",
                                 "/api/v1/auth/signup", "/api/v1/auth/logout",

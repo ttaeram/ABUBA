@@ -67,9 +67,9 @@ public class DiaryController {
     @SecurityRequirement(name = "access")  // 이 API는 토큰이 필요함
     @GetMapping("/{diary_id}")
     @Operation(summary = "일기 상세 조회")
-    public ResponseEntity<DiaryDetailResDTO> getDetail(@PathVariable Long diary_id) {
+    public ResponseEntity<DiaryDetailResDTO> getDetail(@PathVariable Long diary_id , @AuthenticationPrincipal(expression = "user") Parent user) {
         log.info("getDetail");
-        DiaryDetailResDTO diaryDetailResDTO = diaryService.getDetail(diary_id);
+        DiaryDetailResDTO diaryDetailResDTO = diaryService.getDetail(diary_id, user);
         return ResponseEntity.ok(diaryDetailResDTO);
     }
 
