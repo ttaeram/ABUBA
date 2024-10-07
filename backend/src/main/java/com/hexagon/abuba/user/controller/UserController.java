@@ -79,9 +79,11 @@ public class UserController {
     @PostMapping("/account")
     public ResponseEntity<MessageResponse> registAccount(@AuthenticationPrincipal(expression = "user") Parent user,
                                                                @RequestBody RegistAccountRequestDTO registAccountRequestDTO){
-
         userService.registAccount(user, registAccountRequestDTO);
-        return new ResponseEntity<>(MessageResponse.of(HttpStatus.OK,"아이정보 조회가 완료됬습니다."),HttpStatus.OK);
+        if(registAccountRequestDTO.isParent()){
+            return new ResponseEntity<>(MessageResponse.of(HttpStatus.OK,"부모 계좌정보 등록이 완료됬습니다."),HttpStatus.OK);
+        }
+        return new ResponseEntity<>(MessageResponse.of(HttpStatus.OK,"아이 계좌정보 등록이 완료됬습니다."),HttpStatus.OK);
     }
 
 }

@@ -1,39 +1,14 @@
-import React from 'react'
+import { useState, useEffect } from 'react'
 import { Line } from 'react-chartjs-2'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
 import BackButton from '../../components/buttons/BackButton'
 import TransactionItem from '../../components/account/TransactionItem'
 import styled from 'styled-components'
+import api from "../../api/index"
+import dayjs from 'dayjs'
 
 // Chart.js의 요소를 등록
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
-
-// 예시 데이터를 사용한 차트 데이터
-const data = {
-  labels: ['9월 1일', '9월 10일', '9월 20일', '9월 30일'],
-  datasets: [
-    {
-      label: '저축 추세',
-      data: [100000, 150000, 300000, 240000], // 각 날짜에 해당하는 값
-      fill: false,
-      backgroundColor: '#3B6EBA',
-      borderColor: 'white',
-    },
-  ],
-};
-
-// 차트 옵션 설정
-const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      display: true,
-    },
-    title: {
-      display: true,
-    },
-  },
-};
 
 type Transaction = {
   date: string;
@@ -42,21 +17,112 @@ type Transaction = {
   isPositive: boolean; // 입금 또는 출금 여부
 };
 
+// 차트 및 거래 내역 컴포넌트
 const ChildAccount: React.FC = () => {
-  const transactions: Transaction[] = [
-    { date: '9월 30일', description: '기저귀', amount: '-50,000 원', isPositive: false },
-    { date: '9월 28일', description: '저축', amount: '+100,000 원', isPositive: true },
-    { date: '9월 25일', description: '기저귀', amount: '-30,000 원', isPositive: false },
-    { date: '9월 20일', description: '저축', amount: '+150,000 원', isPositive: true },
-    { date: '9월 30일', description: '기저귀', amount: '-50,000 원', isPositive: false },
-    { date: '9월 28일', description: '저축', amount: '+100,000 원', isPositive: true },
-    { date: '9월 25일', description: '기저귀', amount: '-30,000 원', isPositive: false },
-    { date: '9월 20일', description: '저축', amount: '+150,000 원', isPositive: true },
-    { date: '9월 30일', description: '기저귀', amount: '-50,000 원', isPositive: false },
-    { date: '9월 28일', description: '저축', amount: '+100,000 원', isPositive: true },
-    { date: '9월 25일', description: '외식비', amount: '-30,000 원', isPositive: false },
-    { date: '9월 20일', description: '저축', amount: '+150,000 원', isPositive: true },
-  ];
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [balance, setBalance] = useState<string>('0');
+  const [bankCode, setBankCode] = useState<string>('')
+  const [chartData, setChartData] = useState<any>({
+    labels: [],
+    datasets: [
+      {
+        label: '저축 추세',
+        data: [],
+        fill: false,
+        backgroundColor: '#3B6EBA',
+        borderColor: 'white',
+      },
+    ],
+  });
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) {
+          throw new Error('Access Token이 없음');
+        }
+  
+        const response = await api.get('/api/v1/account/balance', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          params: {
+            isParent: true,
+          },
+        });
+  
+        // 잔액 데이터 확인
+        console.log('Balance data:', response.data);
+        setBalance(response.data.accountBalance);
+        setBankCode(response.data.bankCode)
+      } catch (error) {
+        console.error('Failed to fetch balance:', error);
+      }
+    };
+  
+    fetchBalance();
+  }, []);
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const accessToken = localStorage.getItem('accessToken');
+        if (!accessToken) {
+          throw new Error('Access Token이 없음');
+        }
+
+        // 현재 날짜 계산
+        const endDate = dayjs().format('YYYY-MM-DD');
+        
+        // 한 달 전 날짜 계산
+        const startDate = dayjs().subtract(1, 'month').format('YYYY-MM-DD');
+
+        const response = await api.get('/api/v1/account', {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          params:{
+            'startDate': startDate,
+            'endDate': endDate,
+          }
+        }); // API 호출
+
+        const transactionData = response.data;
+        console.log(transactionData)
+        // 거래 내역 변환
+        const transformedTransactions = transactionData.map((transaction: any) => ({
+          date: transaction.transactionDate,
+          description: transaction.transactionSummary || transaction.transactionMemo,
+          amount: transaction.transactionBalance,
+          isPositive: transaction.transactionType === 'CREDIT', // 입금이면 true
+        }));
+
+        setTransactions(transformedTransactions);
+
+        // 차트 데이터 변환 (여기서는 날짜별 잔액을 차트에 반영)
+        const chartLabels = transactionData.map((transaction: any) => transaction.transactionDate);
+        const chartBalances = transactionData.map((transaction: any) => parseFloat(transaction.transactionAfterBalance));
+
+        setChartData({
+          labels: chartLabels,
+          datasets: [
+            {
+              label: '잔액 추세',
+              data: chartBalances,
+              fill: false,
+              backgroundColor: '#3B6EBA',
+              borderColor: 'white',
+            },
+          ],
+        });
+      } catch (error) {
+        console.error('Failed to fetch transactions:', error);
+      }
+    };
+
+    fetchTransactions();
+  }, []);
 
   return (
     <ChildAccountWrapper>
@@ -66,15 +132,16 @@ const ChildAccount: React.FC = () => {
 
       {/* 이모지 아이콘 섹션 */}
       <ChartSection>
-        <Line data={data} options={options} />
+        <Line data={chartData} />
       </ChartSection>
 
       {/* 잔액 및 소비 정보 섹션 */}
       <BalanceSection>
-        <BalanceTitle>내 아이 초등학생 마련</BalanceTitle>
-        <BalanceAmount>2,043,000 원</BalanceAmount>
+        <BalanceTitle>내 아이 초등학생 마련 {bankCode}</BalanceTitle>
+        <BalanceAmount>{balance} 원</BalanceAmount>
         <TransactionInfo>9월 저축 240,000 원</TransactionInfo>
         <TransactionInfo>지난달에 비해 60,000 원 더 저축했어요</TransactionInfo>
+
         {/* 계좌 내역 리스트 */}
         <TransactionList>
           {transactions.map((transaction, index) => (
@@ -88,11 +155,11 @@ const ChildAccount: React.FC = () => {
           ))}
         </TransactionList>
 
-        {/* 버튼 섹션 */}
+        {/* 버튼 섹션
         <ButtonSection>
           <ActionButton>보내기</ActionButton>
           <ActionButton fill>채우기</ActionButton>
-        </ButtonSection>
+        </ButtonSection> */}
       </BalanceSection>
     </ChildAccountWrapper>
   );

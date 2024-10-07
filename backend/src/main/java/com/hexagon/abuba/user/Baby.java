@@ -28,7 +28,7 @@ public class Baby {
 
     private String account;
 
-    private String bankInfo;
+    private String bankName;
     //키
     private Double height;
 
@@ -39,15 +39,23 @@ public class Baby {
     private List<Parent> parents = new ArrayList<>();
 
     @Builder
-    public Baby(Long id, String name, LocalDate birthDate, String gender, String imageUrl, String account, String bankInfo, Double height, Double weight) {
+    public Baby(Long id, String name, LocalDate birthDate, String gender, String imageUrl, String account, String bankName, Double height, Double weight) {
         this.id = id;
         this.name = name;
         this.birthDate = birthDate;
         this.gender = gender;
         this.imageUrl = imageUrl;
         this.account = account;
-        this.bankInfo = bankInfo;
+        this.bankName = bankName;
         this.height = height;
         this.weight = weight;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
     }
 }

@@ -1,4 +1,5 @@
 import {create} from 'zustand';
+import { persist } from 'zustand/middleware';
 
 interface AuthState {
   email: string;
@@ -25,13 +26,21 @@ export const useAuthStore = create<AuthState>((set) => ({
 }));
 
 
-//아이 이름, 부모와의 관계, 키, 몸무게, 생년월일, 성별
-export const useChildAuthStore = create<ChildAuthState>((set) => ({
-  childname: '',
-  relation: '',
-  height: 0,
-  weight: 0,
-  birthdate: '',
-  gender: '',
-  setChildInfo: (childname, relation, height, weight, birthdate, gender) => set({childname, relation, height, weight, birthdate, gender}),
-}));
+//아이 이름, 부모와의 관계, 키, 몸무게, 생년월일, 성별 초기
+export const useChildAuthStore = create<ChildAuthState>()(
+  persist(
+    (set) => ({
+      childname: '',
+      relation: '',
+      height: 0,
+      weight: 0,
+      birthdate: '',
+      gender: '',
+      setChildInfo: (childname, relation, height, weight, birthdate, gender) => 
+        set({ childname, relation, height, weight, birthdate, gender }),
+    }),
+    {
+      name: 'child-auth-storage',
+    }
+  )
+);
