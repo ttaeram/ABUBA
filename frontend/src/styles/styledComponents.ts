@@ -34,6 +34,7 @@ export const FormTitle = styled.h2`
 export const Button = styled.button`
   display: flex;
   justify-content: center;
+  align-items: center;
   font-size: 12px;
   margin-bottom: 10px;
   padding: 15px;
