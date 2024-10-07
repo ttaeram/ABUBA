@@ -27,7 +27,8 @@ public class VerificationToken {
         this.token = token;
         this.email = email;
         this.verified = false;
-        this.expiryDate = LocalDateTime.now().plusHours(24); // 24시간 유효
+//        this.expiryDate = LocalDateTime.now().plusHours(24); // 24시간 유효
+        this.expiryDate = LocalDateTime.now().plusMinutes(2); // 24시간 유효
     }
 
     public boolean isExpired() {

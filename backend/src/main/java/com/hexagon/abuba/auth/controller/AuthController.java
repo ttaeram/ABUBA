@@ -39,7 +39,7 @@ public class AuthController {
         return new ResponseEntity<>(MessageResponse.of(HttpStatus.OK,"회원가입이 완료되었습니다."),HttpStatus.OK);
     }
 
-    @Operation(summary = "로그인", description = "신규 유저가 회원가입합니다.")
+    @Operation(summary = "로그인", description = "로그인 합니다.")
     @PostMapping("/login")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Request body for Swagger",

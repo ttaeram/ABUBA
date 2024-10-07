@@ -14,15 +14,10 @@ spring:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
 
-
-#ec2 주소
-app:
-  email:
-    verification-url: http://localhost:8080/api/v1/auth/verify-email
-
   jpa:
     hibernate:
       ddl-auto: update
+    defer-datasource-initialization: true  # Hibernate 초기화 이후 SQL 스크립트 실행
 
 
   servlet:
@@ -30,6 +25,12 @@ app:
       enabled: true
       max-request-size: 300MB
       max-file-size: 50MB
+
+
+  sql:
+    init:
+      mode: always  # SQL 스크립트 실행 모드를 항상으로 설정
+
 
 aws:
   s3:
@@ -39,3 +40,7 @@ aws:
     region: ap-northeast-2
 
 
+#ec2 주소
+app:
+  email:
+    verification-url: http://localhost:8080/api/v1/auth/verify-email

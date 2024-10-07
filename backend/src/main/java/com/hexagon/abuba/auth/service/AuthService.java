@@ -3,6 +3,8 @@ package com.hexagon.abuba.auth.service;
 import com.hexagon.abuba.auth.dto.request.JoinDTO;
 import com.hexagon.abuba.auth.entity.VerificationToken;
 import com.hexagon.abuba.auth.repository.VerificationTokenRepository;
+import com.hexagon.abuba.global.exception.BusinessException;
+import com.hexagon.abuba.global.exception.ErrorCode;
 import com.hexagon.abuba.global.openfeign.FinAPIClient;
 import com.hexagon.abuba.global.openfeign.dto.request.SignupRequestDTO;
 import com.hexagon.abuba.global.openfeign.dto.response.SignupResponseDTO;
@@ -53,12 +55,11 @@ public class AuthService {
         Boolean isExist = userRepository.existsByUsername(username);
 
         if (isExist) {
-            //이미 존재하는 경우 exception발생 시켜야함.
-            return;
+            throw new BusinessException(ErrorCode.DUPLICATED_EMAIL);
         }
 
         //금융api로 user키를 발급 받는다.
-        SignupResponseDTO response = finAPIClient.signup(new SignupRequestDTO(apikey, joinDTO.getEmail()));
+//        SignupResponseDTO response = finAPIClient.signup(new SignupRequestDTO(apikey, joinDTO.getEmail()));
 
         Parent data = new Parent();
 
@@ -66,7 +67,7 @@ public class AuthService {
         data.setPassword(bCryptPasswordEncoder.encode(password));
         data.setName(name);
         data.setRole("ROLE_USER");
-        data.setUserkey(response.getUserKey());
+//        data.setUserkey(response.getUserKey());
 
         userRepository.save(data);
     }
@@ -76,7 +77,7 @@ public class AuthService {
     public void sendVerificationEmail(String email) {
         // 1. 사용자가 이미 존재하는지 확인
         if (userRepository.findByEmail(email).isPresent()) {
-            throw new IllegalStateException("이미 사용 중인 이메일입니다.");
+            throw new BusinessException(ErrorCode.DUPLICATED_EMAIL);
         }
 
         // 2. 인증 토큰 생성 및 저장
