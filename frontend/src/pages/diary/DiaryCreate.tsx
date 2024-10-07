@@ -5,6 +5,7 @@ import AudioPlayer from "../../components/AudioPlayer"
 import DepositModal from "../../components/deposit/DepostModal"
 import api from '../../api/index'
 import styled from "styled-components"
+import { ReactComponent as WonSvg } from "../../assets/images/won.svg"
 
 interface DiaryData {
   title: string;
@@ -186,6 +187,21 @@ const DiaryCreate = () => {
           onClose={() => setIsModalOpen(false)}
           onConfirm={(selectedAccount, memo, deposit) => handleConfirm(selectedAccount, memo, deposit)}
         />
+
+        {diaryData.account && (
+          <AccountContainer>
+            <IconContainer>
+              <Icon />
+            </IconContainer>
+            <ContentContainer>
+              <TransferTitle>{diaryData.title}</TransferTitle>
+              <MoneyAndAccount>
+                <Money>+ {diaryData.deposit}</Money>
+                <Account>{diaryData.account}</Account>
+              </MoneyAndAccount>
+            </ContentContainer>
+          </AccountContainer>
+        )}
       </DepositContainer>
     </Content>
   </DiaryContainer>
@@ -329,3 +345,52 @@ const DepositContainer = styled.div`
   align-items: center;
   justify-content: space-between;
 `
+
+const AccountContainer = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 10px;
+`;
+
+const IconContainer = styled.div`
+  margin-right: 10px;
+`;
+
+const Icon = styled(WonSvg)`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #007bff;
+`;
+
+const ContentContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
+const TransferTitle = styled.h3`
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 25px;
+`;
+
+const MoneyAndAccount = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`;
+
+const Money = styled.span`
+  color: #888;
+  margin-bottom: 5px;
+`;
+
+const Account = styled.span`
+  font-weight: bold;
+  color: #000;
+`;
