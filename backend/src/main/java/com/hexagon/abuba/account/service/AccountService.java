@@ -113,14 +113,19 @@ public class AccountService {
         RequestHeader header = new RequestHeader();
         header.setHeader("inquireDemandDepositAccountBalance", apiKey, userKey);
 
-
+        String bankName = null;
+        String account = null;
         if(isParent) {
             balanceResponseDTO = finAPIClient.getBalance(new BalanceRequestDTO(header, parent.getAccount()));
+            bankName = parent.getBankName();
+            account = parent.getAccount();
         }
         else {
             balanceResponseDTO = finAPIClient.getBalance(new BalanceRequestDTO(header, parent.getBaby().getAccount()));
+            bankName = parent.getBaby().getBankName();
+            account = parent.getBaby().getAccount();
         }
-        return new BalanceAmountResponseDTO(balanceResponseDTO.REC().getBankCode(), balanceResponseDTO.REC().getAccountBalance());
+        return new BalanceAmountResponseDTO(balanceResponseDTO.REC().getBankCode(), balanceResponseDTO.REC().getAccountBalance(), bankName, account);
     }
 
     public void addBabyMoney(Long parentId, Long amount) {
