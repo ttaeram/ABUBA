@@ -38,7 +38,8 @@ export default Navbar;
 
 const LogoSvgStyled = styled(LogoSvg)`
   width: 100px; 
-  height: auto;  
+  height: auto;
+  cursor: pointer;
 `;
 
 const NavbarContainer = styled.nav`

@@ -59,10 +59,10 @@ const SignupForm = () => {
       return;
     }
 
-    // if (!isCodeVerified) {
-    //   setError('인증 코드를 먼저 확인해 주세요.');
-    //   return;
-    // }
+    if (!isCodeVerified) {
+      setError('인증 코드를 먼저 확인해 주세요.');
+      return;
+    }
 
     try {
       await signup(email, name, password); 
@@ -203,7 +203,6 @@ const ErrorMessage = styled.div`
 
 const SubmitButton = styled.button`
   width: 100%;
-  align-items: center;
   margin-top: 20px;
   font-size: 15px;
   padding: 15px;

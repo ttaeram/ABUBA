@@ -89,18 +89,14 @@ export const verifyAuthCode = async (authCode: string, authText: string, account
   }
 };
 
-//아이 계좌 정보 제출
+//계좌 정보 제출
 export const submitAccountInfo = async (accountInfo: {
   isParent: boolean;
   accountNo: string;
   bankName: string;
 }) => {
   try {
-    const response = await api.post('/api/v1/user/account', accountInfo, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await api.post('/api/v1/user/account', accountInfo);
 
     return response.data;
   } catch (error) {

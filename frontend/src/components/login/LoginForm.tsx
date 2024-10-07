@@ -23,7 +23,7 @@ const LoginForm = () => {
     try {
       const userData = await login(email, password);
       const {isEmpty} = userData.data;
-      if (isEmpty) {
+      if (isEmpty == false) {
         navigate('/onboard');  //true면 온보딩 페이지로 이동
       } else {
 
@@ -72,8 +72,8 @@ const LoginForm = () => {
       {error && <ErrorMessage>{error}</ErrorMessage>}
       <Button type="submit">로그인</Button>
       <SubContainer>
-        <FindPwd>비밀번호를 잊으셨나요?</FindPwd>
-        <Signup onClick={handleSignupClick}>회원가입</Signup>
+        {/* <FindPwd>비밀번호를 잊으셨나요?</FindPwd> */}
+        <Signup onClick={handleSignupClick}>아직 회원이 아니신가요?</Signup>
       </SubContainer>
     </FormContainer>
   );
@@ -92,7 +92,7 @@ const FormContainer = styled.form`
 
 const SubContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   color: #3d3d3d;
   font-size: 12px;
 
@@ -102,6 +102,9 @@ const FindPwd = styled.div`
 `
 
 const Signup = styled.div`
+  margin-top: 10px;
+  font-size: 14px;
+  cursor: pointer;
 `
 
 const InputContainer = styled.div`
