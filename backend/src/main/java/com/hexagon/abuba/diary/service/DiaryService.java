@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -51,6 +52,7 @@ public class DiaryService {
         Baby baby = parent.getBaby();
         List<Parent> parentList = baby.getParents();
         List<Diary> diaries = diaryRepository.findByParents(parentList);
+        Collections.reverse(diaries);
 
         for (Diary diary : diaries) {
             // TODO : 이미지 URL 이 Null 로 나올지 빈칸으로 나올지 모르기 때문에 수정할 가능성 있음
@@ -80,6 +82,7 @@ public class DiaryService {
         }
 
         List<Diary> diaries = diaryRepository.findByParents(parentList);
+        Collections.reverse(diaries);
         List<DiaryResDTO> diaryResDTOList = new ArrayList<>();
         for (Diary diary : diaries) {
             DiaryResDTO diaryResDTO = EntityToResDTO(diary);
