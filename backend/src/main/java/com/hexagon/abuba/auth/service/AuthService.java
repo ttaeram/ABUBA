@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import java.util.Random;
 
 @Transactional
 @Service
@@ -28,21 +28,16 @@ public class AuthService {
     private final ParentRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final FinAPIClient finAPIClient;
-    private final BabyRepository babyRepository;
     private final VerificationTokenRepository tokenRepository;
     private final EmailService emailService;
 
     @Value("${api.key}")
     private String apikey;
 
-    @Value("${app.email.verification-url}")
-    private String verificationUrl; // 이메일 인증 링크에 사용할 URL
-
-    public AuthService(ParentRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, FinAPIClient finAPIClient, BabyRepository babyRepository, VerificationTokenRepository tokenRepository, EmailService emailService) {
+    public AuthService(ParentRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, FinAPIClient finAPIClient, VerificationTokenRepository tokenRepository, EmailService emailService) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.finAPIClient = finAPIClient;
-        this.babyRepository = babyRepository;
         this.tokenRepository = tokenRepository;
         this.emailService = emailService;
     }
@@ -82,13 +77,12 @@ public class AuthService {
         }
 
         // 2. 인증 토큰 생성 및 저장
-        String token = UUID.randomUUID().toString();
-        VerificationToken verificationToken = new VerificationToken(token, email);
+        String authenticationCode = generateRandomCode();
+        VerificationToken verificationToken = new VerificationToken(authenticationCode, email);
         tokenRepository.save(verificationToken);
 
         // 3. 이메일 발송
-        String verificationLink = verificationUrl + "?token=" + token;
-        emailService.sendVerificationEmail(email, verificationLink);
+        emailService.sendVerificationEmail(email, authenticationCode);
     }
 
     public boolean verifyEmail(String token) {
@@ -98,8 +92,9 @@ public class AuthService {
         }
 
         // 토큰이 유효하면 해당 이메일의 인증 상태를 true로 변경
+        //이후 유지하고 있던 인증용 token을 삭제하여 DB를 확보한다.
         verificationToken.setVerified(true);
-        tokenRepository.save(verificationToken);
+        tokenRepository.delete(verificationToken);
         return true;
     }
 
@@ -116,4 +111,8 @@ public class AuthService {
         return baby != null && baby.getAccount() != null && user.getAccount() != null;
     }
 
+    private String generateRandomCode() {
+        Random random = new Random();
+        return String.format("%06d", random.nextInt(1000000));
+    }
 }
