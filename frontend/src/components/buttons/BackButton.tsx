@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 
-const BackButton = ({ label = "뒤로가기", color = "blue" }: { label?: string, color?: string }) => {
+const BackButton = ({ label = "뒤로가기", color = "#3B6EBA" }: { label?: string, color?: string }) => {
   const navigate = useNavigate()
 
   const toBack = () => {
@@ -20,6 +20,7 @@ export default BackButton
 const Button = styled.button<{ color?: string }>`
   background: none;
   border: none;
-  color: ${(props) => props.color || "blue"}; /* 기본 색상은 blue */
+  color: ${(props) => (props.color ? props.color : "#3B6EBA")};
   font-size: 16px;
+  font-weight: bold;
 `;
