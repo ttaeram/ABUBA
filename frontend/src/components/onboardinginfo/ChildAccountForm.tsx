@@ -51,22 +51,22 @@ const ChildAccountForm = ({ onNext, onPrevious }: ChildAccountFormProps) => {
     if (isVerified && selectedBank) {
       try {
         const response = await submitAccountInfo({
-          isParent: true, 
+          isParent: false, 
           accountNo: accountNumber,
           bankName: selectedBank.name,
         });
 
-        if (response.status === 0) { 
+        if (response.status === 200) { 
           alert('계좌 정보 전송 성공!');
           onNext(); 
         } else {
-          alert('계좌 정보 전송 실패: ' + response.message);
+          alert(response.message);
         }
       } catch (error) {
         alert('계좌 정보 전송 중 오류가 발생했습니다.');
       }
     } else {
-      alert('인증번호를 확인해주세요.'); 
+      setResponseMessage('인증 및 은행 선택이 필요합니다.');
     }
   };
 
@@ -95,6 +95,7 @@ const ChildAccountForm = ({ onNext, onPrevious }: ChildAccountFormProps) => {
         setResponseMessage(response.message); 
         if (response.data.status === "SUCCESS") {
           alert('인증 성공!');
+          setIsVerified(true);
         } else {
           alert('인증 실패');
         }
@@ -163,7 +164,7 @@ const ChildAccountForm = ({ onNext, onPrevious }: ChildAccountFormProps) => {
 
       <ButtonContainer>
         <Button type="button" onClick={onPrevious}>이전</Button>
-        <Button type="submit" onClick={onNext}>다음</Button>
+        <Button type="submit">다음</Button>
       </ButtonContainer>
 
       
@@ -241,14 +242,13 @@ const AccountContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 `;
 
 const Input = styled.input`
   display: flex;
   width: 70%;
   padding: 15px;
-  margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 8px;
 `;
@@ -264,6 +264,7 @@ const ButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap:20px;
 `;
 
 const Description = styled.div`

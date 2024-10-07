@@ -36,7 +36,6 @@ export const Button = styled.button`
   justify-content: center;
   align-items: center;
   font-size: 12px;
-  margin-bottom: 10px;
   padding: 15px;
   background-color: #3B6EBA;
   color: white;
