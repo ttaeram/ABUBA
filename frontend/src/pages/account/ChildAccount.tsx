@@ -72,11 +72,9 @@ const ChildAccount: React.FC = () => {
           throw new Error('Access Token이 없음');
         }
 
-        // 현재 날짜 계산
-        const endDate = dayjs().format('YYYY-MM-DD');
+        const endDate = dayjs().format('YYYYMMDD');
         
-        // 한 달 전 날짜 계산
-        const startDate = dayjs().subtract(1, 'month').format('YYYY-MM-DD');
+        const startDate = dayjs().subtract(1, 'month').format('YYYYMMDD');
 
         const response = await api.get('/api/v1/account', {
           headers: {
