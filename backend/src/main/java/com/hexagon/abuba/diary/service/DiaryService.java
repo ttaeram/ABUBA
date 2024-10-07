@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -134,7 +135,6 @@ public class DiaryService {
 
         diary.setTitle(reqDTO.title());
         diary.setContent(reqDTO.content());
-        diary.setCreatedAt(reqDTO.createdAt());
         diary.setHeight(reqDTO.height());
         diary.setWeight(reqDTO.weight());
 
@@ -196,7 +196,7 @@ public class DiaryService {
 
         diary.setTitle(reqDTO.title());
         diary.setContent(reqDTO.content());
-        diary.setCreatedAt(reqDTO.createdAt());
+        diary.setCreatedAt(LocalDateTime.now().plusHours(9));
         diary.setAccount(reqDTO.account());
         diary.setDeposit(reqDTO.deposit());
         diary.setHeight(reqDTO.height());
