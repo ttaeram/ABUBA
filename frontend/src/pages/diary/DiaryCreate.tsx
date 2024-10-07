@@ -65,15 +65,14 @@ const DiaryCreate = () => {
     }
 
     const info = {
-      title: diaryData.title || '제목 없음',  // 기본값 추가
-      content: diaryData.content || '내용 없음',  // 기본값 추가
-      account: diaryData.account || '계좌 없음',  // 기본값 추가
+      title: diaryData.title || '제목 없음',
+      content: diaryData.content || '내용 없음',
+      account: diaryData.account || '계좌 없음',
       deposit: diaryData.deposit || 0,
-      height: diaryData.height || 0,  // 기본값 추가
-      weight: diaryData.weight || 0,  // 기본값 추가
+      height: diaryData.height || 0,
+      weight: diaryData.weight || 0,
     };
 
-    // 'info'를 문자열로 변환하여 FormData에 추가
     formData.append('info', new Blob([JSON.stringify(info)], { type: 'application/json' }))
 
     try {
@@ -132,7 +131,7 @@ const DiaryCreate = () => {
         type="file"
         accept="image/*"
         onChange={handleImageUpload}
-        style={{ display: 'none' }} // 파일 업로드 버튼 숨김
+        style={{ display: 'none' }}
       />
     </ImageContainer>
 
@@ -146,7 +145,9 @@ const DiaryCreate = () => {
           onChange={handleChange}
           placeholder="신장"
         />
+        <Unit>cm</Unit>
       </StatItem>
+
       <StatItem>
         <StatLabel>체중</StatLabel>
         <StatInput
@@ -156,6 +157,7 @@ const DiaryCreate = () => {
           onChange={handleChange}
           placeholder="체중"
         />
+        <Unit>kg</Unit>
       </StatItem>
     </StatsContainer>
 
@@ -237,15 +239,14 @@ const Content = styled.div`
   margin-top: 20px;
 `;
 
-// 사진 업로드 섹션
 const ImageContainer = styled.div`
   display: flex;
-  flex-direction: column; /* 세로로 배치 */
-  align-items: center; /* 가로 중앙 정렬 */
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 20px;
   cursor: pointer;
   width: 100%;
-  text-align: center; /* 텍스트 중앙 정렬 */
+  text-align: center;
 `;
 
 const ImagePlaceholder = styled.div`
@@ -258,7 +259,7 @@ const ImagePlaceholder = styled.div`
   align-items: center;
   font-size: 48px;
   color: #acacac;
-  margin-bottom: 10px; /* 텍스트와 이미지 간격 추가 */
+  margin-bottom: 10px;
 `;
 
 const PreviewImage = styled.img`
@@ -277,31 +278,34 @@ const ImageText = styled.p`
 
 const StatsContainer = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: space-betwee;
   margin-bottom: 20px;
 `;
 
 const StatItem = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
-  flex-direction: row;
-  align-items: center;
+  width: 50%;
 `;
 
 const StatLabel = styled.label`
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
-  margin: 10px;
 `;
 
 const StatInput = styled.input`
   width: 60px;
   padding: 5px;
-  margin-top: 5px;
   text-align: center;
   border: 1px solid #ccc;
   border-radius: 5px;
+  margin-left: 40px
+`;
+
+const Unit = styled.span`
+  margin-left: 10px;
+  font-size: 14px;
+  color: #555;
 `;
 
 const Label = styled.label`
@@ -320,6 +324,7 @@ const Input = styled.input`
 
 const Textarea = styled.textarea`
   width: calc(100% - 0px);
+  height: 120px;
   padding: 10px;
   margin-top: 5px;
   border: 1px solid #ccc;
@@ -328,15 +333,17 @@ const Textarea = styled.textarea`
 
 const Button = styled.button`
   padding: 10px 20px;
-  background-color: #3B6EBA;
-  color: white;
-  border: none;
+  background-color: white;
+  color: #3B6EBA;
+  border-color: #3B6EBA;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 10px;
 
   &:hover {
-    background-color: #173C91;
+    background-color: #3B6EBA;
+    border-color: white
+    color: white;
   }
 `;
 

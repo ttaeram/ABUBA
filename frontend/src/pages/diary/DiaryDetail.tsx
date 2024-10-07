@@ -34,6 +34,7 @@ const DiaryDetail = () => {
         })
         setDiaryData(response.data)
         setLoading(false)
+        console.log(response.data.imageUrl)
       } catch (e) {
         setError("일기를 불러오는 데 실패했습니다.")
         setLoading(false)
@@ -68,10 +69,10 @@ const DiaryDetail = () => {
         </StatsContainer>
         <Title>{diaryData?.title || "제목 없음"}</Title>
         <ContentText>{diaryData?.content || "내용 없음"}</ContentText>
-        {diaryData?.audioUrl && (
+        {diaryData?.recordUrl && (
         <>
           <AudioLabel>목소리 듣기</AudioLabel>
-          <AudioPlayer src={diaryData.audioUrl} disableRecording={true} />
+          <AudioPlayer src={diaryData.recordUrl} disableRecording={true} />
         </>
         )}
         {diaryData?.deposit && (

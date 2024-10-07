@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 
 const DiaryListCard = ({ diary }: { diary: { id: number; title: string; content: string; createdAt: string; deposit: number; imageUrl: string } }) => {
+  console.log(diary.imageUrl)
   const navigate = useNavigate()
   const toDiaryDetail = () => {
     navigate(`/diary/${diary.id}`)
