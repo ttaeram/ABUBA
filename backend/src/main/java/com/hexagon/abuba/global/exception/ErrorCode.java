@@ -10,8 +10,11 @@ public enum ErrorCode {
     //H1009 USER_KEY가 유효하지 않습니다.
     //H1003 계좌번호가 유효하지 않습니다.
     ACCOUNT_NUMBER_INVALID(HttpStatus.UNAUTHORIZED, "A001", "계좌번호가 유효하지 않습니다."),
+    INVALID_ACCOUNT_NUMBER(HttpStatus.BAD_REQUEST, "A002","잘못된 계좌번호입니다."),
+
+    //User,
     INVALID_USER_KEY(HttpStatus.FORBIDDEN,"U001","유효하지 않은 유저키 입니다."),
-    INVALID_ACCOUNT_NUMBER(HttpStatus.BAD_REQUEST, "A002","잘못된 계좌번호입니다.")
+    DUPLICATED_EMAIL(HttpStatus.CONFLICT,"U002","이미 사용중인 이메일입니다.")
     ;
     private final HttpStatus status;
     private final String code;
