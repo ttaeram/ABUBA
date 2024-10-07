@@ -11,7 +11,7 @@ const SignupForm = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [authCode, setAuthCode] = useState('');
-  const [timer, setTimer] = useState(60);
+  const [timer, setTimer] = useState(120);
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const [error, setError] = useState('');
@@ -39,8 +39,8 @@ const SignupForm = () => {
   // 인증번호 확인
   const handleVerifyCode = async () => {
     try {
-      const response = await verifyEmailCode(email, authCode);
-      if (response.success) {
+      const response = await verifyEmailCode(authCode);
+      if (response === '이메일 인증 성공!') {
         setIsCodeVerified(true);
         alert('인증번호가 확인되었습니다!');
       } else {
@@ -75,6 +75,12 @@ const SignupForm = () => {
     }
   };
 
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+  };
+
   return (
       <FormContainer onSubmit={handleSubmit}>
         <InputContainer>
@@ -91,7 +97,7 @@ const SignupForm = () => {
             </Button>
           </FormGroup>
 
-          {isCodeSent && <Timer>{timer}초</Timer>}
+          {isCodeSent && <Timer>{formatTime(timer)}</Timer>}
 
           <FormGroup>
             <Input
@@ -184,7 +190,6 @@ const Input = styled.input`
 const Timer = styled.span`
   font-size: 14px;
   color: #ff6b6b;
-  margin-bottom: 10px;
   text-align: right;
 `;
 
@@ -198,6 +203,7 @@ const ErrorMessage = styled.div`
 
 const SubmitButton = styled.button`
   width: 100%;
+  align-items: center;
   margin-top: 20px;
   font-size: 15px;
   padding: 15px;

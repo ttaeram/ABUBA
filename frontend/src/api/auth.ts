@@ -40,7 +40,7 @@ try {
 // 이메일 인증번호 전송
 export const requestEmailVerificationCode = async (email: string) => {
   try {
-    const response = await api.get(`/v1/auth/email/code/${email}`);
+    const response = await api.post(`/api/v1/auth/send-email`, {email});
     return response.data;
   } catch (error) {
     console.error('이메일 인증번호 전송 중 오류가 발생했습니다.', error);
@@ -49,9 +49,9 @@ export const requestEmailVerificationCode = async (email: string) => {
 };
 
 // 인증번호 확인
-export const verifyEmailCode = async (email: string, authCode: string) => {
+export const verifyEmailCode = async (token: string) => {
   try {
-    const response = await api.post('/v1/auth/email/code', { email, authCode});
+    const response = await api.post('/api/v1/auth/verify-email', {token});
     return response.data;
   } catch (error) {
     console.error('인증번호 확인 중 오류가 발생했습니다.', error);
