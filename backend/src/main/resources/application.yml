@@ -2,19 +2,13 @@ spring:
   application:
     name: abuba
   profiles:
-    active: prod
+    active: local
   jwt:
     secret: spring.jwt.secret=vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-  thymeleaf:
-    prefix: classpath:/templates/
-    suffix: .html
-    mode: HTML
-    encoding: UTF-8
-    cache: false
 
 springdoc:
   swagger-ui:
