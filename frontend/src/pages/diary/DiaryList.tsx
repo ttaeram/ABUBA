@@ -86,8 +86,9 @@ const DiaryContainer = styled.div`
 const CreateButton = styled.button`
   background: none;
   border: none;
-  color: blue;
+  color: #3B6EBA;
   font-size: 16px;
+  font-weight: bold;
 `;
 
 const NoDiariesMessage = styled.div`
