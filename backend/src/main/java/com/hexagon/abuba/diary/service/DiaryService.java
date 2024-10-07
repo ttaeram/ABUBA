@@ -7,7 +7,11 @@ import com.hexagon.abuba.diary.dto.request.DiaryEditReqDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryDetailResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
+import com.hexagon.abuba.diary.entity.DiaryAndRead;
+import com.hexagon.abuba.diary.repository.DiaryAndReadRepository;
 import com.hexagon.abuba.diary.repository.DiaryRepository;
+import com.hexagon.abuba.global.exception.BusinessException;
+import com.hexagon.abuba.global.exception.ErrorCode;
 import com.hexagon.abuba.s3.service.S3Service;
 import com.hexagon.abuba.user.Baby;
 import com.hexagon.abuba.user.Parent;
@@ -29,13 +33,15 @@ import java.util.List;
 public class DiaryService {
     private final DiaryRepository diaryRepository;
     private final ParentRepository parentRepository;
+    private final DiaryAndReadRepository diaryAndReadRepository;
     private final S3Service s3Service;
     private final AccountService accountService;
     private final Tika tika;
 
-    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, S3Service s3Service, AccountService accountService) {
+    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, DiaryAndReadRepository diaryAndReadRepository, S3Service s3Service, AccountService accountService) {
         this.diaryRepository = diaryRepository;
         this.parentRepository = parentRepository;
+        this.diaryAndReadRepository = diaryAndReadRepository;
         this.s3Service = s3Service;
         this.accountService = accountService;
         this.tika = new Tika();
@@ -125,6 +131,23 @@ public class DiaryService {
         if(reqDTO.deposit() != null && reqDTO.deposit().intValue() != 0){
             accountService.minusParentMoney(parentId, reqDTO.deposit().longValue());
             accountService.addBabyMoney(parentId, reqDTO.deposit().longValue());
+        }
+
+        //알림 전송을 위한 로직 추가.
+        //1.작성자가 해당 게시글을 읽었음으로 표기한다.
+        Parent writer = parentRepository.findById(parentId).orElseThrow(()->new BusinessException(ErrorCode.USER_NOT_FOUND));
+        DiaryAndRead diaryAndRead = new DiaryAndRead();
+        diaryAndRead.setParent(writer);
+        diaryAndRead.setDiary(diary);
+        diaryAndReadRepository.save(diaryAndRead);
+
+        //2.동일한 아이를 가지고 있는 사람이 있으면 알람을 전송한다.
+        for(Parent parent: writer.getBaby().getParents()){
+            if(parent == writer) continue;
+            //2-1.알람 Entity 내역추가.
+
+
+            //2-2.알람 전송
         }
     }
 

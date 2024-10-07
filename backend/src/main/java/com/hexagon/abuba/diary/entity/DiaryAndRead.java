@@ -3,7 +3,9 @@ package com.hexagon.abuba.diary.entity;
 import com.hexagon.abuba.user.Baby;
 import com.hexagon.abuba.user.Parent;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.checkerframework.checker.units.qual.C;
 
 @Getter
@@ -11,7 +13,7 @@ import org.checkerframework.checker.units.qual.C;
 public class DiaryAndRead {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")

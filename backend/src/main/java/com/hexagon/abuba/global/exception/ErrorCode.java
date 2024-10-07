@@ -14,7 +14,8 @@ public enum ErrorCode {
 
     //User,
     INVALID_USER_KEY(HttpStatus.FORBIDDEN,"U001","유효하지 않은 유저키 입니다."),
-    DUPLICATED_EMAIL(HttpStatus.CONFLICT,"U002","이미 사용중인 이메일입니다.")
+    DUPLICATED_EMAIL(HttpStatus.CONFLICT,"U002","이미 사용중인 이메일입니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND,"U003","해당 유저를 찾을 수 없습니다.")
     ;
     private final HttpStatus status;
     private final String code;

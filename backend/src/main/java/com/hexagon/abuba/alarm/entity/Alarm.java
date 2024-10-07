@@ -12,9 +12,10 @@ public class Alarm {
     @Column(name = "alarm_id")
     private Long id;
 
-    //사용자가 이메일을 읽었는지
+    //사용자가 읽었는지
     private Boolean isRead;
 
+    //사용자 id
     private String content;
 
     @ManyToOne
