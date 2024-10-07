@@ -90,7 +90,9 @@ public class DiaryService {
                 diary.getAccount(),
                 diary.getDeposit(),
                 diary.getHeight(),
-                diary.getWeight()
+                diary.getWeight(),
+                s3Service.getFileUrl(diary.getImage_url()),
+                s3Service.getFileUrl(diary.getRecord_url())
         );
 
         return diaryDetailResDTO;
