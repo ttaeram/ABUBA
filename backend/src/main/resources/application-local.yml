@@ -5,23 +5,10 @@ spring:
     password: abuba
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-#  mail:
-#    host: smtp.gmail.com
-#    port: 587
-#    username: 106hexagon@gmail.com
-#    password: wuya kvvf iebm ouko
-#    properties:
-#      mail.smtp.auth: true
-#      mail.smtp.starttls.enable: true
-
-
-app:
-  email:
-    verification-url: http://localhost:8080/api/v1/auth/verify-email
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 
   servlet:
     multipart:
@@ -35,41 +22,17 @@ aws:
     secret-key: ${AWS_SECRET_KEY}
     bucket-name: hexagon-abuba
     region: ap-northeast-2
-#spring:
-#  datasource:
-#    url: jdbc:mysql://localhost:3306/abuba
-#    username: abuba
-#    password: abuba
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#
+
+
+app:
+  email:
+    verification-url: http://localhost:8080/api/v1/auth/verify-email
+
 #  mail:
-#    host: smtp.naver.com
-#    port: 465  # SSL 포트
-#    username: chlwogur753@naver.com  # 네이버 이메일 주소
-#    password: hexagon106! # 네이버 계정 비밀번호 또는 앱 비밀번호
+#    host: smtp.gmail.com
+#    port: 587
+#    username: 106hexagon@gmail.com
+#    password: wuya kvvf iebm ouko
 #    properties:
 #      mail.smtp.auth: true
-#      mail.smtp.ssl.enable: true
 #      mail.smtp.starttls.enable: true
-#      mail.smtp.ssl.trust: smtp.naver.com
-#
-#app:
-#  email:
-#    verification-url: http://localhost:8080/api/v1/auth/verify-email
-#
-#  jpa:
-#    hibernate:
-#      ddl-auto: update
-#
-#  servlet:
-#    multipart:
-#      enabled: true
-#      max-request-size: 300MB
-#      max-file-size: 50MB
-#
-#aws:
-#  s3:
-#    access-key: ${AWS_ACCESS_KEY}
-#    secret-key: ${AWS_SECRET_KEY}
-#    bucket-name: hexagon-abuba
-#    region: ap-northeast-2

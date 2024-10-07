@@ -14,12 +14,6 @@ spring:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
 
-
-#ec2 주소
-app:
-  email:
-    verification-url: http://localhost:8080/api/v1/auth/verify-email
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -39,3 +33,7 @@ aws:
     region: ap-northeast-2
 
 
+#ec2 주소
+app:
+  email:
+    verification-url: http://localhost:8080/api/v1/auth/verify-email

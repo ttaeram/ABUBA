@@ -16,7 +16,9 @@ springdoc:
   api-docs:
     path: /docs  # API 문서 경로를 커스텀
 
-accountNo: 0010307956085451
+accountNo1: 0010307956085451
+accountNo2: 0017126350155275
+
 api:
   key: 50f3e70a64074c42a5905b877ea1b194
 user:
