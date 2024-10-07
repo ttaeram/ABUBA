@@ -8,6 +8,7 @@ import com.hexagon.abuba.global.exception.ErrorCode;
 import com.hexagon.abuba.global.openfeign.FinAPIClient;
 import com.hexagon.abuba.global.openfeign.dto.request.SignupRequestDTO;
 import com.hexagon.abuba.global.openfeign.dto.response.SignupResponseDTO;
+import com.hexagon.abuba.user.Baby;
 import com.hexagon.abuba.user.Parent;
 import com.hexagon.abuba.user.repository.BabyRepository;
 import com.hexagon.abuba.user.repository.ParentRepository;
@@ -110,7 +111,9 @@ public class AuthService {
 
     public boolean checkOnboarding(Long parentId) {
         Parent user = userRepository.findById(parentId).orElseThrow();
-        return user.getBaby() == null;
+        Baby baby = user.getBaby();
+
+        return baby != null && baby.getAccount() != null && user.getAccount() != null;
     }
 
 }
