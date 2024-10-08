@@ -34,6 +34,7 @@ public class AlarmController {
     @Operation(summary = "알람 구독")
     @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(@AuthenticationPrincipal(expression = "user") Parent user) {
+        log.info(" subscribe요청이 들어왔습니다. user={}",user.getId());
         return alarmService.subscribe(user.getUsername());
     }
 
