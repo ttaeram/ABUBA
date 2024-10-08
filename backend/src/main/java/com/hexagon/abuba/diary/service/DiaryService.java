@@ -21,6 +21,7 @@ import com.hexagon.abuba.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -123,6 +124,7 @@ public class DiaryService {
         return diaryDetailResDTO;
     }
 
+    @Async
     public void addDiary(Long parentId, DiaryDetailReqDTO reqDTO, MultipartFile image, MultipartFile record){
         InputStream imageStream = null;
         InputStream recordStream = null;
@@ -147,10 +149,10 @@ public class DiaryService {
         }catch (Exception e){
             e.printStackTrace();
         }
-
+        Diary diary = null;
         if(reqDTO.deposit() != null && reqDTO.deposit().intValue() != 0){
             if(accountService.transferMoney(parentId, reqDTO.deposit().longValue(), reqDTO.memo())) {
-                Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
+                diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
                 diaryRepository.save(diary);
             }else{
                 try {
@@ -160,10 +162,9 @@ public class DiaryService {
                 }
             }
         }else {
-            Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
+            diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
             diaryRepository.save(diary);
         }
-
 
         //알림 전송을 위한 로직 추가.
         //1.작성자가 해당 게시글을 읽었음으로 표기한다.

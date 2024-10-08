@@ -38,6 +38,11 @@ public class AlarmService {
     }
 
     public SseEmitter subscribe(String username) {
+        SseEmitter oldEmitter = sseEmitters.get(username);
+        if (oldEmitter != null) {
+            oldEmitter.complete();
+        }
+
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         sseEmitters.put(username, emitter);
 
