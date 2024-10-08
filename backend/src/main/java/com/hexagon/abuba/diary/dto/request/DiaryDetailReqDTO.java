@@ -18,5 +18,5 @@ import java.time.LocalDateTime;
  */
 @Schema
 public record DiaryDetailReqDTO(String title, String content, String account,
-                                BigDecimal deposit, Double height, Double weight) {
+                                BigDecimal deposit, Double height, Double weight, String memo) {
 }
