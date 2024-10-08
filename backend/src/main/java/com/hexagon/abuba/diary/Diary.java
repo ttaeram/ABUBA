@@ -44,6 +44,9 @@ public class Diary {
     //몸무게
     private Double weight;
 
+    //메모
+    private String memo;
+
     public void setParent(Parent parent) {
         if(this.parent != null){
             this.parent.getDiaries().remove(this);

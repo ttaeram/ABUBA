@@ -77,15 +77,15 @@ public class AccountService {
         return new BalanceAmountResponseDTO(balanceResponseDTO.REC().getBankCode(), balanceResponseDTO.REC().getAccountBalance(), bankName, account);
     }
 
-    public boolean transferMoney(Long parentId, Long amount){
+    public boolean transferMoney(Long parentId, Long amount, String memo){
         Parent parent = parentRepository.findById(parentId).orElseThrow();
         RequestHeader header = new RequestHeader();
         header.setHeader("updateDemandDepositAccountTransfer", apiKey, userKey);
         String depositAccountNo = parent.getBaby().getAccount();
-        String depositTransactionSummary = "입금";
+        String depositTransactionSummary = memo;
         String transactionBalance = amount.toString();
         String withdrawalAccountNo = parent.getAccount();
-        String withdrawalTransactionSummary = "출금";
+        String withdrawalTransactionSummary = memo;
 
         TransferResponseDTO responseDTO = finAPIClient.transferDeposit(new TransferRequestDTO(
                 header, depositAccountNo, depositTransactionSummary, transactionBalance, withdrawalAccountNo, withdrawalTransactionSummary

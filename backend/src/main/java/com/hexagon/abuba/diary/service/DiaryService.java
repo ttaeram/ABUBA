@@ -105,7 +105,8 @@ public class DiaryService {
                 diary.getHeight(),
                 diary.getWeight(),
                 s3Service.getFileUrl(diary.getImage_url()),
-                s3Service.getFileUrl(diary.getRecord_url())
+                s3Service.getFileUrl(diary.getRecord_url()),
+                diary.getMemo()
         );
 
         return diaryDetailResDTO;
@@ -137,7 +138,7 @@ public class DiaryService {
         }
 
         if(reqDTO.deposit() != null && reqDTO.deposit().intValue() != 0){
-            if(accountService.transferMoney(parentId, reqDTO.deposit().longValue())) {
+            if(accountService.transferMoney(parentId, reqDTO.deposit().longValue(), reqDTO.memo())) {
                 Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
                 diaryRepository.save(diary);
             }else{
@@ -226,6 +227,7 @@ public class DiaryService {
         diary.setDeposit(reqDTO.deposit());
         diary.setHeight(reqDTO.height());
         diary.setWeight(reqDTO.weight());
+        diary.setMemo(reqDTO.memo());
 
 
         diary = uploadFile(imageStream, imageName, "img", diary, imgMimeType);
