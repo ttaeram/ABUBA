@@ -7,5 +7,5 @@ import java.time.LocalDateTime;
 
 @Schema
 public record DiaryDetailResDTO(Long id, String title, String content, LocalDateTime createdAt, String account,
-                                BigDecimal deposit, Double height, Double weight, String imageUrl, String recordUrl, String memo) {
+                                BigDecimal deposit, Double height, Double weight, String imageUrl, String recordUrl, String memo, String sentiment) {
 }
