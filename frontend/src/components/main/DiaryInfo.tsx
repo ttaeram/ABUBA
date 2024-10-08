@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { SlNotebook } from "react-icons/sl";
+import { PiNotepadFill } from "react-icons/pi";
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/index'
 import { ReactComponent as FullLogo } from '../../assets/images/fulllogo.svg'
@@ -57,9 +58,9 @@ const DiaryInfo = () => {
           )
         ))}
       </ImageContainer>
-      <Text>우리 아이 일기 보기</Text>
+      <Text>일기 전체 보기</Text>
       <IconContainer onClick={toDiaryList}>
-        <SlNotebook size={24} />
+        <PiNotepadFill size={28} />
       </IconContainer>
     </Container>
   );

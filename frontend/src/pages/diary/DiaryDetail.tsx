@@ -85,7 +85,7 @@ const DiaryDetail = () => {
                 <Icon />
               </IconContainer>
               <ContentContainer>
-                <TransferTitle>{diaryData.title}</TransferTitle>
+                <TransferTitle>{diaryData.memo}</TransferTitle>
                 <MoneyAndAccount>
                   <Money>+ {diaryData.deposit}</Money>
                   <Account>{diaryData.account}</Account>

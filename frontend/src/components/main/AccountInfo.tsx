@@ -5,9 +5,10 @@ import { ChildAccountInfo } from '../../api/account';
 
 interface AccountInfoProps {
   onSelectAccount?: (accountNo: string) => void
+  isParent?: boolean
 }
 
-const AccountInfo: React.FC<AccountInfoProps> = ({ onSelectAccount }) => {
+const AccountInfo: React.FC<AccountInfoProps> = ({ onSelectAccount, isParent=false }) => {
   const [account, setAccount] = useState<string>('');
   const [accountBalance, setAccountBalance] = useState<string>('0');
   const [bankName, setBankName] = useState<string>('');
@@ -16,7 +17,7 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ onSelectAccount }) => {
     const getAccountInfo = async () => {
       try {
 
-        const accountInfo = await ChildAccountInfo();
+        const accountInfo = await ChildAccountInfo(isParent);
         
         setAccount(accountInfo.account);
         setAccountBalance(formatCurrency(accountInfo.accountBalance));
@@ -27,7 +28,7 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ onSelectAccount }) => {
     }
 
     getAccountInfo()
-  }, []);
+  }, [isParent]);
 
   const handleSelect = () => {
     if (onSelectAccount) {
