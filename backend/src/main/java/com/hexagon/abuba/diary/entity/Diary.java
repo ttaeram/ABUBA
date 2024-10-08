@@ -56,6 +56,9 @@ public class Diary {
     //메모
     private String memo;
 
+    //감정
+    private String sentiment;
+
     public void setParent(Parent parent) {
         if(this.parent != null){
             this.parent.getDiaries().remove(this);
