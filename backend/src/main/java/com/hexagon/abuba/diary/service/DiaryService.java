@@ -36,14 +36,16 @@ public class DiaryService {
     private final AccountService accountService;
     private final Tika tika;
     private final BabyRepository babyRepository;
+    private final AIService aiService;
 
-    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, S3Service s3Service, AccountService accountService, BabyRepository babyRepository) {
+    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, S3Service s3Service, AccountService accountService, BabyRepository babyRepository, AIService aiService) {
         this.diaryRepository = diaryRepository;
         this.parentRepository = parentRepository;
         this.s3Service = s3Service;
         this.accountService = accountService;
         this.tika = new Tika();
         this.babyRepository = babyRepository;
+        this.aiService = aiService;
     }
 
     public List<DiaryRecentResDTO> recentDiary(Long parentId) {
@@ -106,7 +108,8 @@ public class DiaryService {
                 diary.getWeight(),
                 s3Service.getFileUrl(diary.getImage_url()),
                 s3Service.getFileUrl(diary.getRecord_url()),
-                diary.getMemo()
+                diary.getMemo(),
+                diary.getSentiment()
         );
 
         return diaryDetailResDTO;
@@ -137,9 +140,12 @@ public class DiaryService {
             e.printStackTrace();
         }
 
+        String sentiment = aiService.getSentiment(reqDTO.content());
+
         if(reqDTO.deposit() != null && reqDTO.deposit().intValue() != 0){
             if(accountService.transferMoney(parentId, reqDTO.deposit().longValue(), reqDTO.memo())) {
                 Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
+                diary.setSentiment(sentiment);
                 diaryRepository.save(diary);
             }else{
                 try {
@@ -150,6 +156,7 @@ public class DiaryService {
             }
         }else {
             Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
+            diary.setSentiment(sentiment);
             diaryRepository.save(diary);
         }
 
@@ -192,6 +199,8 @@ public class DiaryService {
             e.printStackTrace();
         }
 
+        String sentiment = aiService.getSentiment(reqDTO.content());
+        diary.setSentiment(sentiment);
         diary = uploadFile(imageStream, imageName, "img", diary, imgMimeType);
         diary = uploadFile(recordStream, recordName, "record", diary, recordMimeType);
 
