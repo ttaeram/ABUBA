@@ -284,13 +284,14 @@ public class DiaryService {
             }else if(fileType.equals("record")){
                 diary.setRecord_url(uploadFileName);
             }
-        }else{
-            if(fileType.equals("img")){
-                diary.setImage_url(null);
-            }else{
-                diary.setRecord_url(null);
-            }
         }
+//        else{
+//            if(fileType.equals("img")){
+//                diary.setImage_url(null);
+//            }else{
+//                diary.setRecord_url(null);
+//            }
+//        }
         return diary;
     }
 

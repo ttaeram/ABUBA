@@ -8,7 +8,7 @@ import SupportRoadMap from '../../components/rodamap/SupportRoadMap';
 import HealthRoadMap from '../../components/rodamap/HealthRoadMap';
 
 const ChildRoadMap = () => {
-  const [selectedTab, setSelectedTab] = useState('전체');
+  const [selectedTab, setSelectedTab] = useState('성장 발달');
   const {childname, birthdate} = useChildAuthStore();
   const age = calculateAge(birthdate);
   const shortname = changeShortName(childname);
@@ -48,6 +48,8 @@ const All = styled.div`
   display: flex;
   justify-content: right;
   text-align: right;
+  font-size: 22px;
+  color:#173C91;
   margin-bottom: 20px;
 `
 const TabContainer = styled.div`

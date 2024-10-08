@@ -75,7 +75,7 @@ public class DiaryController {
 
 
     @SecurityRequirement(name = "access")  // 이 API는 토큰이 필요함
-    @PostMapping(consumes = {MediaType.ALL_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "일기 작성")
     public ResponseEntity<String> addDiary(
             @RequestPart(value = "image", required = false) MultipartFile image,
@@ -90,7 +90,7 @@ public class DiaryController {
 
 
     @SecurityRequirement(name = "access")  // 이 API는 토큰이 필요함
-    @PutMapping(consumes = {MediaType.ALL_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PutMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @Operation(summary = "일기 수정")
     public ResponseEntity<String> editDiary(@RequestPart(value = "image", required = false) MultipartFile image,
                                             @RequestPart(value = "record", required = false) MultipartFile record,
