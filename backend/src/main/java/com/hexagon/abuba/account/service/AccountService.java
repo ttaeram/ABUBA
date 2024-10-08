@@ -52,7 +52,7 @@ public class AccountService {
         String startDate = historyReqDTO.getStartDate();
         String endDate = historyReqDTO.getEndDate();
         String transactionType = "A";
-        String orderByType = "DESC";
+        String orderByType = "ASC";
 
         return finAPIClient.getHistory(new HistoryRequestDTO(header, accountNo, startDate, endDate, transactionType, orderByType)).REC().list();
     }
