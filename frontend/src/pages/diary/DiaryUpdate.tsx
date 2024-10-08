@@ -13,6 +13,8 @@ const DiaryUpdate = () => {
   const [diaryData, setDiaryData] = useState<any>(location.state?.diaryData || null)
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [audioFile, setAudioFile] = useState<Blob | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!diaryData) {
@@ -30,9 +32,14 @@ const DiaryUpdate = () => {
           setDiaryData(response.data);
         } catch (e) {
           console.error("Failed to load diary data:", e);
+          setError("일기를 불러오는 데 실패했습니다.")
+        } finally {
+          setLoading(false)
         }
       };
       fetchDiaryData();
+    } else {
+      setLoading(false)
     }
   }, [diaryData, id]);
 
@@ -68,19 +75,19 @@ const DiaryUpdate = () => {
       formData.append("image", imageFile);
     }
 
-    // 새로 녹음된 오디오 파일이 있으면 추가
     if (audioFile) {
       formData.append("record", audioFile);
     }
 
-    const diaryJson = JSON.stringify({
-      title: diaryData.title,
-      content: diaryData.content,
-      height: diaryData.height,
-      weight: diaryData.weight,
-    })
+    const info = {
+      diaryId: diaryData.id,
+      title: diaryData.title || '제목 없음',
+      content: diaryData.content || '내용 없음',
+      height: diaryData.height || 0,
+      weight: diaryData.weight || 0,
+    };
 
-    formData.append("diary", new Blob([diaryJson], { type: "application/json" }))
+    formData.append('info', new Blob([JSON.stringify(info)], { type: 'application/json' }))
 
     try {
       const accessToken = localStorage.getItem('accessToken');
@@ -88,9 +95,10 @@ const DiaryUpdate = () => {
         throw new Error('Access Token이 없음');
       }
 
-      await api.put(`/api/v1/diary/${id}`, formData, {
+      await api.put(`/api/v1/diary`, formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data',
         },
       })
       navigate(`/diary/${id}`)

@@ -1,12 +1,10 @@
 package com.hexagon.abuba.account.controller;
 
 
-import com.hexagon.abuba.account.dto.request.BalanceRequestDTO;
 import com.hexagon.abuba.account.dto.request.HistoryReqDTO;
 import com.hexagon.abuba.account.dto.response.BalanceAmountResponseDTO;
-import com.hexagon.abuba.account.dto.response.HistoryResDTO;
 import com.hexagon.abuba.account.service.AccountService;
-import com.hexagon.abuba.global.openfeign.dto.response.BalanceResponseDTO;
+import com.hexagon.abuba.global.openfeign.dto.response.HistoryData;
 import com.hexagon.abuba.user.Parent;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -36,13 +34,13 @@ public class AccountController {
     }
 
 
-    @GetMapping
+    @PostMapping
     @Operation(summary = "아이 계좌 거래내역 조회")
-    public ResponseEntity<List<HistoryResDTO>> getHistory(@RequestBody HistoryReqDTO historyReqDTO,
-                                             @AuthenticationPrincipal(expression = "user") Parent user) {
-        List<HistoryResDTO> historyResDTOList = accountService.getHistory(user.getId(), historyReqDTO);
+    public ResponseEntity<List<HistoryData>> getHistory(@RequestBody HistoryReqDTO historyReqDTO,
+                                                        @AuthenticationPrincipal(expression = "user") Parent user) {
+        List<HistoryData> historyDataList = accountService.getHistory(user.getId(), historyReqDTO);
 
-        return ResponseEntity.ok(historyResDTOList);
+        return ResponseEntity.ok(historyDataList);
     }
 
     @GetMapping("/balance")
