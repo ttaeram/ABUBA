@@ -5,7 +5,7 @@ spring:
     # password: abuba106
     username: root
     password: ssafy
-    url: jdbc:mysql://mysql:3306
+    url: jdbc:mysql://mysql:3306/abuba
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   mail:
