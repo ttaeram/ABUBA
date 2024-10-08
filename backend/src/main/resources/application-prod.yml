@@ -1,8 +1,11 @@
 spring:
   datasource:
-    url: jdbc:mysql://stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306/S11P22A106?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
-    username: S11P22A106@stg-yswa-kr-practice-db-master
-    password: abuba106
+    # url: jdbc:mysql://stg-yswa-kr-practice-db-master.mariadb.database.azure.com:3306/S11P22A106?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    # username: S11P22A106@stg-yswa-kr-practice-db-master
+    # password: abuba106
+    username: root
+    password: ssafy
+    url: jdbc:mysql://3.36.67.138:3306/abuba
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   mail:
@@ -31,6 +34,10 @@ aws:
     secret-key: ${AWS_SECRET_KEY}
     bucket-name: hexagon-abuba
     region: ap-northeast-2
+
+naver:
+  client-id: ${CLIENT_ID}
+  client-secret: ${CLIENT_SECRET}
 
 
 #ec2 주소

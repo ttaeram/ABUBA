@@ -5,15 +5,15 @@ interface AmountModalProps {
   setDeposit: (value: number) => void;
   memo: string;
   setMemo: (value: string) => void;
-  onNext: () => void;
+  onConfirm: () => void;
   onBack: () => void;
 }
 
-const AmountModal: React.FC<AmountModalProps> = ({ deposit, setDeposit, memo, setMemo, onNext, onBack }) => {
+const AmountModal: React.FC<AmountModalProps> = ({ deposit, setDeposit, memo, setMemo, onConfirm, onBack }) => {
   return (
     <div>
       <Title>금액 입력</Title>
-      <Input
+      <DepositInput
         type="number"
         value={deposit}
         onChange={(e) => setDeposit(Number(e.target.value))}
@@ -28,7 +28,7 @@ const AmountModal: React.FC<AmountModalProps> = ({ deposit, setDeposit, memo, se
       />
       <ButtonContainer>
         <BackButton onClick={onBack}>이전</BackButton>
-        <NextButton onClick={onNext}>다음</NextButton>
+        <NextButton onClick={onConfirm}>완료</NextButton>
       </ButtonContainer>
     </div>
   )
@@ -37,18 +37,44 @@ const AmountModal: React.FC<AmountModalProps> = ({ deposit, setDeposit, memo, se
 export default AmountModal
 
 const Title = styled.h2`
+  text-align: left;
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 20px;
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 10px
 `;
 
-const Input = styled.input`
+const DepositInput = styled.input`
+  text-align: right;
   width: 100%;
   padding: 10px;
   margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  border-radius: 0;
+  outline: none;
+  transition: border-bottom-color 0.3s ease;
+
+  &:focus {
+    border-bottom: 2px solid #3B6EBA;
+  }
+`;
+
+const Input = styled.input`
   text-align: center;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  border-radius: 0;
+  outline: none;
+  transition: border-bottom-color 0.3s ease;
+
+  &:focus {
+    border-bottom: 2px solid #3B6EBA;
+  }
 `;
 
 const ButtonContainer = styled.div`

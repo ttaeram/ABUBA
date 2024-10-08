@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react"
-import SelectModal from "./SelectModal"
+import SelectChildModal from "./SelectChildModal"
 import AmountModal from "./AmountModal"
-import MemoModal from "./MemoModal"
+import SelectParentModal from "./SelectParentModal"
 import styled from "styled-components"
+import ParentAccountForm from "../onboardinginfo/ParentAccountForm"
 
 interface DepositModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (account: string, memo: string, deposit: number) => void;
+  onConfirm: (childAccount: string, parentAccount: string, memo: string, deposit: number) => void;
 }
 
 const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose, onConfirm }) => {
   const [step, setStep] = useState(1)
-  const [account, setAccount] = useState<string>("")
+  const [childAccount, setChildAccount] = useState<string>("")
+  const [parentAccount, setParentAccount] = useState<string>("")
   const [deposit, setDeposit] = useState<number>(0)
   const [memo, setMemo] = useState<string>("")
 
@@ -25,8 +27,13 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose, onConfirm 
   const handleNext = () => setStep((prevStep) => prevStep + 1)
   const handleBack = () => setStep((prevStep) => prevStep - 1)
 
-  const handleSelectAccount = (selectedAccount: string) => {
-    setAccount(selectedAccount)
+  const handleSelectChildAccount = (selectedChildAccount: string) => {
+    setChildAccount(selectedChildAccount)
+    handleNext()
+  }
+
+  const handleSelectParentAccount = (selectedParentAccount: string) => {
+    setParentAccount(selectedParentAccount)
     handleNext()
   }
 
@@ -38,25 +45,22 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose, onConfirm 
         <CloseButton onClick={onClose}>x</CloseButton>
         
         {/* 상태에 따른 내용물 변경 */}
-        {step === 1 && <SelectModal onNext={handleSelectAccount} />}  {/* 계좌 선택 */}
-        {step === 2 && (
+        {step === 1 && <SelectChildModal onNext={handleSelectChildAccount} />}
+        {step === 2 && 
+          <SelectParentModal 
+            onNext={handleSelectParentAccount}
+            onBack={handleBack}
+          />}
+        {step === 3 && (
           <AmountModal
             deposit={deposit}
             setDeposit={setDeposit}
             memo={memo}
             setMemo={setMemo}
-            onNext={handleNext}
             onBack={handleBack}
+            onConfirm={() => onConfirm(childAccount, parentAccount, memo, deposit)}
           />
-        )}  {/* 금액 입력 */}
-        {step === 3 && (
-          <MemoModal
-            memo={memo}
-            setMemo={setMemo}
-            onConfirm={() => onConfirm(account, memo, deposit)}
-            onBack={handleBack}
-          />
-        )}  {/* 메모 입력 */}
+        )}
       </ModalContainer>
     </Modal>
   )

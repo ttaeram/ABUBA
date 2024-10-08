@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import BackButton from "../../components/buttons/BackButton"
 import AudioPlayer from "../../components/AudioPlayer"
@@ -6,6 +6,7 @@ import DepositModal from "../../components/deposit/DepostModal"
 import api from '../../api/index'
 import styled from "styled-components"
 import { ReactComponent as WonSvg } from "../../assets/images/won.svg"
+import { useChildAuthStore } from "../../stores/authStore"
 
 interface DiaryData {
   title: string;
@@ -16,38 +17,47 @@ interface DiaryData {
   audioFile?: File | null;
   account: string;
   deposit: number;
+  memo: string;
 }
 
 const DiaryCreate = () => {
   const navigate = useNavigate()
-  const [diaryData, setDiaryData] = useState<DiaryData>({
-    title: "",
-    content: "",
-    height: 0,
-    weight: 0,
-    account: "",
-    deposit: 0,
-    imageFile: null,
-    audioFile: null,
-  })
-
+  const [title, setTitle] = useState<string>("")
+  const [content, setContent] = useState<string>("")
+  const [height, setHeight] = useState<number>(0)
+  const [weight, setWeight] = useState<number>(0)
+  const [childAccount, setChildAccount] = useState<string>("")
+  const [parentAccount, setParentAccount] = useState<string>("")
+  const [deposit, setDeposit] = useState<number>(0)
+  const [memo, setMemo] = useState<string>("")
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [audioFile, setAudioFile] = useState<File | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setDiaryData({ ...diaryData, [name]: value })
-  }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      setDiaryData({ ...diaryData, imageFile: file })
+      setImageFile(file)
+
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl)
+      }
+      const newUrl = URL.createObjectURL(file)
+      setPreviewUrl(newUrl)
     }
   }
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl)
+      }
+    }
+  }, [previewUrl])
   
   const handleNewRecording = (audioBlob: Blob) => {
-    const audioFile = new File([audioBlob], 'recording.wav', { type: 'audio/wav' })
-    setDiaryData({ ...diaryData, audioFile })
+    setAudioFile(new File([audioBlob], 'recording.wav', { type: 'audio/wav' }))
   }
 
   const handleImageClick = () => {
@@ -57,34 +67,30 @@ const DiaryCreate = () => {
   const handleSubmit = async () => {
     const formData = new FormData()
 
-    if (diaryData.imageFile) {
-      formData.append('image', diaryData.imageFile)
+    if (imageFile) {
+      formData.append('image', imageFile)
     }
-    if (diaryData.audioFile) {
-      formData.append('record', diaryData.audioFile)
+    if (audioFile) {
+      formData.append('record', audioFile)
     }
 
     const info = {
-      title: diaryData.title || '제목 없음',
-      content: diaryData.content || '내용 없음',
-      account: diaryData.account || '계좌 없음',
-      deposit: diaryData.deposit || 0,
-      height: diaryData.height || 0,
-      weight: diaryData.weight || 0,
+      title: title || '제목 없음',
+      content: content || '내용 없음',
+      account: childAccount || '계좌 없음',
+      deposit: deposit || 0,
+      memo: memo || '메모 없음',
+      height: height || 0,
+      weight: weight || 0,
     };
 
     formData.append('info', new Blob([JSON.stringify(info)], { type: 'application/json' }))
 
     try {
       const accessToken = localStorage.getItem('accessToken')
-
       if (!accessToken) {
         throw new Error('Access Token이 없음')
       }
-      
-      formData.forEach((value, key) => {
-        console.log(key, value);
-      });
 
       await api.post('/api/v1/diary', formData, {
         headers: {
@@ -99,12 +105,11 @@ const DiaryCreate = () => {
     }
   }
 
-  const handleConfirm = (selectedAccount: string, memo: string, deposit: number) => {
-    setDiaryData({
-      ...diaryData,
-      account: selectedAccount,
-      deposit: deposit,
-    })
+  const handleConfirm = (selectedChildAccount: string, selectedParentAccount: string, memo: string, deposit: number) => {
+    setChildAccount(selectedChildAccount)
+    setParentAccount(selectedParentAccount)
+    setMemo(memo)
+    setDeposit(deposit)
     setIsModalOpen(false)
   }
 
@@ -118,8 +123,8 @@ const DiaryCreate = () => {
 
     <Content>
     <ImageContainer onClick={handleImageClick}>
-      {diaryData.imageFile ? (
-        <PreviewImage src={URL.createObjectURL(diaryData.imageFile)} alt="Uploaded" />
+      {previewUrl ? (
+        <PreviewImage src={previewUrl} alt="Uploaded" />
       ) : (
         <>
           <ImagePlaceholder>+</ImagePlaceholder>
@@ -141,8 +146,8 @@ const DiaryCreate = () => {
         <StatInput
           type="number"
           name="height"
-          value={diaryData.height}
-          onChange={handleChange}
+          value={height}
+          onChange={(e) => setHeight(Number(e.target.value))}
           placeholder="신장"
         />
         <Unit>cm</Unit>
@@ -153,8 +158,8 @@ const DiaryCreate = () => {
         <StatInput
           type="number"
           name="weight"
-          value={diaryData.weight}
-          onChange={handleChange}
+          value={weight}
+          onChange={(e) => setWeight(Number(e.target.value))}
           placeholder="체중"
         />
         <Unit>kg</Unit>
@@ -165,16 +170,16 @@ const DiaryCreate = () => {
       <Input
         type="text"
         name="title"
-        value={diaryData.title}
-        onChange={handleChange}
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
         placeholder="제목을 입력하세요"
       />
 
       <Label>내용</Label>
       <Textarea
         name="content"
-        value={diaryData.content}
-        onChange={handleChange}
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
         placeholder="오늘의 일기를 작성해주세요"
       />
 
@@ -187,24 +192,23 @@ const DiaryCreate = () => {
         <DepositModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onConfirm={(selectedAccount, memo, deposit) => handleConfirm(selectedAccount, memo, deposit)}
+          onConfirm={(selectedChildAccount, selectedParentAccount, memo, deposit) => handleConfirm(selectedChildAccount, selectedParentAccount, memo, deposit)}
         />
-
-        {diaryData.account && (
-          <AccountContainer>
-            <IconContainer>
-              <Icon />
-            </IconContainer>
-            <ContentContainer>
-              <TransferTitle>{diaryData.title}</TransferTitle>
-              <MoneyAndAccount>
-                <Money>+ {diaryData.deposit}</Money>
-                <Account>{diaryData.account}</Account>
-              </MoneyAndAccount>
-            </ContentContainer>
-          </AccountContainer>
-        )}
       </DepositContainer>
+      {childAccount && (
+        <AccountContainer>
+          <IconContainer>
+            <Icon />
+          </IconContainer>
+          <ContentContainer>
+            <TransferTitle>{memo}</TransferTitle>
+            <MoneyAndAccount>
+              <Money>+ {deposit}</Money>
+              <Account>{childAccount}</Account>
+            </MoneyAndAccount>
+          </ContentContainer>
+        </AccountContainer>
+      )}
     </Content>
   </DiaryContainer>
   )
@@ -296,7 +300,7 @@ const StatLabel = styled.label`
 const StatInput = styled.input`
   width: 60px;
   padding: 5px;
-  text-align: center;
+  text-align: right;
   border: 1px solid #ccc;
   border-radius: 5px;
   margin-left: 40px
@@ -359,6 +363,7 @@ const AccountContainer = styled.div`
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
+  margin-top: 10px;
   margin-bottom: 10px;
 `;
 

@@ -12,6 +12,7 @@ import com.hexagon.abuba.diary.repository.DiaryRepository;
 import com.hexagon.abuba.s3.service.S3Service;
 import com.hexagon.abuba.user.Baby;
 import com.hexagon.abuba.user.Parent;
+import com.hexagon.abuba.user.repository.BabyRepository;
 import com.hexagon.abuba.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -33,13 +35,17 @@ public class DiaryService {
     private final S3Service s3Service;
     private final AccountService accountService;
     private final Tika tika;
+    private final BabyRepository babyRepository;
+    private final AIService aiService;
 
-    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, S3Service s3Service, AccountService accountService) {
+    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, S3Service s3Service, AccountService accountService, BabyRepository babyRepository, AIService aiService) {
         this.diaryRepository = diaryRepository;
         this.parentRepository = parentRepository;
         this.s3Service = s3Service;
         this.accountService = accountService;
         this.tika = new Tika();
+        this.babyRepository = babyRepository;
+        this.aiService = aiService;
     }
 
     public List<DiaryRecentResDTO> recentDiary(Long parentId) {
@@ -48,10 +54,10 @@ public class DiaryService {
         Baby baby = parent.getBaby();
         List<Parent> parentList = baby.getParents();
         List<Diary> diaries = diaryRepository.findByParents(parentList);
+        Collections.reverse(diaries);
 
         for (Diary diary : diaries) {
-            // TODO : 이미지 URL 이 Null 로 나올지 빈칸으로 나올지 모르기 때문에 수정할 가능성 있음
-            if(diary.getImage_url().isEmpty()) continue; // 이미지 URL 이 null 일 경우
+            if(diary.getImage_url()==null) continue; // 이미지 URL 이 null 일 경우
 
             DiaryRecentResDTO diaryRecentResDTO = new DiaryRecentResDTO(
                     diary.getId(),
@@ -68,8 +74,16 @@ public class DiaryService {
     public List<DiaryResDTO> getList(Long parentId){
         Parent parent = parentRepository.findById(parentId).orElseThrow();
         Baby baby = parent.getBaby();
-        List<Parent> parentList = baby.getParents();
+        List<Baby> babyList = babyRepository.findAllByAccount(baby.getAccount());
+
+        List<Parent> parentList = new ArrayList<>();
+
+        for(Baby b: babyList){
+            parentList.addAll(b.getParents());
+        }
+
         List<Diary> diaries = diaryRepository.findByParents(parentList);
+        Collections.reverse(diaries);
         List<DiaryResDTO> diaryResDTOList = new ArrayList<>();
         for (Diary diary : diaries) {
             DiaryResDTO diaryResDTO = EntityToResDTO(diary);
@@ -92,7 +106,9 @@ public class DiaryService {
                 diary.getHeight(),
                 diary.getWeight(),
                 s3Service.getFileUrl(diary.getImage_url()),
-                s3Service.getFileUrl(diary.getRecord_url())
+                s3Service.getFileUrl(diary.getRecord_url()),
+                diary.getMemo(),
+                diary.getSentiment()
         );
 
         return diaryDetailResDTO;
@@ -123,12 +139,26 @@ public class DiaryService {
             e.printStackTrace();
         }
 
-        Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
-        diaryRepository.save(diary);
+        String sentiment = aiService.getSentiment(reqDTO.content());
+
         if(reqDTO.deposit() != null && reqDTO.deposit().intValue() != 0){
-            accountService.minusParentMoney(parentId, reqDTO.deposit().longValue());
-            accountService.addBabyMoney(parentId, reqDTO.deposit().longValue());
+            if(accountService.transferMoney(parentId, reqDTO.deposit().longValue(), reqDTO.memo())) {
+                Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
+                diary.setSentiment(sentiment);
+                diaryRepository.save(diary);
+            }else{
+                try {
+                    throw new Exception("계좌이체중 문제가 발생했습니다.");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }else {
+            Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
+            diary.setSentiment(sentiment);
+            diaryRepository.save(diary);
         }
+
     }
 
     public void editDiary(DiaryEditReqDTO reqDTO, MultipartFile image, MultipartFile record){
@@ -168,6 +198,8 @@ public class DiaryService {
             e.printStackTrace();
         }
 
+        String sentiment = aiService.getSentiment(reqDTO.content());
+        diary.setSentiment(sentiment);
         diary = uploadFile(imageStream, imageName, "img", diary, imgMimeType);
         diary = uploadFile(recordStream, recordName, "record", diary, recordMimeType);
 
@@ -203,6 +235,7 @@ public class DiaryService {
         diary.setDeposit(reqDTO.deposit());
         diary.setHeight(reqDTO.height());
         diary.setWeight(reqDTO.weight());
+        diary.setMemo(reqDTO.memo());
 
 
         diary = uploadFile(imageStream, imageName, "img", diary, imgMimeType);
@@ -219,13 +252,14 @@ public class DiaryService {
             }else if(fileType.equals("record")){
                 diary.setRecord_url(uploadFileName);
             }
-        }else{
-            if(fileType.equals("img")){
-                diary.setImage_url(null);
-            }else{
-                diary.setRecord_url(null);
-            }
         }
+//        else{
+//            if(fileType.equals("img")){
+//                diary.setImage_url(null);
+//            }else{
+//                diary.setRecord_url(null);
+//            }
+//        }
         return diary;
     }
 

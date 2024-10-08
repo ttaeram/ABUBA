@@ -1,14 +1,14 @@
 import AccountInfo from "../main/AccountInfo";
 import styled from "styled-components"
 
-interface SelectModalProps {
-  onNext: (selectedAccount: string) => void;
+interface SelectChildModalProps {
+  onNext: (selectedChildAccount: string) => void;
 }
 
-const SelectModal: React.FC<SelectModalProps> = ({ onNext }) => {
+const SelectChildModal: React.FC<SelectChildModalProps> = ({ onNext }) => {
   return (
     <div>
-      <Title>계좌 선택</Title>
+      <Title>아이 계좌 선택</Title>
       <Content>
         <AccountInfo onSelectAccount={onNext} />
       </Content>
@@ -16,7 +16,7 @@ const SelectModal: React.FC<SelectModalProps> = ({ onNext }) => {
   )
 }
 
-export default SelectModal
+export default SelectChildModal
 
 const Title = styled.h2`
   font-size: 18px;
