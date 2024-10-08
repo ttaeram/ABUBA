@@ -1,9 +1,11 @@
+import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
 
 const DiaryListCard = ({ diary }: { diary: { id: number; title: string; content: string; createdAt: string; deposit: number; imageUrl: string } }) => {
-  console.log(diary.imageUrl)
   const navigate = useNavigate()
+  const formattedDate = dayjs(diary.createdAt).format('YYYY년 MM월 DD일')
+
   const toDiaryDetail = () => {
     navigate(`/diary/${diary.id}`)
   }
@@ -16,8 +18,8 @@ const DiaryListCard = ({ diary }: { diary: { id: number; title: string; content:
       </div>
       <Content>{diary.content}</Content>
       <InfoRow>
-        <Date>{diary.createdAt}</Date>
-        <Money>{diary.deposit}</Money>
+        <Date>{formattedDate}</Date>
+        <Money>+{diary.deposit} 원</Money>
       </InfoRow>
     </Card>
   )

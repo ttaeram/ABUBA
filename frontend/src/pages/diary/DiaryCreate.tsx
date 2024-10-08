@@ -16,6 +16,7 @@ interface DiaryData {
   audioFile?: File | null;
   account: string;
   deposit: number;
+  memo: string;
 }
 
 const DiaryCreate = () => {
@@ -29,6 +30,7 @@ const DiaryCreate = () => {
     deposit: 0,
     imageFile: null,
     audioFile: null,
+    memo: "",
   })
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -69,6 +71,7 @@ const DiaryCreate = () => {
       content: diaryData.content || '내용 없음',
       account: diaryData.account || '계좌 없음',
       deposit: diaryData.deposit || 0,
+      memo: diaryData.memo || '메모 없음',
       height: diaryData.height || 0,
       weight: diaryData.weight || 0,
     };
@@ -103,6 +106,7 @@ const DiaryCreate = () => {
     setDiaryData({
       ...diaryData,
       account: selectedAccount,
+      memo: memo,
       deposit: deposit,
     })
     setIsModalOpen(false)
@@ -189,22 +193,21 @@ const DiaryCreate = () => {
           onClose={() => setIsModalOpen(false)}
           onConfirm={(selectedAccount, memo, deposit) => handleConfirm(selectedAccount, memo, deposit)}
         />
-
-        {diaryData.account && (
-          <AccountContainer>
-            <IconContainer>
-              <Icon />
-            </IconContainer>
-            <ContentContainer>
-              <TransferTitle>{diaryData.title}</TransferTitle>
-              <MoneyAndAccount>
-                <Money>+ {diaryData.deposit}</Money>
-                <Account>{diaryData.account}</Account>
-              </MoneyAndAccount>
-            </ContentContainer>
-          </AccountContainer>
-        )}
       </DepositContainer>
+      {diaryData.account && (
+        <AccountContainer>
+          <IconContainer>
+            <Icon />
+          </IconContainer>
+          <ContentContainer>
+            <TransferTitle>{diaryData.memo}</TransferTitle>
+            <MoneyAndAccount>
+              <Money>+ {diaryData.deposit}</Money>
+              <Account>{diaryData.account}</Account>
+            </MoneyAndAccount>
+          </ContentContainer>
+        </AccountContainer>
+      )}
     </Content>
   </DiaryContainer>
   )
@@ -296,7 +299,7 @@ const StatLabel = styled.label`
 const StatInput = styled.input`
   width: 60px;
   padding: 5px;
-  text-align: center;
+  text-align: right;
   border: 1px solid #ccc;
   border-radius: 5px;
   margin-left: 40px
@@ -359,6 +362,7 @@ const AccountContainer = styled.div`
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
+  margin-top: 10px;
   margin-bottom: 10px;
 `;
 
