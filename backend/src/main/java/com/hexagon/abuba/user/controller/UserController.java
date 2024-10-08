@@ -17,7 +17,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.bridge.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,11 +78,11 @@ public class UserController {
     @PostMapping("/account")
     public ResponseEntity<MessageResponse> registAccount(@AuthenticationPrincipal(expression = "user") Parent user,
                                                                @RequestBody RegistAccountRequestDTO registAccountRequestDTO){
-        userService.registAccount(user, registAccountRequestDTO);
+        HttpStatus status = userService.registAccount(user, registAccountRequestDTO);
         if(registAccountRequestDTO.isParent()){
-            return new ResponseEntity<>(MessageResponse.of(HttpStatus.OK,"부모 계좌정보 등록이 완료됬습니다."),HttpStatus.OK);
+            return new ResponseEntity<>(MessageResponse.of(status,"부모 계좌정보 등록이 완료됬습니다."),status);
         }
-        return new ResponseEntity<>(MessageResponse.of(HttpStatus.OK,"아이 계좌정보 등록이 완료됬습니다."),HttpStatus.OK);
+        return new ResponseEntity<>(MessageResponse.of(status,"아이 계좌정보 등록이 완료됬습니다."),status);
     }
 
 }
