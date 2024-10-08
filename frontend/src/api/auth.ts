@@ -42,7 +42,10 @@ export const requestEmailVerificationCode = async (email: string) => {
   try {
     const response = await api.post(`/api/v1/auth/send-email`, {email});
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
+    if (error.response && error.response.status === 409) {
+      throw new Error('이미 사용 중인 이메일입니다.');
+    }
     console.error('이메일 인증번호 전송 중 오류가 발생했습니다.', error);
     throw error;
   }

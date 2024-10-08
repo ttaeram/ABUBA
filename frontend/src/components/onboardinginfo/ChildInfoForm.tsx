@@ -12,7 +12,7 @@ const ChildInfoForm = ({ onNext }: Props) => {
   const [relation, setRelation] = useState('');
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
-  const [birthDate, setBirthDate] = useState('');
+  const [birthDate, setBirthDate] = useState(new Date().toISOString().split('T')[0]);
   const [gender, setGender] = useState('');
   const [error, setError] = useState('');
 
@@ -72,21 +72,27 @@ const ChildInfoForm = ({ onNext }: Props) => {
           </RelationButton>
         </RelationContainer>
 
-        <Label>키 (cm)</Label>
-        <Input
-          type="number"
-          value={height}
-          onChange={(e) => setHeight(e.target.value)}
-        />
-
-        <Label>몸무게 (kg)</Label>
-        <Input
-          type="number"
-          step="0.1"
-          value={weight}
-          onChange={(e) => setWeight(e.target.value)}
-        />
-
+        <PhysicalContainer>
+          <PhysicalInputContainer>
+            <Label>키 (cm)</Label>
+            <PhysicalInput
+              type="number"
+              step="0.1"
+              value={height}
+              onChange={(e) => setHeight(e.target.value)}
+            />
+          </PhysicalInputContainer>
+          <PhysicalInputContainer>
+            <Label>몸무게 (kg)</Label>
+            <PhysicalInput
+              type="number"
+              step="0.1"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+            />
+        
+          </PhysicalInputContainer>
+        </PhysicalContainer>
         <Label>생년월일</Label>
         <Input
           type="date"
@@ -94,7 +100,7 @@ const ChildInfoForm = ({ onNext }: Props) => {
           onChange={(e) => setBirthDate(e.target.value)}
         />
 
-        <Label>성별</Label>
+        <Label>아이 성별</Label>
         <GenderContainer>
           <GenderButton
             type="button"
@@ -111,6 +117,8 @@ const ChildInfoForm = ({ onNext }: Props) => {
             여자
           </GenderButton>
         </GenderContainer>
+
+
       </InputContainer>
 
       {error && <ErrorMessage>{error}</ErrorMessage>}
@@ -136,7 +144,7 @@ const InputContainer = styled.div`
 `;
 
 const Label = styled.label`
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 `;
 
 const Input = styled.input`
@@ -153,7 +161,7 @@ const RelationContainer = styled.div`
 `;
 
 const RelationButton = styled.button<{ isSelected: boolean }>`
-  width: 45%;
+  width: 48%;
   padding: 15px;
   background-color: ${({ isSelected }) => (isSelected ? '#3B6EBA' : '#f0f0f0')};
   border: 1px solid #ccc;
@@ -170,7 +178,7 @@ const GenderContainer = styled.div`
 `;
 
 const GenderButton = styled.button<{ isSelected: boolean }>`
-  width: 45%;
+  width: 48%;
   padding: 15px;
   background-color: ${({ isSelected }) => (isSelected ? '#3B6EBA' : '#f0f0f0')};
   border: 1px solid #ccc;
@@ -183,4 +191,31 @@ const GenderButton = styled.button<{ isSelected: boolean }>`
 const ErrorMessage = styled.div`
   color: red;
   margin-bottom: 15px;
+`;
+
+
+const PhysicalContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  width: 100%;
+`;
+
+const PhysicalInputContainer = styled.div`
+  flex: 1;
+  margin-right: 10px;
+
+  &:last-child {
+    margin-right: 0; 
+  }
+`;
+
+const PhysicalInput = styled.input`
+  padding: 15px;
+  margin-top: 10px;
+  margin-bottom: 5px; 
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  text-align: right; 
+  width: 100%; 
 `;

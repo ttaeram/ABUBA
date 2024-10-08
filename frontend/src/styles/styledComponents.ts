@@ -3,6 +3,7 @@
 import styled from 'styled-components';
 import { ReactComponent as LogoSvg } from '../assets/images/onlylogo.svg';
 import { ReactComponent as FullLogoSvg } from '../assets/images/fulllogo.svg';
+import { ReactComponent as WhiteFullSvg} from '../assets/images/whitefulllogo.svg'
 import { motion } from 'framer-motion';
 
 export const LogoSvgStyled = styled(LogoSvg)`
@@ -11,7 +12,12 @@ export const LogoSvgStyled = styled(LogoSvg)`
 `;
 
 export const FullLogoSvgStyled = styled(FullLogoSvg)`
-  width: 120px; 
+  width: 120px;
+  height: auto;  
+`;
+
+export const WhiteFullLogoSvgStyled = styled(WhiteFullSvg)`
+  width: 120px;
   height: auto;  
 `;
 
@@ -21,6 +27,7 @@ export const FormContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh; 
+  background-color: #FFFFFF;
 `;
 
 export const FormTitle = styled.h2`
