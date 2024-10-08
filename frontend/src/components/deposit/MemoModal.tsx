@@ -10,12 +10,12 @@ interface MemoModalProps {
 const MemoModal: React.FC<MemoModalProps> = ({ memo, setMemo, onConfirm, onBack }) => {
   return (
     <div>
-      <Title>메모 입력</Title>
+      <Title>비밀번호 입력</Title>
       <Input
         type="text"
         value={memo}
         onChange={(e) => setMemo(e.target.value)}
-        placeholder="메모를 입력하세요."
+        placeholder="비밀번호"
       />
       <ButtonContainer>
         <BackButton onClick={onBack}>이전</BackButton>
