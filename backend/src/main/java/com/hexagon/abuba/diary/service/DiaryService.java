@@ -116,7 +116,8 @@ public class DiaryService {
                 diary.getHeight(),
                 diary.getWeight(),
                 s3Service.getFileUrl(diary.getImage_url()),
-                s3Service.getFileUrl(diary.getRecord_url())
+                s3Service.getFileUrl(diary.getRecord_url()),
+                diary.getMemo()
         );
 
         return diaryDetailResDTO;
@@ -147,12 +148,22 @@ public class DiaryService {
             e.printStackTrace();
         }
 
-        Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
-        diaryRepository.save(diary);
         if(reqDTO.deposit() != null && reqDTO.deposit().intValue() != 0){
-            accountService.minusParentMoney(parentId, reqDTO.deposit().longValue());
-            accountService.addBabyMoney(parentId, reqDTO.deposit().longValue());
+            if(accountService.transferMoney(parentId, reqDTO.deposit().longValue(), reqDTO.memo())) {
+                Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
+                diaryRepository.save(diary);
+            }else{
+                try {
+                    throw new Exception("계좌이체중 문제가 발생했습니다.");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }else {
+            Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
+            diaryRepository.save(diary);
         }
+
 
         //알림 전송을 위한 로직 추가.
         //1.작성자가 해당 게시글을 읽었음으로 표기한다.
@@ -245,6 +256,7 @@ public class DiaryService {
         diary.setDeposit(reqDTO.deposit());
         diary.setHeight(reqDTO.height());
         diary.setWeight(reqDTO.weight());
+        diary.setMemo(reqDTO.memo());
 
 
         diary = uploadFile(imageStream, imageName, "img", diary, imgMimeType);

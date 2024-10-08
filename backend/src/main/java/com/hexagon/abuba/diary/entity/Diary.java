@@ -53,6 +53,9 @@ public class Diary {
     @OneToMany(mappedBy = "diary")
     private List<DiaryAndRead> diaryAndReads;
 
+    //메모
+    private String memo;
+
     public void setParent(Parent parent) {
         if(this.parent != null){
             this.parent.getDiaries().remove(this);

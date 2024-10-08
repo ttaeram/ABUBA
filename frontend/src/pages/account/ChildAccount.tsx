@@ -32,7 +32,7 @@ const groupTransactionsByDate = (transactions: Transaction[]) => {
 const ChildAccount: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [balance, setBalance] = useState<string>('0');
-  const [bankCode, setBankCode] = useState<string>('')
+  const [bankName, setBankName] = useState<string>('')
   const [chartData, setChartData] = useState<any>({
     labels: [],
     datasets: [
@@ -62,9 +62,8 @@ const ChildAccount: React.FC = () => {
             isParent: true,
           },
         });
-  
         setBalance(response.data.accountBalance);
-        setBankCode(response.data.bankCode)
+        setBankName(response.data.bankName)
       } catch (error) {
         console.error('Failed to fetch balance:', error);
       }
@@ -97,7 +96,7 @@ const ChildAccount: React.FC = () => {
         });
 
         const transactionData = response.data;
-
+        console.log(transactionData)
         const transformedTransactions = transactionData.map((transaction: any) => ({
           date: transaction.transactionDate,
           description: transaction.transactionSummary || transaction.transactionMemo,
@@ -107,8 +106,8 @@ const ChildAccount: React.FC = () => {
 
         setTransactions(transformedTransactions);
 
-        const chartLabels = transactionData.map((transaction: any) => transaction.transactionDate);
-        const chartBalances = transactionData.map((transaction: any) => parseFloat(transaction.transactionAfterBalance));
+        const chartLabels = transactionData.map((transaction: any) => transaction.transactionDate).reverse();
+        const chartBalances = transactionData.map((transaction: any) => parseFloat(transaction.transactionAfterBalance)).reverse();
 
         setChartData({
           labels: chartLabels,
@@ -167,7 +166,7 @@ const ChildAccount: React.FC = () => {
       </ChartSection>
 
       <BalanceSection>
-        <BalanceTitle>내 아이 초등학생 마련 {bankCode}</BalanceTitle>
+        <BalanceTitle>{bankName} 주거래 통장</BalanceTitle>
         <BalanceAmount>{balance} 원</BalanceAmount>
 
         <TransactionList>
