@@ -14,6 +14,7 @@ import DiaryUpdate from './pages/diary/DiaryUpdate'
 import GlobalStyle from './styles/GlobalStyle'
 import ChildAccount from './pages/account/ChildAccount'
 import ChildRoadMap from './pages/roadmap/ChildRoadMap'
+import MyEmotionCalendar from './pages/calendar/MyEmotionCalendar'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage/>} />
         <Route path="/main" element={<Main/>} />
+        <Route path="/mycal" element={<MyEmotionCalendar/>} />
         <Route path="/onboard" element={<OnBoardingInfoPage/>} />
         <Route path="/signup" element={<SignupPage/>} />
         <Route path="/account" element={<ChildAccount/>} />

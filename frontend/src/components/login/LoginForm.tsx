@@ -16,7 +16,7 @@ const LoginForm = () => {
     setError('');
 
     if (!email || !password) {
-      setError('모든 필드를 입력해주세요.');
+      setError('모든 정보를 입력해주세요.');
       return;
     }
     
@@ -105,6 +105,7 @@ const Signup = styled.div`
   margin-top: 10px;
   font-size: 14px;
   cursor: pointer;
+  color: black;
 `
 
 const InputContainer = styled.div`
@@ -124,6 +125,7 @@ const Input = styled.input`
 const Button = styled.button`
   padding: 15px;
   background-color: #3B6EBA;
+  font-weight: 700;
   margin-bottom: 10px;
   color: white;
   border: none;
@@ -131,13 +133,16 @@ const Button = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #173C91;
+    background-color: #3B6EBA;
   }
 `;
 
 const ErrorMessage = styled.div`
+  display: flex;
   font-size: 14px;
-  color: red;
+  justify-content: center;
+  align-items: center;
+  color: #fd0000;
   margin-bottom: 15px;
 `;
 

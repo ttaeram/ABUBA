@@ -6,6 +6,7 @@ import ChildInfoForm from '../components/onboardinginfo/ChildInfoForm';
 import ChildAccount from '../components/onboardinginfo/ChildAccountForm'; 
 import ParentAccount from '../components/onboardinginfo/ParentAccountForm';
 
+
 const OnboardingInfoPage = () => {
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ const OnboardingInfoPage = () => {
 
   return (
     <FormContainer>
+      <FullLogoSvgStyled/>
       <FormTitle>{getTitle()}</FormTitle>
       {step === 1 && <ChildInfoForm onNext={handleNextStep} />}
       {step === 2 && <ChildAccount onNext={handleNextStep} onPrevious={handlePreviousStep} />}

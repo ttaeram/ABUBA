@@ -14,14 +14,21 @@ const SignupForm = () => {
   const [timer, setTimer] = useState(120);
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isCodeVerified, setIsCodeVerified] = useState(false);
-  const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [codeError, setCodeError] = useState('');
+  const [emailMessage, setEmailMessage] = useState('');
+  const [codeMessage, setCodeMessage] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const navigate = useNavigate();
 
   const handleSendCode = async () => {
     try {
+      setEmailError('');
+      setEmailMessage('');
       await requestEmailVerificationCode(email);
-
       setIsCodeSent(true);
+      setEmailMessage('인증번호가 발송되었습니다.');
+
       const countdown = setInterval(() => {
         setTimer((prev) => {
           if (prev <= 1) {
@@ -32,35 +39,46 @@ const SignupForm = () => {
         });
       }, 1000);
     } catch (error: any) {
-      setError(error.message);
+      if (error.message === "이미 사용 중인 이메일입니다.") {
+        setEmailError(error.message);
+      } else {
+        setEmailError('인증번호 발송에 실패했습니다.');
+      }
     }
   };
 
   // 인증번호 확인
   const handleVerifyCode = async () => {
     try {
+      setCodeError('');
+      setCodeMessage('');
       const response = await verifyEmailCode(authCode);
+
       if (response === '이메일 인증 성공!') {
         setIsCodeVerified(true);
-        alert('인증번호가 확인되었습니다!');
+        setCodeMessage('인증번호가 확인되었습니다!');
       } else {
-        alert('인증번호가 올바르지 않습니다.');
+        setCodeError('인증번호가 올바르지 않습니다.');
       }
     } catch (error: any) {
-      setError('인증번호 확인에 실패했습니다.');
+      setCodeError('인증번호 확인에 실패했습니다.');
     }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError('');
+    setEmailError('');
+    setCodeError('');
+    setPasswordError('');
+
+
     if (password !== confirmPassword) {
-      setError('비밀번호가 일치하지 않습니다.');
+      setPasswordError('비밀번호가 일치하지 않습니다.');
       return;
     }
 
     if (!isCodeVerified) {
-      setError('인증 코드를 먼저 확인해 주세요.');
+      setCodeError('인증 코드를 먼저 확인해 주세요.');
       return;
     }
 
@@ -70,8 +88,7 @@ const SignupForm = () => {
       navigate('/');
       
     } catch (error: any) {
-
-      setError(error.message);
+      setEmailError(error.message || '회원가입에 실패했습니다.');
     }
   };
 
@@ -96,7 +113,8 @@ const SignupForm = () => {
               인증번호 전송
             </Button>
           </FormGroup>
-
+          {emailError && <ErrorMessage>{emailError}</ErrorMessage>}
+          {emailMessage && <SuccessMessage>{emailMessage}</SuccessMessage>}
           <FormGroup>
             <InputWrapper>
             <Input
@@ -112,6 +130,8 @@ const SignupForm = () => {
               인증번호 확인
             </Button>
           </FormGroup>
+          {codeError && <ErrorMessage>{codeError}</ErrorMessage>}
+          {codeMessage && <SuccessMessage>{codeMessage}</SuccessMessage>}
 
           <Input
             type="text"
@@ -136,10 +156,9 @@ const SignupForm = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-
+           {passwordError && <ErrorMessage>{passwordError}</ErrorMessage>}
         </InputContainer>
 
-        {error && <ErrorMessage>{error}</ErrorMessage>}
         <SubmitButton type="submit">
             가입하기
         </SubmitButton>
@@ -161,8 +180,6 @@ const FormContainer = styled.form`
   align-items: center;
   margin: 0 auto;
   box-sizing: border-box;
-
-  
 `;
 
 const InputContainer = styled.div`
@@ -191,7 +208,17 @@ const Input = styled.input`
   border-radius: 8px;
   font-size: 16px;
   box-sizing: border-box;
-  padding-right: 60px;
+  padding-right: 15px;
+`;
+
+const AuthInput = styled.input`
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+  padding-right: 50px;
 `;
 
 
@@ -207,9 +234,13 @@ const Timer = styled.span`
 const ErrorMessage = styled.div`
   color: red;
   font-size: 14px;
-  margin-top: 10px;
-  margin-bottom: 15px;
 `;
+
+const SuccessMessage = styled.div`
+  color: green;
+  font-size: 14px;
+`;
+
 
 
 const SubmitButton = styled.button`
