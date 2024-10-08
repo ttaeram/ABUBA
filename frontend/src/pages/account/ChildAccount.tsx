@@ -17,11 +17,21 @@ type Transaction = {
   isPositive: boolean; // 입금 또는 출금 여부
 };
 
-// 차트 및 거래 내역 컴포넌트
+const groupTransactionsByDate = (transactions: Transaction[]) => {
+  return transactions.reduce((groups: { [key: string]: Transaction[] }, transaction) => {
+    const date = dayjs(transaction.date).format('YYYY년 MM월 DD일');
+    if (!groups[date]) {
+      groups[date] = [];
+    }
+    groups[date].push(transaction);
+    return groups;
+  }, {});
+};
+
 const ChildAccount: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [balance, setBalance] = useState<string>('0');
-  const [bankCode, setBankCode] = useState<string>('')
+  const [bankName, setBankName] = useState<string>('')
   const [chartData, setChartData] = useState<any>({
     labels: [],
     datasets: [
@@ -48,14 +58,11 @@ const ChildAccount: React.FC = () => {
             Authorization: `Bearer ${accessToken}`,
           },
           params: {
-            isParent: true,
+            isParent: false,
           },
         });
-  
-        // 잔액 데이터 확인
-        console.log('Balance data:', response.data);
         setBalance(response.data.accountBalance);
-        setBankCode(response.data.bankCode)
+        setBankName(response.data.bankName)
       } catch (error) {
         console.error('Failed to fetch balance:', error);
       }
@@ -73,34 +80,32 @@ const ChildAccount: React.FC = () => {
         }
 
         const endDate = dayjs().format('YYYYMMDD');
-        
         const startDate = dayjs().subtract(1, 'month').format('YYYYMMDD');
 
-        const response = await api.get('/api/v1/account', {
+        const response = await api.post('/api/v1/account',
+          {
+            startDate: startDate,
+            endDate: endDate,
+          },
+          {
           headers: {
             Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
           },
-          params:{
-            'startDate': startDate,
-            'endDate': endDate,
-          }
-        }); // API 호출
+        });
 
         const transactionData = response.data;
-        console.log(transactionData)
-        // 거래 내역 변환
         const transformedTransactions = transactionData.map((transaction: any) => ({
           date: transaction.transactionDate,
-          description: transaction.transactionSummary || transaction.transactionMemo,
+          description: transaction.transactionSummary,
           amount: transaction.transactionBalance,
-          isPositive: transaction.transactionType === 'CREDIT', // 입금이면 true
+          isPositive: transaction.transactionType === '입금',
         }));
 
         setTransactions(transformedTransactions);
 
-        // 차트 데이터 변환 (여기서는 날짜별 잔액을 차트에 반영)
-        const chartLabels = transactionData.map((transaction: any) => transaction.transactionDate);
-        const chartBalances = transactionData.map((transaction: any) => parseFloat(transaction.transactionAfterBalance));
+        const chartLabels = transactionData.map((transaction: any) => transaction.transactionDate).reverse();
+        const chartBalances = transactionData.map((transaction: any) => parseFloat(transaction.transactionAfterBalance)).reverse();
 
         setChartData({
           labels: chartLabels,
@@ -122,34 +127,59 @@ const ChildAccount: React.FC = () => {
     fetchTransactions();
   }, []);
 
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        display: false, // X축 라벨 숨기기
+      },
+      y: {
+        display: false, // Y축 라벨 숨기기
+        grid: {
+          display: false, // 그리드 숨기기
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: false, // 범례 숨기기
+      },
+      tooltip: {
+        enabled: true, // 툴팁은 그대로 유지
+      },
+    },
+  };
+
+  const groupedTransactions = groupTransactionsByDate(transactions);
+
   return (
     <ChildAccountWrapper>
       <Header>
         <BackButton label='<' color='white'/>
       </Header>
 
-      {/* 이모지 아이콘 섹션 */}
       <ChartSection>
-        <Line data={chartData} />
+        <Line data={chartData} options={chartOptions} />
       </ChartSection>
 
-      {/* 잔액 및 소비 정보 섹션 */}
       <BalanceSection>
-        <BalanceTitle>내 아이 초등학생 마련 {bankCode}</BalanceTitle>
+        <BalanceTitle>{bankName} 주거래 통장</BalanceTitle>
         <BalanceAmount>{balance} 원</BalanceAmount>
-        <TransactionInfo>9월 저축 240,000 원</TransactionInfo>
-        <TransactionInfo>지난달에 비해 60,000 원 더 저축했어요</TransactionInfo>
 
-        {/* 계좌 내역 리스트 */}
         <TransactionList>
-          {transactions.map((transaction, index) => (
-            <TransactionItem
-              key={index}
-              date={transaction.date}
-              description={transaction.description}
-              amount={transaction.amount}
-              isPositive={transaction.isPositive}
-            />
+          {Object.entries(groupedTransactions).map(([date, transactionGroup]) => (
+            <TransactionGroup key={date}>
+              <TransactionDate>{date}</TransactionDate>
+              {transactionGroup.map((transaction, index) => (
+                <TransactionItem
+                  key={index}
+                  description={transaction.description}
+                  amount={transaction.amount}
+                  isPositive={transaction.isPositive}
+                />
+              ))}
+            </TransactionGroup>
           ))}
         </TransactionList>
 
@@ -169,10 +199,10 @@ export default ChildAccount
 const ChildAccountWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: #3B6EBA; /* 배경색 (이미지와 유사한 색상) */
+  background-color: #3B6EBA;
   color: white;
   box-sizing: border-box;
-  position: relative; /* 절대 위치의 기준이 되는 부모 요소 */
+  position: relative;
 `;
 
 // 상단 헤더 스타일 정의
@@ -191,7 +221,7 @@ const ChartSection = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px 0;
+  margin: 20px;
 `;
 
 // 이모지 이미지를 스타일링
@@ -206,8 +236,8 @@ const BalanceSection = styled.div`
   background-color: #fff;
   color: #000;
   padding: 20px;
-  border-top-left-radius: 20px;  /* 상단 왼쪽 모서리 둥글게 */
-  border-top-right-radius: 20px; /* 상단 오른쪽 모서리 둥글게 */
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
   flex-grow: 1;
   z-index: 1;
 `;
@@ -232,15 +262,15 @@ const TransactionInfo = styled.div`
 
 // 버튼 섹션을 스타일링
 const ButtonSection = styled.div`
-  position: sticky; /* 절대 위치 지정 */
+  position: sticky;
   background: linear-gradient(transparent, rgba(255, 255, 255, 1));
-  bottom: 0; /* 페이지의 아래쪽에 배치 */
+  bottom: 0
   left: 0;
   right: 0;
   display: flex;
   justify-content: space-between;
   padding: 20px;
-  z-index: 10; /* z축 상에서 위로 배치 */
+  z-index: 10;
 `;
 
 // 버튼 스타일링
@@ -260,25 +290,33 @@ const ActionButton = styled.button<{ fill?: boolean }>`
   }
 `;
 
-// 계좌 내역 리스트 섹션 스타일링
 const TransactionList = styled.ul`
   list-style: none;
   margin: 0;
   padding: 0;
-  overflow-y: auto; /* 스크롤 가능하게 */
-  flex-grow: 1; /* 리스트가 남은 공간을 모두 차지 */
-  max-height: 300px; /* 리스트가 화면을 넘지 않도록 설정 */
+  overflow-y: auto;
+  flex-grow: 1;
+  max-height: 300px;
   background-color: #fff;
   padding: 10px;
   border-radius: 10px;
   margin-bottom: 10px;
 
-  /* 웹킷 브라우저 (Chrome, Safari) */
   &::-webkit-scrollbar {
     display: none;
   }
 
-  /* IE와 Edge */
-  -ms-overflow-style: none; /* IE, Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+`;
+
+const TransactionGroup = styled.div`
+  margin-bottom: 20px;
+`;
+
+const TransactionDate = styled.h3`
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
 `;

@@ -1,58 +1,55 @@
 import { useState, useEffect } from 'react'
 import styled from 'styled-components';
 import api from '../../api/index'
+import { ChildAccountInfo } from '../../api/account';
 
 interface AccountInfoProps {
   onSelectAccount?: (accountNo: string) => void
+  isParent?: boolean
 }
 
-const AccountInfo: React.FC<AccountInfoProps> = ({ onSelectAccount }) => {
-  const [account, setAccount] = useState<string>('')
-  const [accountBalance, setAccountBalance] = useState<string>('')
+const AccountInfo: React.FC<AccountInfoProps> = ({ onSelectAccount, isParent=false }) => {
+  const [account, setAccount] = useState<string>('');
+  const [accountBalance, setAccountBalance] = useState<string>('0');
+  const [bankName, setBankName] = useState<string>('');
 
   useEffect(() => {
-    const fetchAccountInfo = async () => {
+    const getAccountInfo = async () => {
       try {
-        const accessToken = localStorage.getItem('accessToken');
-        if (!accessToken) {
-          throw new Error('Access Token이 없음');
-        }
 
-        const response = await api.get('/api/v1/account/balance', {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          params:{
-            isParent: true,
-          },
-        })
+        const accountInfo = await ChildAccountInfo(isParent);
         
-        console.log(response.data.account, response.data.accountBalance)
-        setAccount(response.data.account)
-        setAccountBalance(response.data.accountBalance)
+        setAccount(accountInfo.account);
+        setAccountBalance(formatCurrency(accountInfo.accountBalance));
+        setBankName(accountInfo.bankName);
       } catch (error) {
         console.error('Failed to fetch balance:', error)
       }
     }
 
-    fetchAccountInfo()
-  }, [])
+    getAccountInfo()
+  }, [isParent]);
 
   const handleSelect = () => {
     if (onSelectAccount) {
       onSelectAccount(account)
     }
-  }
+  };
+
+  const formatCurrency = (amount: string): string => {
+    const numberAmount = Number(amount);
+    return numberAmount.toLocaleString();
+  };
 
   return (
     <Container onClick={onSelectAccount ? handleSelect : undefined}>
         <TextInfo>
             <Name>
-                신한 주거래 통장
+                {bankName} 주거래 통장
             </Name>
-            <Name>
+            <AccountName>
                 {account}
-            </Name>
+            </AccountName>
         </TextInfo>
         <Money>
             {accountBalance} 원
@@ -66,7 +63,7 @@ export default AccountInfo
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 15px;
+  padding: 20px;
   background-color: #3B6EBA;
   color:white;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -85,14 +82,22 @@ const TextInfo = styled.div`
 `
 
 const Name = styled.div`
-  font-size:16px;
+  font-size:22px;
+  margin-bottom: 6px;
+
+`
+
+const AccountName = styled.div`
+  font-size:14px;
+  margin-bottom: 6px;
 
 `
 
 const Money = styled.div`
     display: flex;
-    justify-content: right;
+    justify-content: flex-end;
     text-align: right;
-    font-size:px;
+    margin-bottom: 5px;
+    font-size:25px;
 
 `

@@ -97,9 +97,8 @@ const SignupForm = () => {
             </Button>
           </FormGroup>
 
-          {isCodeSent && <Timer>{formatTime(timer)}</Timer>}
-
           <FormGroup>
+            <InputWrapper>
             <Input
               type="text"
               placeholder="인증번호"
@@ -107,6 +106,8 @@ const SignupForm = () => {
               onChange={(e) => setAuthCode(e.target.value)}
               required
             />
+             {isCodeSent && <Timer>{formatTime(timer)}</Timer>}
+             </InputWrapper>
             <Button type="button" onClick={handleVerifyCode}>
               인증번호 확인
             </Button>
@@ -173,24 +174,34 @@ const InputContainer = styled.div`
 
 const FormGroup = styled.div`
   display: flex;
+  align-items: center; 
   gap: 10px;
-  flex-wrap: wrap;
+  width: 100%;
+`;
+
+const InputWrapper = styled.div`
+  position: relative;
+  width: 100%;
 `;
 
 const Input = styled.input`
-  flex: 1;
-  min-width: 0;
+  width: 100%;
   padding: 15px;
   border: 1px solid #ddd;
   border-radius: 8px;
   font-size: 16px;
   box-sizing: border-box;
+  padding-right: 60px;
 `;
 
+
 const Timer = styled.span`
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   font-size: 14px;
   color: #ff6b6b;
-  text-align: right;
 `;
 
 const ErrorMessage = styled.div`

@@ -13,6 +13,8 @@ const DiaryUpdate = () => {
   const [diaryData, setDiaryData] = useState<any>(location.state?.diaryData || null)
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [audioFile, setAudioFile] = useState<Blob | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!diaryData) {
@@ -30,9 +32,14 @@ const DiaryUpdate = () => {
           setDiaryData(response.data);
         } catch (e) {
           console.error("Failed to load diary data:", e);
+          setError("일기를 불러오는 데 실패했습니다.")
+        } finally {
+          setLoading(false)
         }
       };
       fetchDiaryData();
+    } else {
+      setLoading(false)
     }
   }, [diaryData, id]);
 
@@ -68,19 +75,19 @@ const DiaryUpdate = () => {
       formData.append("image", imageFile);
     }
 
-    // 새로 녹음된 오디오 파일이 있으면 추가
     if (audioFile) {
       formData.append("record", audioFile);
     }
 
-    const diaryJson = JSON.stringify({
-      title: diaryData.title,
-      content: diaryData.content,
-      height: diaryData.height,
-      weight: diaryData.weight,
-    })
+    const info = {
+      diaryId: diaryData.id,
+      title: diaryData.title || '제목 없음',
+      content: diaryData.content || '내용 없음',
+      height: diaryData.height || 0,
+      weight: diaryData.weight || 0,
+    };
 
-    formData.append("diary", new Blob([diaryJson], { type: "application/json" }))
+    formData.append('info', new Blob([JSON.stringify(info)], { type: 'application/json' }))
 
     try {
       const accessToken = localStorage.getItem('accessToken');
@@ -88,9 +95,10 @@ const DiaryUpdate = () => {
         throw new Error('Access Token이 없음');
       }
 
-      await api.put(`/api/v1/diary/${id}`, formData, {
+      await api.put(`/api/v1/diary`, formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data',
         },
       })
       navigate(`/diary/${id}`)
@@ -132,6 +140,7 @@ const DiaryUpdate = () => {
             onChange={handleChange}
             placeholder="신장"
           />
+          <Unit>cm</Unit>
         </StatItem>
         <StatItem>
           <StatLabel>체중</StatLabel>
@@ -142,6 +151,7 @@ const DiaryUpdate = () => {
             onChange={handleChange}
             placeholder="체중"
           />
+          <Unit>kg</Unit>
         </StatItem>
       </StatsContainer>
 
@@ -158,9 +168,10 @@ const DiaryUpdate = () => {
         value={diaryData.content}
         onChange={handleChange}
       />
+
+      <Label>목소리 듣기/녹음</Label>
+      <AudioPlayer src={diaryData.audioUrl} onNewRecording={handleNewRecording} />
     </Content>
-    <Label>목소리 녹음/듣기</Label>
-    <AudioPlayer src={diaryData.audioUrl} onNewRecording={handleNewRecording} />
   </DiaryContainer>
   )
 }
@@ -215,31 +226,34 @@ const ImageText = styled.p`
 
 const StatsContainer = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: space-betwee;
   margin-bottom: 20px;
 `;
 
 const StatItem = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
-  flex-direction: row;
-  align-items: center;
+  width: 50%;
 `;
 
 const StatLabel = styled.label`
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
-  margin: 10px;
 `;
 
 const StatInput = styled.input`
   width: 60px;
   padding: 5px;
-  margin-top: 5px;
-  text-align: center;
+  text-align: right;
   border: 1px solid #ccc;
   border-radius: 5px;
+  margin-left: 40px
+`;
+
+const Unit = styled.span`
+  margin-left: 10px;
+  font-size: 14px;
+  color: #555;
 `;
 
 const Label = styled.label`
@@ -258,6 +272,7 @@ const Input = styled.input`
 
 const Textarea = styled.textarea`
   width: calc(100% - 0px);
+  height: 120px;
   padding: 10px;
   margin-top: 5px;
   border: 1px solid #ccc;
