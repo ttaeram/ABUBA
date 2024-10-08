@@ -57,8 +57,7 @@ public class DiaryService {
         Collections.reverse(diaries);
 
         for (Diary diary : diaries) {
-            // TODO : 이미지 URL 이 Null 로 나올지 빈칸으로 나올지 모르기 때문에 수정할 가능성 있음
-            if(diary.getImage_url().isEmpty()) continue; // 이미지 URL 이 null 일 경우
+            if(diary.getImage_url()==null) continue; // 이미지 URL 이 null 일 경우
 
             DiaryRecentResDTO diaryRecentResDTO = new DiaryRecentResDTO(
                     diary.getId(),
