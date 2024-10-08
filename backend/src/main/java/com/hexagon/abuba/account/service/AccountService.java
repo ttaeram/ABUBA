@@ -6,12 +6,10 @@ import com.hexagon.abuba.account.dto.response.ApiResponseDTO;
 import com.hexagon.abuba.account.dto.response.BalanceAmountResponseDTO;
 import com.hexagon.abuba.account.dto.response.HistoryResDTO;
 import com.hexagon.abuba.global.openfeign.FinAPIClient;
-import com.hexagon.abuba.global.openfeign.dto.request.BalanceRequestDTO;
-import com.hexagon.abuba.global.openfeign.dto.request.DepositRequestDTO;
-import com.hexagon.abuba.global.openfeign.dto.request.HistoryRequestDTO;
-import com.hexagon.abuba.global.openfeign.dto.request.RequestHeader;
+import com.hexagon.abuba.global.openfeign.dto.request.*;
 import com.hexagon.abuba.global.openfeign.dto.response.BalanceResponseDTO;
 import com.hexagon.abuba.global.openfeign.dto.response.HistoryData;
+import com.hexagon.abuba.global.openfeign.dto.response.TransferResponseDTO;
 import com.hexagon.abuba.user.Parent;
 import com.hexagon.abuba.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
@@ -52,7 +50,7 @@ public class AccountService {
         String startDate = historyReqDTO.getStartDate();
         String endDate = historyReqDTO.getEndDate();
         String transactionType = "A";
-        String orderByType = "ASC";
+        String orderByType = "DESC";
 
         return finAPIClient.getHistory(new HistoryRequestDTO(header, accountNo, startDate, endDate, transactionType, orderByType)).REC().list();
     }
@@ -77,6 +75,24 @@ public class AccountService {
             account = parent.getBaby().getAccount();
         }
         return new BalanceAmountResponseDTO(balanceResponseDTO.REC().getBankCode(), balanceResponseDTO.REC().getAccountBalance(), bankName, account);
+    }
+
+    public boolean transferMoney(Long parentId, Long amount){
+        Parent parent = parentRepository.findById(parentId).orElseThrow();
+        RequestHeader header = new RequestHeader();
+        header.setHeader("updateDemandDepositAccountTransfer", apiKey, userKey);
+        String depositAccountNo = parent.getBaby().getAccount();
+        String depositTransactionSummary = "입금";
+        String transactionBalance = amount.toString();
+        String withdrawalAccountNo = parent.getAccount();
+        String withdrawalTransactionSummary = "출금";
+
+        TransferResponseDTO responseDTO = finAPIClient.transferDeposit(new TransferRequestDTO(
+                header, depositAccountNo, depositTransactionSummary, transactionBalance, withdrawalAccountNo, withdrawalTransactionSummary
+        ));
+        log.info(responseDTO.toString());
+        if(responseDTO.Header().getResponseCode().equals("H0000")) return true;
+        return false;
     }
 
     public void addBabyMoney(Long parentId, Long amount) {

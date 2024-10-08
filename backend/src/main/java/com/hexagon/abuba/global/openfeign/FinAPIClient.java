@@ -37,4 +37,7 @@ public interface FinAPIClient {
 
     @PostMapping(value="edu/demandDeposit/inquireTransactionHistoryList")
     HistoryResponseDTO getHistory(@RequestBody HistoryRequestDTO historyRequestDTO);
+
+    @PostMapping(value="edu/demandDeposit/updateDemandDepositAccountTransfer")
+    TransferResponseDTO transferDeposit(@RequestBody TransferRequestDTO transferRequestDTO);
 }

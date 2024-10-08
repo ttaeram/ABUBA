@@ -136,12 +136,22 @@ public class DiaryService {
             e.printStackTrace();
         }
 
-        Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
-        diaryRepository.save(diary);
         if(reqDTO.deposit() != null && reqDTO.deposit().intValue() != 0){
-            accountService.minusParentMoney(parentId, reqDTO.deposit().longValue());
-            accountService.addBabyMoney(parentId, reqDTO.deposit().longValue());
+            if(accountService.transferMoney(parentId, reqDTO.deposit().longValue())) {
+                Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
+                diaryRepository.save(diary);
+            }else{
+                try {
+                    throw new Exception("계좌이체중 문제가 발생했습니다.");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }else {
+            Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
+            diaryRepository.save(diary);
         }
+
     }
 
     public void editDiary(DiaryEditReqDTO reqDTO, MultipartFile image, MultipartFile record){
