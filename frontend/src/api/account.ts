@@ -4,7 +4,7 @@ export const ChildAccountInfo = async () => {
     try{
         const response = await api.get('/api/v1/account/balance', {
             params: {
-            isParent: true,
+            isParent: false,
             },
         });
         return {

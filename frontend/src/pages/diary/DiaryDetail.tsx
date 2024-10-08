@@ -6,6 +6,7 @@ import AudioPlayer from "../../components/AudioPlayer"
 import styled from "styled-components"
 import { ReactComponent as WonSvg } from "../../assets/images/won.svg"
 import api from "../../api/index"
+import dayjs from "dayjs"
 
 const DiaryDetail = () => {
   const navigate = useNavigate()
@@ -13,6 +14,7 @@ const DiaryDetail = () => {
   const [diaryData, setDiaryData] = useState<any>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
+  const [formattedDate, setFormattedDate] = useState<string>('')
 
   useEffect(() => {
     const fetchDiaryData = async () => {
@@ -34,7 +36,7 @@ const DiaryDetail = () => {
         })
         setDiaryData(response.data)
         setLoading(false)
-        console.log(response.data.imageUrl)
+        setFormattedDate(dayjs(response.data.createdAt).format('YYYY년 MM월 DD일'))
       } catch (e) {
         setError("일기를 불러오는 데 실패했습니다.")
         setLoading(false)
@@ -57,7 +59,7 @@ const DiaryDetail = () => {
     <DiaryContainer>
       <Header>
         <BackButton label="이전"/>
-        <Date>{diaryData?.createdAt || "날짜  없음"}</Date>
+        <Date>{formattedDate || "날짜  없음"}</Date>
         <UpdateButton onClick={toDiaryUpdate}>수정</UpdateButton>
       </Header>
 

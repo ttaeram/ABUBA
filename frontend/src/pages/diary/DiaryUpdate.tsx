@@ -140,6 +140,7 @@ const DiaryUpdate = () => {
             onChange={handleChange}
             placeholder="신장"
           />
+          <Unit>cm</Unit>
         </StatItem>
         <StatItem>
           <StatLabel>체중</StatLabel>
@@ -150,6 +151,7 @@ const DiaryUpdate = () => {
             onChange={handleChange}
             placeholder="체중"
           />
+          <Unit>kg</Unit>
         </StatItem>
       </StatsContainer>
 
@@ -166,9 +168,10 @@ const DiaryUpdate = () => {
         value={diaryData.content}
         onChange={handleChange}
       />
+
+      <Label>목소리 듣기/녹음</Label>
+      <AudioPlayer src={diaryData.audioUrl} onNewRecording={handleNewRecording} />
     </Content>
-    <Label>목소리 녹음/듣기</Label>
-    <AudioPlayer src={diaryData.audioUrl} onNewRecording={handleNewRecording} />
   </DiaryContainer>
   )
 }
@@ -223,31 +226,34 @@ const ImageText = styled.p`
 
 const StatsContainer = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: space-betwee;
   margin-bottom: 20px;
 `;
 
 const StatItem = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
-  flex-direction: row;
-  align-items: center;
+  width: 50%;
 `;
 
 const StatLabel = styled.label`
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
-  margin: 10px;
 `;
 
 const StatInput = styled.input`
   width: 60px;
   padding: 5px;
-  margin-top: 5px;
-  text-align: center;
+  text-align: right;
   border: 1px solid #ccc;
   border-radius: 5px;
+  margin-left: 40px
+`;
+
+const Unit = styled.span`
+  margin-left: 10px;
+  font-size: 14px;
+  color: #555;
 `;
 
 const Label = styled.label`
@@ -266,6 +272,7 @@ const Input = styled.input`
 
 const Textarea = styled.textarea`
   width: calc(100% - 0px);
+  height: 120px;
   padding: 10px;
   margin-top: 5px;
   border: 1px solid #ccc;

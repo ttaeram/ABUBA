@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { VscEdit } from 'react-icons/vsc';
 import { SlNotebook } from "react-icons/sl";
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/index'
@@ -42,9 +41,9 @@ const DiaryInfo = () => {
     fetchLatest()
   }, [])
 
-  const displayedImages = [...images.slice(0, 3)]; // 최대 3개의 이미지만 표시
+  const displayedImages = [...images.slice(0, 3)];
   while (displayedImages.length < 3) {
-    displayedImages.push({ diaryId: displayedImages.length, imageUrl: '' }); // 이미지가 3개가 안되면 빈 객체 추가
+    displayedImages.push({ diaryId: displayedImages.length, imageUrl: '' });
   }
 
   return (
@@ -81,15 +80,16 @@ const Container = styled.div`
 `;
 
 const ImageContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
   width: 100%;
   margin-bottom: 20px;
 `;
 
 const Image = styled.img`
-  width: 30%;
-  height: 30%;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   object-fit: cover;
@@ -112,8 +112,8 @@ const IconContainer = styled.div`
 `;
 
 const BasicImage = styled(FullLogo)`
-  width: 30%;
-  height: auto;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 20px
