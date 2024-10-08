@@ -30,7 +30,6 @@ const DiaryList = () => {
     }
   }
 
-  // 컴포넌트가 마운트될 때 데이터 로딩
   useEffect(() => {
     fetchDiaries()
   }, [])

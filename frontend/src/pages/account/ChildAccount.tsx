@@ -19,7 +19,7 @@ type Transaction = {
 
 const groupTransactionsByDate = (transactions: Transaction[]) => {
   return transactions.reduce((groups: { [key: string]: Transaction[] }, transaction) => {
-    const date = dayjs(transaction.date).format('YYYY년 MM월 DD일'); // Group by formatted date
+    const date = dayjs(transaction.date).format('YYYY년 MM월 DD일');
     if (!groups[date]) {
       groups[date] = [];
     }
@@ -28,7 +28,6 @@ const groupTransactionsByDate = (transactions: Transaction[]) => {
   }, {});
 };
 
-// 차트 및 거래 내역 컴포넌트
 const ChildAccount: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [balance, setBalance] = useState<string>('0');
@@ -59,7 +58,7 @@ const ChildAccount: React.FC = () => {
             Authorization: `Bearer ${accessToken}`,
           },
           params: {
-            isParent: true,
+            isParent: false,
           },
         });
         setBalance(response.data.accountBalance);
@@ -96,12 +95,11 @@ const ChildAccount: React.FC = () => {
         });
 
         const transactionData = response.data;
-        console.log(transactionData)
         const transformedTransactions = transactionData.map((transaction: any) => ({
           date: transaction.transactionDate,
-          description: transaction.transactionSummary || transaction.transactionMemo,
+          description: transaction.transactionSummary,
           amount: transaction.transactionBalance,
-          isPositive: transaction.transactionType === '입금', // 입금이면 true
+          isPositive: transaction.transactionType === '입금',
         }));
 
         setTransactions(transformedTransactions);
@@ -170,14 +168,18 @@ const ChildAccount: React.FC = () => {
         <BalanceAmount>{balance} 원</BalanceAmount>
 
         <TransactionList>
-          {transactions.map((transaction, index) => (
-            <TransactionItem
-              key={index}
-              date={transaction.date}
-              description={transaction.description}
-              amount={transaction.amount}
-              isPositive={transaction.isPositive}
-            />
+          {Object.entries(groupedTransactions).map(([date, transactionGroup]) => (
+            <TransactionGroup key={date}>
+              <TransactionDate>{date}</TransactionDate>
+              {transactionGroup.map((transaction, index) => (
+                <TransactionItem
+                  key={index}
+                  description={transaction.description}
+                  amount={transaction.amount}
+                  isPositive={transaction.isPositive}
+                />
+              ))}
+            </TransactionGroup>
           ))}
         </TransactionList>
 
@@ -292,9 +294,9 @@ const TransactionList = styled.ul`
   list-style: none;
   margin: 0;
   padding: 0;
-  overflow-y: auto; /* 스크롤 가능하게 */
-  flex-grow: 1; /* 리스트가 남은 공간을 모두 차지 */
-  max-height: 300px; /* 리스트가 화면을 넘지 않도록 설정 */
+  overflow-y: auto;
+  flex-grow: 1;
+  max-height: 300px;
   background-color: #fff;
   padding: 10px;
   border-radius: 10px;
@@ -306,4 +308,15 @@ const TransactionList = styled.ul`
 
   -ms-overflow-style: none;
   scrollbar-width: none;
+`;
+
+const TransactionGroup = styled.div`
+  margin-bottom: 20px;
+`;
+
+const TransactionDate = styled.h3`
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
 `;
