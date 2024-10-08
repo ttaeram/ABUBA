@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 type Transaction = {
-  date: string;
+  date?: string;
   description: string;
   amount: string;
   isPositive: boolean; // 입금 또는 출금 여부

@@ -1,10 +1,10 @@
 import api from './index'; 
 
-export const ChildAccountInfo = async () => {
+export const ChildAccountInfo = async (isParent: boolean) => {
     try{
         const response = await api.get('/api/v1/account/balance', {
             params: {
-            isParent: false,
+            isParent: isParent,
             },
         });
         return {
