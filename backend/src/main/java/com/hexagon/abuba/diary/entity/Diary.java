@@ -1,5 +1,6 @@
-package com.hexagon.abuba.diary;
+package com.hexagon.abuba.diary.entity;
 
+import com.hexagon.abuba.alarm.entity.Alarm;
 import com.hexagon.abuba.user.Parent;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -7,6 +8,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -43,6 +46,12 @@ public class Diary {
     private Double height;
     //몸무게
     private Double weight;
+
+    @OneToMany(mappedBy = "diary")
+    private List<Alarm> alarms = new ArrayList<>();
+
+    @OneToMany(mappedBy = "diary")
+    private List<DiaryAndRead> diaryAndReads;
 
     //메모
     private String memo;

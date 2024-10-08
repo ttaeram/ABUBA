@@ -1,6 +1,6 @@
 package com.hexagon.abuba.diary.repository;
 
-import com.hexagon.abuba.diary.Diary;
+import com.hexagon.abuba.diary.entity.Diary;
 import com.hexagon.abuba.user.Parent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

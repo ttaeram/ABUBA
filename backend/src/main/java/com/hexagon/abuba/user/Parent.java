@@ -1,7 +1,8 @@
 package com.hexagon.abuba.user;
 
 import com.hexagon.abuba.alarm.entity.Alarm;
-import com.hexagon.abuba.diary.Diary;
+import com.hexagon.abuba.diary.entity.Diary;
+import com.hexagon.abuba.diary.entity.DiaryAndRead;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -41,6 +42,9 @@ public class Parent {
 
     @OneToMany(mappedBy = "parent")
     private List<Diary> diaries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "parent")
+    private List<DiaryAndRead> diaryAndReads = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "baby_id")

@@ -1,7 +1,10 @@
 package com.hexagon.abuba.diary.service;
 
 import com.hexagon.abuba.account.service.AccountService;
-import com.hexagon.abuba.diary.Diary;
+import com.hexagon.abuba.alarm.entity.Alarm;
+import com.hexagon.abuba.alarm.repository.AlarmRepository;
+import com.hexagon.abuba.alarm.service.AlarmService;
+import com.hexagon.abuba.diary.entity.Diary;
 import com.hexagon.abuba.diary.dto.request.DiaryDetailReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryEditReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryRecentReqDTO;
@@ -9,6 +12,8 @@ import com.hexagon.abuba.diary.dto.response.DiaryDetailResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
 import com.hexagon.abuba.diary.repository.DiaryRepository;
+import com.hexagon.abuba.global.exception.BusinessException;
+import com.hexagon.abuba.global.exception.ErrorCode;
 import com.hexagon.abuba.s3.service.S3Service;
 import com.hexagon.abuba.user.Baby;
 import com.hexagon.abuba.user.Parent;
@@ -17,6 +22,7 @@ import com.hexagon.abuba.user.repository.ParentRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,9 +42,11 @@ public class DiaryService {
     private final AccountService accountService;
     private final Tika tika;
     private final BabyRepository babyRepository;
+    private final AlarmRepository alarmRepository;
+    private final AlarmService alarmService;
     private final AIService aiService;
 
-    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, S3Service s3Service, AccountService accountService, BabyRepository babyRepository, AIService aiService) {
+    public DiaryService(DiaryRepository diaryRepository, ParentRepository parentRepository, S3Service s3Service, AccountService accountService, BabyRepository babyRepository, AIService aiService,  AlarmRepository alarmRepository, AlarmService alarmService) {
         this.diaryRepository = diaryRepository;
         this.parentRepository = parentRepository;
         this.s3Service = s3Service;
@@ -46,6 +54,8 @@ public class DiaryService {
         this.tika = new Tika();
         this.babyRepository = babyRepository;
         this.aiService = aiService;
+        this.alarmRepository = alarmRepository;
+        this.alarmService = alarmService;
     }
 
     public List<DiaryRecentResDTO> recentDiary(Long parentId) {
@@ -93,8 +103,11 @@ public class DiaryService {
         return diaryResDTOList;
     }
 
-    public DiaryDetailResDTO getDetail(Long diaryId){
+    public DiaryDetailResDTO getDetail(Long diaryId, Parent user){
         Diary diary = diaryRepository.findById(diaryId).orElseThrow();
+        Alarm alarm = alarmRepository.findByDiaryIdAndParentId(diaryId, user.getId());
+        log.info("alarm: {}", alarm.getId());
+        alarm.setIsRead(true);
 
         DiaryDetailResDTO diaryDetailResDTO = new DiaryDetailResDTO(
                 diary.getId(),
@@ -114,6 +127,7 @@ public class DiaryService {
         return diaryDetailResDTO;
     }
 
+    @Async
     public void addDiary(Long parentId, DiaryDetailReqDTO reqDTO, MultipartFile image, MultipartFile record){
         InputStream imageStream = null;
         InputStream recordStream = null;
@@ -138,12 +152,13 @@ public class DiaryService {
         }catch (Exception e){
             e.printStackTrace();
         }
+        Diary diary = null;
 
         String sentiment = aiService.getSentiment(reqDTO.content());
 
         if(reqDTO.deposit() != null && reqDTO.deposit().intValue() != 0){
             if(accountService.transferMoney(parentId, reqDTO.deposit().longValue(), reqDTO.memo())) {
-                Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
+                diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
                 diary.setSentiment(sentiment);
                 diaryRepository.save(diary);
             }else{
@@ -154,11 +169,28 @@ public class DiaryService {
                 }
             }
         }else {
-            Diary diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
+            diary = DTOToEntity(parentId, reqDTO, imageStream, imageName, recordStream, recordName, imgMimeType, recordMimeType);
             diary.setSentiment(sentiment);
             diaryRepository.save(diary);
         }
 
+        //알림 전송을 위한 로직 추가.
+        //1.작성자가 해당 게시글을 읽었음으로 표기한다.
+        Parent writer = parentRepository.findById(parentId).orElseThrow(()->new BusinessException(ErrorCode.USER_NOT_FOUND));
+        log.info("writer={}",writer.getId());
+        //2.동일한 아이를 가지고 있는 사람이 있으면 알람을 전송한다.
+        for(Parent parent: writer.getBaby().getParents()){
+            log.info("parentId={}",parent.getId());
+            if(parent == writer) continue;
+            //2-1.알람 Entity 내역추가.
+            Alarm alarm = new Alarm();
+            alarm.setDiary(diary);
+            alarm.setParent(parent);
+            alarmRepository.save(alarm);
+            log.info("Saved Alarm ID: {}", alarm.getId());
+            //2-2.알람 전송
+            alarmService.sendNotification(parent);
+        }
     }
 
     public void editDiary(DiaryEditReqDTO reqDTO, MultipartFile image, MultipartFile record){
