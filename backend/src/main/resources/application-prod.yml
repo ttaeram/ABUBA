@@ -35,6 +35,10 @@ aws:
     bucket-name: hexagon-abuba
     region: ap-northeast-2
 
+naver:
+  client-id: ${CLIENT_ID}
+  client-secret: ${CLIENT_SECRET}
+
 
 #ec2 주소
 app:
