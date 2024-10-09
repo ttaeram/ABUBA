@@ -26,6 +26,7 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -157,55 +158,73 @@ public class UserService {
      * @param user
      * @param registAccountRequestDTO
      */
-    public HttpStatus registAccount(Parent user, RegistAccountRequestDTO registAccountRequestDTO) {
+    public void registAccount(Parent user, RegistAccountRequestDTO registAccountRequestDTO) {
         if(registAccountRequestDTO.isParent()) {
             //부모인경우
             //이미 존재하는 계좌인 경우(주어진 은행과 계좌번호가 DB에서 매칭되는 경우, 이미 있는 계좌 정보)
-            if(checkAlreadyExists(registAccountRequestDTO)) {
-                throw new BusinessException(ErrorCode.ALREADY_EXISTS_ACCOUNT);
-            }
+//            if(checkAlreadyExists(registAccountRequestDTO)) {
+//                throw new BusinessException(ErrorCode.ALREADY_EXISTS_ACCOUNT);
+//            }
             user.setAccount(registAccountRequestDTO.accountNo());
             user.setBankName(registAccountRequestDTO.bankName());
             parentRepository.save(user);
         } else{
             //아이 계좌 등록 로직
             Baby baby = user.getBaby();
-            if(baby == null) {
-                baby = new Baby();
-            } else {
+//            if(baby == null) {
+//                baby = new Baby();
+//            } else {
                 //페치 조인을 사용하여 Baby와 Parents를 함께 로딩
-                baby = babyRepository.findByIdWithParents(baby.getId())
-                        .orElseThrow(() -> new EntityNotFoundException("Baby not found"));
+//                baby = babyRepository.findByIdWithParents(baby.getId())
+//                        .orElseThrow(() -> new EntityNotFoundException("Baby not found"));
+//
+//                //아이가 가지는 정보에 부모 정보와 일치하는지 확인
+//                boolean isParentOfBaby = baby.getParents().stream()
+//                        .anyMatch(parent -> parent.getId().equals(user.getId()));
+//
+//                if (!isParentOfBaby) {
+//                    throw new BusinessException(ErrorCode.INVALID_PARENT_NUMBER);
+//                }
+//            }
+            //이미 계좌가 등록된 아이인경우
+            if(baby.getAccount() != null){
+                throw new BusinessException(ErrorCode.ALREADY_EXISTS_ACCOUNT);
 
-                //아이가 가지는 정보에 부모 정보와 일치하는지 확인
-                boolean isParentOfBaby = baby.getParents().stream()
-                        .anyMatch(parent -> parent.getId().equals(user.getId()));
-
-                if (!isParentOfBaby) {
-                    throw new BusinessException(ErrorCode.INVALID_PARENT_NUMBER);
-                }
             }
+            //사용자가 입력한 아이의 계좌번호를 조회한다.
+            Optional<Baby> originBaby = babyRepository.findByAccount(registAccountRequestDTO.accountNo());
+            if(originBaby.isPresent()){
+                //-이미 존재하는 계좌인경우
+                if(originBaby.get().getName().equals(baby.getName())){
+                    //현재 계좌에 등록된 아이 이름과 새로등록하려는 아이의 이름이 일치한다면, 기존아이의 계좌를 연결해준다.
+                    user.setBaby(originBaby.get());
+                    babyRepository.delete(baby);//이전 ui에서 아이정보를 db에 등록한 것을 삭제한다. 더 이상 사용하지 않음.
+                    return;
+                }
+                //계좌번호와 아이 이름이 일치하지 않는 경우, 예외 처리
+                throw new BusinessException(ErrorCode.BABY_INFO_DOES_NOT_MATCH);
+            }
+
             //아이 계좌가 존재하지 않는 경우, 새로 만들어준다
             if(baby.getAccount() == null) {
                 baby.setAccount(registAccountRequestDTO.accountNo());
                 baby.setBankName(registAccountRequestDTO.bankName());
                 babyRepository.save(baby);
-                return HttpStatus.CREATED;
+
             }
             //검증 이후 입력받은 계좌 정보와 은행 정보가 일치하는지 여부
             if(!checkSameAccount(baby, registAccountRequestDTO)) {
                 throw new BusinessException(ErrorCode.INVALID_ACCOUNT_NUMBER);
             }
         }
-        return HttpStatus.OK;
     }
 
     private boolean checkSameAccount(Baby baby, RegistAccountRequestDTO request) {
         return baby.getAccount().equals(request.accountNo()) && baby.getBankName().equals(request.bankName());
     }
 
-    private boolean checkAlreadyExists(RegistAccountRequestDTO request) {
-        Baby baby = babyRepository.findByAccountAndBankName(request.accountNo(), request.bankName());
-        return baby != null;
-    }
+//    private boolean checkAlreadyExists(RegistAccountRequestDTO request) {
+//        Baby baby = babyRepository.findByAccountAndBankName(request.accountNo(), request.bankName());
+//        return baby != null;
+//    }
 }
