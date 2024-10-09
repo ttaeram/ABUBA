@@ -100,4 +100,18 @@ public class DiaryController {
         diaryService.editDiary(diaryEditReqDTO, image, record);
         return ResponseEntity.ok("edit Diary Success");
     }
+
+
+//    @SecurityRequirement(name = "access")  // 이 API는 토큰이 필요함
+//    @GetMapping("/calendar")
+//    @Operation(summary = "일기 수정")
+//    public ResponseEntity<String> calendar(@RequestParam("year") String year,
+//                                           @RequestParam("month") String month,
+//                                            @AuthenticationPrincipal(expression = "user") Parent user) {
+//        log.info("editDiary");
+//        diaryService.getCalendar(year,month,user);
+//        return ResponseEntity.ok("edit Diary Success");
+//    }
+//
+
 }

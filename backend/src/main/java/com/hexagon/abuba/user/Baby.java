@@ -35,7 +35,7 @@ public class Baby {
     //몸무게
     private Double weight;
 
-    @OneToMany(mappedBy = "baby")
+    @OneToMany(mappedBy = "baby", fetch = FetchType.EAGER)
     private List<Parent> parents = new ArrayList<>();
 
     @Builder

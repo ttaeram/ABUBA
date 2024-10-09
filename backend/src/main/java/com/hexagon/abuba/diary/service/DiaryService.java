@@ -8,9 +8,7 @@ import com.hexagon.abuba.diary.entity.Diary;
 import com.hexagon.abuba.diary.dto.request.DiaryDetailReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryEditReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryRecentReqDTO;
-import com.hexagon.abuba.diary.dto.response.DiaryDetailResDTO;
-import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
-import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
+import com.hexagon.abuba.diary.dto.response.*;
 import com.hexagon.abuba.diary.repository.DiaryRepository;
 import com.hexagon.abuba.global.exception.BusinessException;
 import com.hexagon.abuba.global.exception.ErrorCode;
@@ -28,9 +26,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @Transactional
@@ -295,4 +297,42 @@ public class DiaryService {
         return diary;
     }
 
+//    /**
+//     * 캘린더형태로 조회할 수 있는 데이터를 반환한다.
+//     * @param year
+//     * @param month
+//     * @param user
+//     */
+//    public void getCalendar(int year, int month, Parent user) {
+//        YearMonth yearMonth = YearMonth.of(year, month);
+//        List<DayPosts> dayPostsList = initializeMonthDays(yearMonth);
+//
+//        Long babyId = user.getBaby().getId();
+//        List<Diary> posts = diaryRepository.findByYearAndMonthAndId(year, month,user.);
+//        mapPostsToDays(dayPostsList, posts);
+//
+////        return new CalendarResponse(year, month, dayPostsList);
+//    }
+//
+//    private List<DayPosts> initializeMonthDays(YearMonth yearMonth) {
+//        return IntStream.rangeClosed(1, yearMonth.lengthOfMonth())
+//                .mapToObj(day -> new DayPosts(yearMonth.atDay(day).toString(), new ArrayList<>()))
+//                .collect(Collectors.toList());
+//    }
+//
+//    private void mapPostsToDays(List<DayPosts> dayPostsList, List<Diary> posts) {
+//        Map<String, List<PostSummary>> postsByDate = posts.stream()
+//                .collect(Collectors.groupingBy(
+//                        post -> post.getCreatedAt().toLocalDate().toString(),
+//                        Collectors.mapping(this::toPostSummary, Collectors.toList())
+//                ));
+//
+//        dayPostsList.forEach(dayPosts ->
+//                dayPosts.setPosts(postsByDate.getOrDefault(dayPosts.getDate(), new ArrayList<>()))
+//        );
+//    }
+//
+//    private PostSummary toPostSummary(Diary post) {
+//        return new PostSummary(post.getId(), post.getTitle(), post.getSummary(), post.getAuthorName());
+//    }
 }

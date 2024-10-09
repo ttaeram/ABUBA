@@ -13,4 +13,6 @@ public interface BabyRepository extends JpaRepository<Baby, Long> {
     @Query("SELECT b FROM Baby b LEFT JOIN FETCH b.parents WHERE b.id = :id")
     Optional<Baby> findByIdWithParents(@Param("id") Long id);
     List<Baby> findAllByAccount(String account);
+
+    Optional<Baby> findByAccount(String accountNo);
 }
