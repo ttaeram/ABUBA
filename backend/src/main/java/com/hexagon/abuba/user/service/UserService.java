@@ -198,6 +198,7 @@ public class UserService {
                 if(originBaby.get().getName().equals(baby.getName())){
                     //현재 계좌에 등록된 아이 이름과 새로등록하려는 아이의 이름이 일치한다면, 기존아이의 계좌를 연결해준다.
                     user.setBaby(originBaby.get());
+                    parentRepository.save(user);
                     babyRepository.delete(baby);//이전 ui에서 아이정보를 db에 등록한 것을 삭제한다. 더 이상 사용하지 않음.
                     return;
                 }
