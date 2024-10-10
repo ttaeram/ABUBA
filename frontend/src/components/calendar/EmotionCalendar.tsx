@@ -4,6 +4,8 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import koLocale from '@fullcalendar/core/locales/ko';
 import styled from 'styled-components';
 import { sentimentCalendar } from '../../api/calendar';
+import { DayCellContentArg } from '@fullcalendar/core';
+
 
 interface DiaryPost {
   diaryId: number;
@@ -63,6 +65,11 @@ const TeamDateCalendar: React.FC = () => {
     });
   };
 
+  const handleDayCellContent = (arg: DayCellContentArg) => {
+    const dayNumber = arg.dayNumberText.replace("일", "");
+    return dayNumber;
+  };
+
   return (
     <CalendarContainer>
       <FullCalendar
@@ -71,8 +78,9 @@ const TeamDateCalendar: React.FC = () => {
         events={events}
         locale='ko'
         eventContent={(arg) => { 
-          return arg.event.title;  
+          return <StyledEmoji>{arg.event.title}</StyledEmoji>;
         }}
+        dayCellContent = {handleDayCellContent}
       />
     </CalendarContainer>
   );
@@ -82,29 +90,28 @@ export default TeamDateCalendar;
 
 const CalendarContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: 100vh; 
   display: flex;
   justify-content: center;
-  flex-direction: column;
   align-items: center;
+  overflow: hidden;
+  padding: 0 20px;
 
   .fc {
     width: 100%;
-    height: 100%;
-    max-width: 100vw;
-    max-height: 100vh;
-    overflow: hidden;
+    height: 100%; 
+    max-width: none; 
+    max-height: none; 
   }
 
   .fc .fc-toolbar.fc-header-toolbar {
-    margin-top: 20px;
-    padding: 0 2vw;
-    background-color: #1f1f45;
+    padding: 10px 20px;
+    background-color: #173C91;
     height: 63px;
     font-weight: 600;
-    font-size: 1.3rem;
+    font-size: 10px;
     color: white;
-    border-radius: 20px;
+    border-radius: 10px;
   }
 
   .fc .fc-button-primary {
@@ -123,7 +130,7 @@ const CalendarContainer = styled.div`
   .fc-theme-standard th {
     height: 32px;
     padding-top: 3.5px;
-    background: #1f1f45;
+    background: #173C91;
     border: 1px solid #dddee0;
     font-weight: 100;
     font-size: 1rem; 
@@ -139,7 +146,7 @@ const CalendarContainer = styled.div`
     flex-direction: column;
     width: 100%;
     height: 100%;
-    padding: 5px;
+
     margin-bottom: 5px;
   }
 
@@ -165,4 +172,10 @@ const CalendarContainer = styled.div`
     color: blue;
     text-decoration: none;
   }
+`;
+
+
+const StyledEmoji = styled.span`
+  font-size: 2rem;
+  line-height: 1; 
 `;
