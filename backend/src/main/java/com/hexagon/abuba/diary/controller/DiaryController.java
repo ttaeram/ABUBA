@@ -1,7 +1,9 @@
 package com.hexagon.abuba.diary.controller;
 
+import com.hexagon.abuba.common.DataResponse;
 import com.hexagon.abuba.diary.dto.request.DiaryDetailReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryEditReqDTO;
+import com.hexagon.abuba.diary.dto.response.CalendarResponse;
 import com.hexagon.abuba.diary.dto.response.DiaryDetailResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
 import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
@@ -10,6 +12,7 @@ import com.hexagon.abuba.user.Parent;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -102,16 +105,15 @@ public class DiaryController {
     }
 
 
-//    @SecurityRequirement(name = "access")  // 이 API는 토큰이 필요함
-//    @GetMapping("/calendar")
-//    @Operation(summary = "일기 수정")
-//    public ResponseEntity<String> calendar(@RequestParam("year") String year,
-//                                           @RequestParam("month") String month,
-//                                            @AuthenticationPrincipal(expression = "user") Parent user) {
-//        log.info("editDiary");
-//        diaryService.getCalendar(year,month,user);
-//        return ResponseEntity.ok("edit Diary Success");
-//    }
-//
+    @SecurityRequirement(name = "access")  // 이 API는 토큰이 필요함
+    @GetMapping("/calendar")
+    @Operation(summary = "캘린저 조회")
+    public ResponseEntity<DataResponse<CalendarResponse>> calendar(@RequestParam("year") int year,
+                                                                   @RequestParam("month") int month,
+                                                                   @AuthenticationPrincipal(expression = "user") Parent user) {
+        CalendarResponse res = diaryService.getCalendar(year,month,user);
+        return new ResponseEntity<>(DataResponse.of(HttpStatus.OK,"캘린더 조회 완료",res),HttpStatus.OK);
+    }
+
 
 }
