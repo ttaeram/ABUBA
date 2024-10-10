@@ -68,7 +68,7 @@ const ControlButton = styled.button<{ isRecording: boolean }>`
   align-items: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin right: 20px
+  margin-right: 20px;
   
   &:hover {
     transform: scale(1.1);
