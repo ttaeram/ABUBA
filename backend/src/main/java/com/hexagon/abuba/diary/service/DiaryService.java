@@ -68,7 +68,7 @@ public class DiaryService {
         Collections.reverse(diaries);
 
         for (Diary diary : diaries) {
-            if(diary.getImage_url()==null) continue; // 이미지 URL 이 null 일 경우
+            // if(diary.getImage_url()==null) continue; // 이미지 URL 이 null 일 경우
 
             DiaryRecentResDTO diaryRecentResDTO = new DiaryRecentResDTO(
                     diary.getId(),
