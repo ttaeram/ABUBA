@@ -26,10 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -106,9 +103,10 @@ public class DiaryService {
 
     public DiaryDetailResDTO getDetail(Long diaryId, Parent user){
         Diary diary = diaryRepository.findById(diaryId).orElseThrow();
-        Alarm alarm = alarmRepository.findByDiaryIdAndParentId(diaryId, user.getId());
-        log.info("alarm: {}", alarm.getId());
-        alarm.setIsRead(true);
+        Optional<Alarm> alarm = alarmRepository.findByDiaryIdAndParentId(diaryId, user.getId());
+        if(alarm.isPresent()){
+            alarm.get().setIsRead(true);
+        }
 
         DiaryDetailResDTO diaryDetailResDTO = new DiaryDetailResDTO(
                 diary.getId(),
