@@ -54,6 +54,8 @@ const DiaryDetail = () => {
   
   if (!diaryData) return null;
 
+  const isDefaultImage = !diaryData.imageUrl || diaryData.imageUrl === "https://hexagon-abuba.s3.amazonaws.com/null"
+
   const displayImageUrl =
     diaryData.imageUrl === "https://hexagon-abuba.s3.amazonaws.com/null" || !diaryData.imageUrl
       ? FullLogo
@@ -67,7 +69,11 @@ const DiaryDetail = () => {
       </Header>
 
       <Content>
-        <DiaryImage src={displayImageUrl || 'https://via.placeholder.com/400x300'} alt={diaryData.title} />
+      {isDefaultImage ? (
+          <StyledLogo src={FullLogo} alt="default logo" />
+        ) : (
+          <DiaryImage src={diaryData.imageUrl} alt={diaryData.title} />
+        )}
         <StatsContainer>
           <StatItem>신장 : {diaryData?.height || 0}</StatItem>
           <StatItem>체중 : {diaryData?.weight || 0}</StatItem>
@@ -107,7 +113,7 @@ const DiaryContainer = styled.div`
 const Header = styled.div`
   position: relative;
   display: flex;
-  justify-content: flex-end; /* 작성 버튼을 오른쪽 끝으로 보냄 */
+  justify-content: flex-end;
   align-items: center;
   margin-bottom: 20px;
 `;
@@ -181,7 +187,7 @@ const Error = styled.div`
 
 const AccountContainer = styled.div`
   display: flex;
-  justify-content: space-between; /* 양 끝에 배치 */
+  justify-content: space-between;
   align-items: center;
   padding: 15px;
   border: 1px solid #ddd;
@@ -211,4 +217,11 @@ const Account = styled.span`
 const MemoLabel = styled.p`
   margin-right: 10px;
   font-size: 14px;
+`;
+
+const StyledLogo = styled.img`
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  padding: 100px
 `;

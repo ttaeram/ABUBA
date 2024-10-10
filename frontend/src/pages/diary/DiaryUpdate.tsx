@@ -208,7 +208,7 @@ const Content = styled.div`
 const ImageContainer = styled.div`
   text-align: center;
   margin-bottom: 20px;
-  cursor: pointer; /* 클릭 가능하게 표시 */
+  cursor: pointer;
 `;
 
 const DiaryImage = styled.img`
