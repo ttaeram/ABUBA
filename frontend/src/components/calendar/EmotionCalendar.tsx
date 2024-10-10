@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import { sentimentCalendar } from '../../api/calendar';
 import { DayCellContentArg } from '@fullcalendar/core';
 
-
 interface DiaryPost {
   diaryId: number;
   title: string;
@@ -20,23 +19,24 @@ interface PostsResponse {
 }
 
 const TeamDateCalendar: React.FC = () => {
-  const [events, setEvents] = useState<any[]>([]); 
-  const currentYear = new Date().getFullYear(); 
-  const currentMonth = new Date().getMonth() + 1; 
+  const [events, setEvents] = useState<any[]>([]);
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
 
   useEffect(() => {
-    const fetchSentimentData = async () => {
-      try {
-        const response = await sentimentCalendar(currentYear, currentMonth);
-        const formattedEvents = formatEvents(response.data.posts);
-        setEvents(formattedEvents);
-      } catch (error) {
-        console.error("Error fetching sentiment data:", error);
-      }
-    };
-
+    // 컴포넌트가 처음 렌더링될 때 이벤트 가져오기
     fetchSentimentData();
-  }, []);
+  }, []); // 빈 배열을 넣어 최초 한번만 호출되게 설정
+
+  const fetchSentimentData = async () => {
+    try {
+      const response = await sentimentCalendar(currentYear, currentMonth);
+      const formattedEvents = formatEvents(response.data.posts);
+      setEvents(formattedEvents);
+    } catch (error) {
+      console.error("Error fetching sentiment data:", error);
+    }
+  };
 
   const formatEvents = (posts: PostsResponse[]): any[] => {
     return posts.flatMap(post => {
@@ -70,6 +70,14 @@ const TeamDateCalendar: React.FC = () => {
     return dayNumber;
   };
 
+  const handleDatesSet = (dateInfo: { start: Date; end: Date }) => {
+    const newYear = dateInfo.start.getFullYear();
+    const newMonth = dateInfo.start.getMonth() + 1; // 자바스크립트에서 월은 0부터 시작하므로 +1
+    setCurrentYear(newYear);
+    setCurrentMonth(newMonth);
+    fetchSentimentData(); // 새로운 날짜에 맞게 데이터 가져오기
+  };
+
   return (
     <CalendarContainer>
       <FullCalendar
@@ -80,7 +88,8 @@ const TeamDateCalendar: React.FC = () => {
         eventContent={(arg) => { 
           return <StyledEmoji>{arg.event.title}</StyledEmoji>;
         }}
-        dayCellContent = {handleDayCellContent}
+        dayCellContent={handleDayCellContent}
+        datesSet={handleDatesSet} // 날짜가 변경될 때 호출
       />
     </CalendarContainer>
   );
@@ -154,7 +163,6 @@ const CalendarContainer = styled.div`
   .fc .fc-daygrid-day {
     border: none; 
     background: none; 
-    
   }
 
   .fc .fc-daygrid-day > div {
@@ -177,22 +185,15 @@ const CalendarContainer = styled.div`
     border: none; 
   }
 
-  .fc-day-sun a {
-
-    text-decoration: none;
-  }
-
-  .fc-day-sat a {
-
+  .fc-day-sun a, .fc-day-sat a {
     text-decoration: none;
   }
 `;
 
-
 const StyledEmoji = styled.span`
-  display: flex; /* Enable flexbox for the emoji container */
-  justify-content: center; /* Center emojis horizontally */
-  align-items: center; /* Center emojis vertically */
+  display: flex; /* 이모지 컨테이너에 flexbox 사용 */
+  justify-content: center; /* 이모지를 수평으로 중앙 정렬 */
+  align-items: center; /* 이모지를 수직으로 중앙 정렬 */
   font-size: 2rem; 
   line-height: 1; 
 `;
