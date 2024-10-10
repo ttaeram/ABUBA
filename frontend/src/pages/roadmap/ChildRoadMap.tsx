@@ -54,7 +54,8 @@ const All = styled.div`
 `
 const TabContainer = styled.div`
   display: flex;
-  justify-content: left;
+  justify-content: center;
+  font-size: 14px;
   margin-bottom: 20px;
 `;
 
