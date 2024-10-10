@@ -10,13 +10,17 @@ const DiaryListCard = ({ diary }: { diary: { id: number; title: string; content:
     navigate(`/diary/${diary.id}`)
   }
 
+  const truncatedContent = diary.content.length > 20
+    ? diary.content.substring(0, 20) + "..."
+    : diary.content
+
   return (
     <Card>
       <div onClick={toDiaryDetail}>
       <DiaryImage src={diary.imageUrl} alt={diary.title} />
         <Title>{diary.title}</Title>
       </div>
-      <Content>{diary.content}</Content>
+      <Content>{truncatedContent}</Content>
       <InfoRow>
         <Date>{formattedDate}</Date>
         <Money>+{diary.deposit} 원</Money>

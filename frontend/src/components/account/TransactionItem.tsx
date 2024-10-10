@@ -4,16 +4,23 @@ type Transaction = {
   date?: string;
   description: string;
   amount: string;
+  balance: string;
   isPositive: boolean; // 입금 또는 출금 여부
 };
 
-const TransactionItem: React.FC<Transaction> = ({ date, description, amount, isPositive }) => {
+const TransactionItem: React.FC<Transaction> = ({ date, description, amount, balance, isPositive }) => {
+  const formattedAmount = Number(amount).toLocaleString()
+  const formattedBalance = Number(balance).toLocaleString()
+
   return (
     <TransactionItemWrapper>
       <TransactionDate>{date}</TransactionDate>
       <TransactionDetail>
         <span>{description}</span>
-        <span style={{ color: isPositive ? '#3B6EBA' : 'black' }}>{amount}</span>
+        <AmountContainer>
+          <Amount style={{ color: isPositive ? 'black' : '#3B6EBA' }}>+{formattedAmount} 원</Amount>
+          <Balance>{formattedBalance} 원</Balance>
+        </AmountContainer>
       </TransactionDetail>
     </TransactionItemWrapper>
   );
@@ -43,4 +50,21 @@ const TransactionDetail = styled.div`
   span {
     font-size: 16px;
   }
+`;
+
+const AmountContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`;
+
+// 금액 스타일링
+const Amount = styled.span`
+  font-size: 16px;
+`;
+
+// 잔액 스타일링
+const Balance = styled.span`
+  font-size: 12px;
+  color: #999;
 `;

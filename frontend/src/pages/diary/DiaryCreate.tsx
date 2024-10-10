@@ -235,8 +235,9 @@ const Title = styled.h2`
 const ActionButton = styled.button`
   background: none;
   border: none;
-  color: blue;
+  color: #3B6EBA;
   font-size: 16px;
+  font-weight: bold;
 `;
 
 const Content = styled.div`

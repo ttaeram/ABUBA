@@ -120,8 +120,9 @@ const Date = styled.h2`
 const UpdateButton = styled.button`
   background: none;
   border: none;
-  color: blue;
+  color: #3B6EBA;
   font-size: 16px;
+  font-weight: bold;
 `;
 
 const Content = styled.div`
@@ -180,7 +181,8 @@ const AccountContainer = styled.div`
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  margin-bottom: 10px;
+  margin-top: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const IconContainer = styled.div`

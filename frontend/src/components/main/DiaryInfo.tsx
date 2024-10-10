@@ -4,7 +4,7 @@ import { SlNotebook } from "react-icons/sl";
 import { PiNotepadFill } from "react-icons/pi";
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/index'
-import { ReactComponent as FullLogo } from '../../assets/images/fulllogo.svg'
+import FullLogo from '../../assets/images/fulllogo.svg'
 
 interface DiaryImage {
   diaryId: number;
@@ -52,9 +52,9 @@ const DiaryInfo = () => {
       <ImageContainer>
         {displayedImages.map((image, index) => (
           image.imageUrl ? (
-            <Image key={image.diaryId} src={image.imageUrl || "https://via.placeholder.com/150"} alt={`diary ${image.diaryId}`} />
+            <Image key={image.diaryId} src={image.imageUrl} alt={`diary ${image.diaryId}`} />
           ) : (
-            <BasicImage key={index} />
+            <StyledLogo key={index} src={FullLogo} alt="default logo" />
           )
         ))}
       </ImageContainer>
@@ -114,8 +114,16 @@ const IconContainer = styled.div`
 
 const BasicImage = styled(FullLogo)`
   width: 100%;
+  height: 94px;
   aspect-ratio: 1 / 1;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 20px
 `
+const StyledLogo = styled.img`
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px
+`;

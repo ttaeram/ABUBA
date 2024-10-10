@@ -7,14 +7,14 @@ import styled from 'styled-components'
 import api from "../../api/index"
 import dayjs from 'dayjs'
 
-// Chart.js의 요소를 등록
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 type Transaction = {
   date: string;
   description: string;
   amount: string;
-  isPositive: boolean; // 입금 또는 출금 여부
+  balance: string;
+  isPositive: boolean;
 };
 
 const groupTransactionsByDate = (transactions: Transaction[]) => {
@@ -38,7 +38,7 @@ const ChildAccount: React.FC = () => {
       {
         label: '저축 추세',
         data: [],
-        fill: false,
+        fill: true,
         backgroundColor: '#3B6EBA',
         borderColor: 'white',
       },
@@ -61,7 +61,8 @@ const ChildAccount: React.FC = () => {
             isParent: false,
           },
         });
-        setBalance(response.data.accountBalance);
+        const formattedBalance = Number(response.data.accountBalance).toLocaleString()
+        setBalance(formattedBalance);
         setBankName(response.data.bankName)
       } catch (error) {
         console.error('Failed to fetch balance:', error);
@@ -95,10 +96,12 @@ const ChildAccount: React.FC = () => {
         });
 
         const transactionData = response.data;
+        console.log(transactionData)
         const transformedTransactions = transactionData.map((transaction: any) => ({
           date: transaction.transactionDate,
           description: transaction.transactionSummary,
           amount: transaction.transactionBalance,
+          balance: transaction.transactionAfterBalance,
           isPositive: transaction.transactionType === '입금',
         }));
 
@@ -113,7 +116,7 @@ const ChildAccount: React.FC = () => {
             {
               label: '잔액 추세',
               data: chartBalances,
-              fill: false,
+              fill: true,
               backgroundColor: '#3B6EBA',
               borderColor: 'white',
             },
@@ -132,21 +135,24 @@ const ChildAccount: React.FC = () => {
     maintainAspectRatio: false,
     scales: {
       x: {
-        display: false, // X축 라벨 숨기기
+        display: true,
+        grid: {
+          display: false,
+        },
       },
       y: {
-        display: false, // Y축 라벨 숨기기
+        display: false,
         grid: {
-          display: false, // 그리드 숨기기
+          display: false,
         },
       },
     },
     plugins: {
       legend: {
-        display: false, // 범례 숨기기
+        display: false,
       },
       tooltip: {
-        enabled: true, // 툴팁은 그대로 유지
+        enabled: true,
       },
     },
   };
@@ -156,7 +162,7 @@ const ChildAccount: React.FC = () => {
   return (
     <ChildAccountWrapper>
       <Header>
-        <BackButton label='<' color='white'/>
+        <BackButton label='이전' color='white'/>
       </Header>
 
       <ChartSection>
@@ -176,18 +182,13 @@ const ChildAccount: React.FC = () => {
                   key={index}
                   description={transaction.description}
                   amount={transaction.amount}
+                  balance={transaction.balance}
                   isPositive={transaction.isPositive}
                 />
               ))}
             </TransactionGroup>
           ))}
         </TransactionList>
-
-        {/* 버튼 섹션
-        <ButtonSection>
-          <ActionButton>보내기</ActionButton>
-          <ActionButton fill>채우기</ActionButton>
-        </ButtonSection> */}
       </BalanceSection>
     </ChildAccountWrapper>
   );
@@ -195,7 +196,6 @@ const ChildAccount: React.FC = () => {
 
 export default ChildAccount
 
-// 전체 페이지를 감싸는 래퍼 스타일 정의
 const ChildAccountWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -203,9 +203,9 @@ const ChildAccountWrapper = styled.div`
   color: white;
   box-sizing: border-box;
   position: relative;
+  height: 100vh;
 `;
 
-// 상단 헤더 스타일 정의
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
@@ -216,7 +216,6 @@ const Header = styled.div`
   border-radius: 10px;
 `;
 
-// 이모지나 이미지를 표시하는 섹션
 const ChartSection = styled.div`
   display: flex;
   justify-content: center;
@@ -224,14 +223,6 @@ const ChartSection = styled.div`
   margin: 20px;
 `;
 
-// 이모지 이미지를 스타일링
-const EmojiImage = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-`;
-
-// 잔액 표시 섹션
 const BalanceSection = styled.div`
   background-color: #fff;
   color: #000;
@@ -239,68 +230,31 @@ const BalanceSection = styled.div`
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   z-index: 1;
+  overflow-y: auto;
 `;
 
-// 잔액 제목 스타일
 const BalanceTitle = styled.h2`
   font-size: 18px;
   margin-bottom: 8px;
 `;
 
-// 잔액 금액 스타일
 const BalanceAmount = styled.h1`
   font-size: 32px;
 `;
 
-// 트랜잭션 정보 스타일
-const TransactionInfo = styled.div`
-  font-size: 16px;
-  color: #666;
-  margin-top: 10px;
-`;
-
-// 버튼 섹션을 스타일링
-const ButtonSection = styled.div`
-  position: sticky;
-  background: linear-gradient(transparent, rgba(255, 255, 255, 1));
-  bottom: 0
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
-  z-index: 10;
-`;
-
-// 버튼 스타일링
-const ActionButton = styled.button<{ fill?: boolean }>`
-  flex: 1;
-  padding: 12px;
-  background-color: ${(props) => (props.fill ? '#3B6EBA' : '#ffffff')};
-  color: ${(props) => (props.fill ? '#ffffff' : '#3B6EBA')};
-  border: none;
-  border-radius: 10px;
-  margin: 0 8px;
-  font-size: 16px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: ${(props) => (props.fill ? '#173C91' : '#e0e0e0')};
-  }
-`;
-
 const TransactionList = styled.ul`
   list-style: none;
-  margin: 0;
   padding: 0;
   overflow-y: auto;
   flex-grow: 1;
-  max-height: 300px;
   background-color: #fff;
   padding: 10px;
   border-radius: 10px;
-  margin-bottom: 10px;
+  margin-top: 10px;
 
   &::-webkit-scrollbar {
     display: none;
@@ -315,7 +269,7 @@ const TransactionGroup = styled.div`
 `;
 
 const TransactionDate = styled.h3`
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
   margin-bottom: 10px;
   color: #333;
