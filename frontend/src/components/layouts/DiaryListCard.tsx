@@ -15,15 +15,17 @@ const DiaryListCard = ({ diary }: { diary: { id: number; title: string; content:
     ? diary.content.substring(0, 20) + "..."
     : diary.content
 
-  const displayImageUrl =
-    diary.imageUrl === "https://hexagon-abuba.s3.amazonaws.com/null" || !diary.imageUrl
-      ? FullLogo
-      : diary.imageUrl
+  const isDefaultImage = !diary.imageUrl || diary.imageUrl === "https://hexagon-abuba.s3.amazonaws.com/null"
 
   return (
     <Card>
       <div onClick={toDiaryDetail}>
-      <DiaryImage src={displayImageUrl} alt={diary.title} />
+        {isDefaultImage ? (
+          <StyledLogo src={FullLogo} alt="default logo" />
+        ) : (
+          <DiaryImage src={diary.imageUrl} alt={diary.title} />
+        )}
+
         <Title>{diary.title}</Title>
       </div>
       <Content>{truncatedContent}</Content>
@@ -47,22 +49,22 @@ const Card = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 18px;
+  font-size: 24px;
   color: #333;
   margin-bottom: 5px;
 `;
 
 const Content = styled.p`
-  font-size: 16px;
+  font-size: 20px;
   color: #555;
   margin: 10px 0;
 `;
 
 const InfoRow = styled.div`
   display: flex;
-  justify-content: space-between; /* 양 끝으로 배치 */
+  justify-content: space-between;
   align-items: center;
-  font-size: 12px;
+  font-size: 18px;
   color: #999;
 `;
 
@@ -70,11 +72,20 @@ const Date = styled.div`
 `;
 
 const Money = styled.div`
+  color: #3B6EBA
 `;
 
 const DiaryImage = styled.img`
   width: 100%;
-  height: auto;
+  aspect-ratio: 1 / 1;
   border-radius: 8px;
   margin-bottom: 10px;
+  object-fit: cover;
+`;
+
+const StyledLogo = styled.img`
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  padding: 100px
 `;

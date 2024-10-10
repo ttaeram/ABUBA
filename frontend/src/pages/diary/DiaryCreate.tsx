@@ -337,7 +337,7 @@ const Button = styled.button`
 
   &:hover {
     background-color: #3B6EBA;
-    border-color: white
+    border-color: white;
     color: white;
   }
 `;
@@ -350,7 +350,7 @@ const DepositContainer = styled.div`
 
 const AccountContainer = styled.div`
   display: flex;
-  justify-content: space-between; /* 양 끝에 배치 */
+  justify-content: space-between;
   align-items: center;
   padding: 15px;
   border: 1px solid #ddd;
@@ -375,5 +375,5 @@ const Account = styled.span`
 `;
 
 const MemoLabel = styled.p`
-  margin-right: 10px; /* Label과 내용 간의 간격 조정 */
+  margin-right: 10px;
 `;

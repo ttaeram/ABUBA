@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { SlNotebook } from "react-icons/sl";
-import { PiNotepadFill } from "react-icons/pi";
+import { BsPencilSquare } from "react-icons/bs";
+
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/index'
 import FullLogo from '../../assets/images/fulllogo.svg'
@@ -18,6 +18,10 @@ const DiaryInfo = () => {
   const toDiaryList = () => {
   navigate("/diaryList")
   }
+
+  const toDiaryCreate = () => {
+    navigate("/diary/create")
+    }
 
   const fetchLatest = async () => {
     try {
@@ -49,6 +53,7 @@ const DiaryInfo = () => {
 
   return (
     <Container>
+      <AllText onClick={toDiaryList}>전체보기</AllText>
       <ImageContainer>
         {displayedImages.map((image, index) => (
           image.imageUrl ? (
@@ -58,9 +63,9 @@ const DiaryInfo = () => {
           )
         ))}
       </ImageContainer>
-      <Text>일기 전체 보기</Text>
-      <IconContainer onClick={toDiaryList}>
-        <PiNotepadFill size={28} />
+      <Text onClick={toDiaryCreate}>일기 쓰기</Text>
+      <IconContainer onClick={toDiaryCreate}>
+        <BsPencilSquare size={28}  />
       </IconContainer>
     </Container>
   );
@@ -96,11 +101,22 @@ const Image = styled.img`
   object-fit: cover;
 `;
 
-const Text = styled.p`
+const Text = styled.div`
+  display: flex;
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 10px;
   color: #727272;
+`;
+
+
+const AllText = styled.div`
+  width: 100%;
+  text-align: right;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #ACACAC;
 `;
 
 const IconContainer = styled.div`
@@ -112,14 +128,6 @@ const IconContainer = styled.div`
   }
 `;
 
-const BasicImage = styled(FullLogo)`
-  width: 100%;
-  height: 94px;
-  aspect-ratio: 1 / 1;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  padding: 20px
-`
 const StyledLogo = styled.img`
   width: 100%;
   aspect-ratio: 1 / 1;
