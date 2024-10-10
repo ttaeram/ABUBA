@@ -36,27 +36,28 @@ public class AlarmService {
         this.objectMapper.registerModule(new JavaTimeModule());
         this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
-
     public SseEmitter subscribe(String username) {
         SseEmitter oldEmitter = sseEmitters.get(username);
         if (oldEmitter != null) {
             oldEmitter.complete();
+            sseEmitters.remove(username);  // 명확하게 이전 Emitter 제거
         }
 
-        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);  // 새로운 Emitter 생성
         sseEmitters.put(username, emitter);
-
+        log.info("새로운 emitter생성 emitter={}", emitter);
+        // Emitter의 종료 시점 처리
         emitter.onCompletion(() -> {
             log.info("SSE Connection Completed for user: {}", username);
-            sseEmitters.remove(username);
+            sseEmitters.remove(username);  // 종료 시 Emitter 제거
         });
         emitter.onTimeout(() -> {
             log.info("SSE Connection Timeout for user: {}", username);
-            sseEmitters.remove(username);
+            sseEmitters.remove(username);  // 타임아웃 시 Emitter 제거
         });
         emitter.onError((e) -> {
             log.error("SSE Connection Error for user: {}", username, e);
-            sseEmitters.remove(username);
+            sseEmitters.remove(username);  // 오류 시 Emitter 제거
         });
 
         try {
@@ -69,10 +70,11 @@ public class AlarmService {
         return emitter;
     }
 
-    @Scheduled(fixedRate = 30000) // 30초마다 실행
+    @Scheduled(fixedRate = 30000) // 15초마다 실행
     public void sendHeartbeat() {
         sseEmitters.forEach((username, emitter) -> {
             try {
+                log.info("Sending heartbeat for username: {}", username);
                 emitter.send(SseEmitter.event().name("heartbeat").data("ping"));
             } catch (IOException e) {
                 log.warn("Failed to send heartbeat to user: {}. Removing emitter.", username);
@@ -84,7 +86,7 @@ public class AlarmService {
     public void sendNotification(Parent parent) {
         String username = parent.getUsername();
         SseEmitter emitter = sseEmitters.get(username);
-
+        log.info("Trying to send notification for user: {}", username);
         if (emitter != null) {
             try {
                 List<AlarmResponseDTO> response = new ArrayList<>();
@@ -120,5 +122,22 @@ public class AlarmService {
     @Scheduled(fixedRate = 60000) // 1분마다 실행
     public void logActiveConnections() {
         log.info("Active SSE connections: {}", sseEmitters.size());
+    }
+
+
+    public List<AlarmResponseDTO> getAlarms(Long parentId) {
+        List<AlarmResponseDTO> response = new ArrayList<>();
+        log.info("response.size()={}", response.size());
+        for (Alarm alarm : alarmRepository.findAllByParentId(parentId)) {
+            Diary diary = alarm.getDiary();
+            AlarmResponseDTO row = new AlarmResponseDTO(
+                    diary.getCreatedAt(),
+                    alarm.getIsRead(),
+                    diary.getId(),
+                    diary.getParent().getName()
+            );
+            response.add(row);
+        }
+        return response;
     }
 }

@@ -7,7 +7,6 @@ import com.hexagon.abuba.alarm.service.AlarmService;
 import com.hexagon.abuba.diary.entity.Diary;
 import com.hexagon.abuba.diary.dto.request.DiaryDetailReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryEditReqDTO;
-import com.hexagon.abuba.diary.dto.request.DiaryRecentReqDTO;
 import com.hexagon.abuba.diary.dto.response.*;
 import com.hexagon.abuba.diary.repository.DiaryRepository;
 import com.hexagon.abuba.global.exception.BusinessException;
@@ -27,10 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -69,13 +65,13 @@ public class DiaryService {
         Collections.reverse(diaries);
 
         for (Diary diary : diaries) {
-            if(diary.getImage_url()==null) continue; // 이미지 URL 이 null 일 경우
-
-            DiaryRecentResDTO diaryRecentResDTO = new DiaryRecentResDTO(
-                    diary.getId(),
-                    s3Service.getFileUrl(diary.getImage_url())
-            );
-
+            DiaryRecentResDTO diaryRecentResDTO = new DiaryRecentResDTO(diary.getId(), null);
+            if(diary.getImage_url() != null) {
+                diaryRecentResDTO = new DiaryRecentResDTO(
+                        diary.getId(),
+                        s3Service.getFileUrl(diary.getImage_url())
+                );
+            }
             diaryRecentResDTOList.add(diaryRecentResDTO);
 
             if(diaryRecentResDTOList.size() == 3) break; // 최대 3개까지만
@@ -107,9 +103,10 @@ public class DiaryService {
 
     public DiaryDetailResDTO getDetail(Long diaryId, Parent user){
         Diary diary = diaryRepository.findById(diaryId).orElseThrow();
-        Alarm alarm = alarmRepository.findByDiaryIdAndParentId(diaryId, user.getId());
-        log.info("alarm: {}", alarm.getId());
-        alarm.setIsRead(true);
+        Optional<Alarm> alarm = alarmRepository.findByDiaryIdAndParentId(diaryId, user.getId());
+        if(alarm.isPresent()){
+            alarm.get().setIsRead(true);
+        }
 
         DiaryDetailResDTO diaryDetailResDTO = new DiaryDetailResDTO(
                 diary.getId(),
@@ -297,42 +294,43 @@ public class DiaryService {
         return diary;
     }
 
-//    /**
-//     * 캘린더형태로 조회할 수 있는 데이터를 반환한다.
-//     * @param year
-//     * @param month
-//     * @param user
-//     */
-//    public void getCalendar(int year, int month, Parent user) {
-//        YearMonth yearMonth = YearMonth.of(year, month);
-//        List<DayPosts> dayPostsList = initializeMonthDays(yearMonth);
-//
-//        Long babyId = user.getBaby().getId();
-//        List<Diary> posts = diaryRepository.findByYearAndMonthAndId(year, month,user.);
-//        mapPostsToDays(dayPostsList, posts);
-//
-////        return new CalendarResponse(year, month, dayPostsList);
-//    }
-//
-//    private List<DayPosts> initializeMonthDays(YearMonth yearMonth) {
-//        return IntStream.rangeClosed(1, yearMonth.lengthOfMonth())
-//                .mapToObj(day -> new DayPosts(yearMonth.atDay(day).toString(), new ArrayList<>()))
-//                .collect(Collectors.toList());
-//    }
-//
-//    private void mapPostsToDays(List<DayPosts> dayPostsList, List<Diary> posts) {
-//        Map<String, List<PostSummary>> postsByDate = posts.stream()
-//                .collect(Collectors.groupingBy(
-//                        post -> post.getCreatedAt().toLocalDate().toString(),
-//                        Collectors.mapping(this::toPostSummary, Collectors.toList())
-//                ));
-//
-//        dayPostsList.forEach(dayPosts ->
-//                dayPosts.setPosts(postsByDate.getOrDefault(dayPosts.getDate(), new ArrayList<>()))
-//        );
-//    }
-//
-//    private PostSummary toPostSummary(Diary post) {
-//        return new PostSummary(post.getId(), post.getTitle(), post.getSummary(), post.getAuthorName());
-//    }
+    /**
+     * 캘린더형태로 조회할 수 있는 데이터를 반환한다.
+     * @param year
+     * @param month
+     * @param user
+     */
+
+    public CalendarResponse getCalendar(int year, int month, Parent user) {
+        YearMonth yearMonth = YearMonth.of(year, month);
+        List<DayPosts> dayPostsList = initializeMonthDays(yearMonth);
+
+        Long babyId = user.getBaby().getId();
+        List<Diary> posts = diaryRepository.findByYearAndMonthAndId(year, month, babyId);
+        mapPostsToDays(dayPostsList, posts);
+
+        return new CalendarResponse(year, month, dayPostsList);
+    }
+
+    private List<DayPosts> initializeMonthDays(YearMonth yearMonth) {
+        return IntStream.rangeClosed(1, yearMonth.lengthOfMonth())
+                .mapToObj(day -> new DayPosts(yearMonth.atDay(day).toString(), new ArrayList<>()))
+                .collect(Collectors.toList());
+    }
+
+    private void mapPostsToDays(List<DayPosts> dayPostsList, List<Diary> posts) {
+        Map<String, List<DiarySummary>> postsByDate = posts.stream()
+                .collect(Collectors.groupingBy(
+                        post -> post.getCreatedAt().toLocalDate().toString(),
+                        Collectors.mapping(this::toPostSummary, Collectors.toList())
+                ));
+
+        dayPostsList.forEach(dayPosts ->
+                dayPosts.setPosts(postsByDate.getOrDefault(dayPosts.getDate(), new ArrayList<>()))
+        );
+    }
+
+    private DiarySummary toPostSummary(Diary diary) {
+        return new DiarySummary(diary.getId(), diary.getTitle(), diary.getCreatedAt(), diary.getSentiment());
+    }
 }
