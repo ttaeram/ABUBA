@@ -38,8 +38,8 @@ const ChildAccount: React.FC = () => {
         label: '저축 추세',
         data: [],
         fill: true,
-        backgroundColor: 'white',
-        borderColor: '#3B6EBA',
+        backgroundColor: '#3B6EBA',
+        borderColor: 'white',
       },
     ],
   });
@@ -116,8 +116,8 @@ const ChildAccount: React.FC = () => {
               label: '잔액 추세',
               data: chartBalances,
               fill: true,
-              backgroundColor: 'white',
-              borderColor: '#3B6EBA',
+              backgroundColor: '#3B6EBA',
+              borderColor: 'white',
             },
           ],
         });
@@ -194,7 +194,7 @@ export default ChildAccount
 const ChildAccountWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: white;
+  background-color: #3B6EBA;
   color: white;
   box-sizing: border-box;
   position: relative;
