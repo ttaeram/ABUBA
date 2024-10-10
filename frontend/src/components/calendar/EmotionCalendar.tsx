@@ -24,9 +24,8 @@ const TeamDateCalendar: React.FC = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
 
   useEffect(() => {
-    // 컴포넌트가 처음 렌더링될 때 이벤트 가져오기
     fetchSentimentData();
-  }, []); // 빈 배열을 넣어 최초 한번만 호출되게 설정
+  }, []);
 
   const fetchSentimentData = async () => {
     try {
@@ -72,10 +71,10 @@ const TeamDateCalendar: React.FC = () => {
 
   const handleDatesSet = (dateInfo: { start: Date; end: Date }) => {
     const newYear = dateInfo.start.getFullYear();
-    const newMonth = dateInfo.start.getMonth() + 1; // 자바스크립트에서 월은 0부터 시작하므로 +1
+    const newMonth = dateInfo.start.getMonth() + 1; 
     setCurrentYear(newYear);
     setCurrentMonth(newMonth);
-    fetchSentimentData(); // 새로운 날짜에 맞게 데이터 가져오기
+    fetchSentimentData();
   };
 
   return (
@@ -89,7 +88,7 @@ const TeamDateCalendar: React.FC = () => {
           return <StyledEmoji>{arg.event.title}</StyledEmoji>;
         }}
         dayCellContent={handleDayCellContent}
-        datesSet={handleDatesSet} // 날짜가 변경될 때 호출
+        datesSet={handleDatesSet} 
       />
     </CalendarContainer>
   );
@@ -191,9 +190,9 @@ const CalendarContainer = styled.div`
 `;
 
 const StyledEmoji = styled.span`
-  display: flex; /* 이모지 컨테이너에 flexbox 사용 */
-  justify-content: center; /* 이모지를 수평으로 중앙 정렬 */
-  align-items: center; /* 이모지를 수직으로 중앙 정렬 */
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
   font-size: 2rem; 
   line-height: 1; 
 `;
