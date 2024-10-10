@@ -1,33 +1,46 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { ReactComponent as LogoSvg } from '../assets/images/onlylogo.svg';
 import AlertModal from './AlertModal';
 import { useNavigate } from 'react-router-dom';
-import { AiOutlineCalendar, AiOutlineBell  } from "react-icons/ai";
-import { useNotificationStore } from '../stores/notificationStore'; // 상태 가져오기
+import { AiOutlineCalendar, AiOutlineBell } from "react-icons/ai";
+import { useNotificationStore } from '../stores/notificationStore';
 import axios from 'axios';
 
-
 interface Notification {
-  id: number;
-  message: string;
   createdAt: string;
-  // 필요한 다른 필드들을 추가하세요
+  isRead: boolean;
+  diaryId: number;
+  writer: string;
+  title: string;
 }
 
 const Navbar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate();
-  const { hasNewNotification, setHasNewNotification } = useNotificationStore(); // 상태 가져오기
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const navigate = useNavigate();
+  const { hasNewNotification, setHasNewNotification } = useNotificationStore();
 
-
-
-  const toggleModal = () => {
+  const toggleModal = async () => {
     setIsModalOpen(!isModalOpen);
-    setHasNewNotification(false); // 알림을 읽었으므로 상태를 false로 변경  
+    setHasNewNotification(false);
+    if (!isModalOpen) {
+      await fetchNotifications();
+    }
   };
-  
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/alarm`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        }
+      });
+      setNotifications(response.data.data);
+    } catch (error) {
+      console.error('Failed to fetch notifications:', error);
+    }
+  };
 
   const handleHomeClick = () => {
     navigate('/main');
@@ -37,6 +50,11 @@ const Navbar = () => {
     navigate('/mycalendar');
   }
 
+  const handleNotificationClick = (diaryId: number) => {
+    setIsModalOpen(false); // 모달 닫기
+    navigate(`/diary/${diaryId}`); // 해당 일기 상세 페이지로 이동
+  };
+
   return (
     <NavbarContainer>
       <LogoSvgStyled onClick={handleHomeClick}/>
@@ -44,13 +62,36 @@ const Navbar = () => {
         <AiOutlineCalendar size={24} color="#000000" onClick={handleCalClick}/>
         <NotificationButton onClick={toggleModal}>
           <AiOutlineBell size={24} />
-          {hasNewNotification && <NotificationBadge />} {/* 알림 배지 */}
+          {hasNewNotification && <NotificationBadge />}
         </NotificationButton>
         {isModalOpen && (
           <AlertModal
             isOpen={isModalOpen}
             onClose={toggleModal}
-            message="알림 메시지를 여기에 작성하세요."
+            content={
+              <NotificationList>
+                {notifications.map((notification, index) => (
+                  <NotificationItem 
+                    key={index} 
+                    onClick={() => handleNotificationClick(notification.diaryId)}
+                    isRead={notification.isRead}
+                  >
+                    <NotificationStatus isRead={notification.isRead}>
+                      {notification.isRead ? '읽음' : '안읽음'}
+                    </NotificationStatus>
+                    <NotificationContent>
+                      <NotificationTitle>
+                        {notification.title.length > 15 
+                          ? `${notification.title.substring(0, 15)}...` 
+                          : notification.title}
+                      </NotificationTitle>
+                      <p>{notification.writer}님이 새 일기를 작성했습니다.</p>
+                      <small>{new Date(notification.createdAt).toLocaleString()}</small>
+                    </NotificationContent>
+                  </NotificationItem>
+                ))}
+              </NotificationList>
+            }
           />
         )}
       </IconContainer>
@@ -58,17 +99,13 @@ const Navbar = () => {
   );
 };
 
-const NotificationBadge = styled.div`
-    position: absolute; /* 아이콘에 겹치게 표시하기 위해 absolute로 설정 */
-    top: -5px; /* 아이콘의 위치에 따라 조정 */
-    right: -5px; /* 아이콘의 위치에 따라 조정 */
-    width: 12px;
-    height: 12px;
-    border-radius: 50%; /* 원형으로 만들기 */
-    background-color: red; /* 빨간색 배경 */
+const NavbarContainer = styled.nav`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f8f9fa;
 `;
-
-export default Navbar;
 
 const LogoSvgStyled = styled(LogoSvg)`
   width: 100px; 
@@ -76,27 +113,62 @@ const LogoSvgStyled = styled(LogoSvg)`
   cursor: pointer;
 `;
 
-const NavbarContainer = styled.nav`
+const IconContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  gap: 20px;
   align-items: center;
-  padding: 1rem;
-  color: white;
 `;
 
 const NotificationButton = styled.button`
-  cursor: pointer;
-  background-color: transparent;
+  background: none;
   border: none;
-  color: black;
+  cursor: pointer;
+  position: relative;
+`;
+
+const NotificationBadge = styled.div`
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+`;
+
+const NotificationList = styled.div`
+  max-height: 300px;
+  overflow-y: auto;
+`;
+
+const NotificationItem = styled.div<{ isRead: boolean }>`
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  background-color: ${props => props.isRead ? 'white' : '#f0f8ff'};
+  display: flex;
+  align-items: flex-start;
 
   &:hover {
-    opacity: 0.8;
+    background-color: #f5f5f5;
   }
 `;
 
-const IconContainer = styled.div`
-    display: flex;
-    gap:10px;
+const NotificationStatus = styled.span<{ isRead: boolean }>`
+  font-size: 0.8em;
+  color: ${props => props.isRead ? 'gray' : 'blue'};
+  margin-right: 10px;
+  min-width: 40px;
+`;
 
-`
+const NotificationContent = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const NotificationTitle = styled.strong`
+  margin-bottom: 5px;
+  font-size: 1em;
+`;
+
+export default Navbar;

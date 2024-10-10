@@ -3,15 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import {login} from '../../api/auth'
 import { getBabyInfo } from '../../api/user';
-import { useChildAuthStore } from '../../stores/authStore';
-import { connect } from '../../api/sse'; // SSE 연결 함수 가져오기
+import { useChildAuthStore, useAuthStore } from '../../stores/authStore';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [notifications, setNotifications] = useState<any[]>([]); // 알림 상태 추가
   const navigate = useNavigate();
+  const { setIsAuthenticated, setEmailAndName } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,24 +27,20 @@ const LoginForm = () => {
       if (isEmpty == false) {
         navigate('/onboard');  //true면 온보딩 페이지로 이동
       } else {
-
         const babyInfoData = await getBabyInfo();
         const { name, relation, height, weight, birthday, gender } = babyInfoData.data;
 
         const setBabyInfo = useChildAuthStore.getState().setChildInfo;
         setBabyInfo(name, relation, height, weight, birthday, gender);
         
-        //TODO구독설정
-        connect(setNotifications); // setNotifications를 인자로 전달
-        navigate('/main');  //false면 메인 페이지로 이동
+        setIsAuthenticated(true);  // 인증 상태를 true로 설정
+        setEmailAndName(email, name);  // 이메일과 이름 설정
         
+        navigate('/main');  //false면 메인 페이지로 이동
       }
-
-
     } catch (err) {
       setError('로그인에 실패했습니다. 다시 시도해주세요.');
     }
-
   };
 
   const handleSignupClick = () => {
