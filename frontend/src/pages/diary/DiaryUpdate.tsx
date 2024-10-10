@@ -119,7 +119,13 @@ const DiaryUpdate = () => {
 
     <Content>
       <ImageContainer onClick={handleImageClick}>
-        <DiaryImage src={diaryData?.imageUrl || 'https://via.placeholder.com/400x300'} alt={diaryData.title} />
+        {diaryData.imageUrl !== "https://hexagon-abuba.s3.amazonaws.com/null" ? (
+          <DiaryImage src={diaryData?.imageUrl} alt="Uploaded" />
+        ) : (
+          <>
+            <ImagePlaceholder>+</ImagePlaceholder>
+          </>
+        )}
         <ImageText>아이의 사진을 수정하려면 클릭하세요.</ImageText>
         <input
           id="imageInput"
@@ -190,23 +196,26 @@ const Header = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 16px;
+  font-size: 24px;
   font-weight: bold;
 `;
 
-const ActionButton = styled.button`
+const ActionButton = styled.div`
   background: none;
   border: none;
-  color: blue;
-  font-size: 16px;
+  color: #3B6EBA;
+  font-size: 24px;
 `;
 
 const Content = styled.div`
   margin-top: 20px;
+  
 `;
 
 const ImageContainer = styled.div`
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 20px;
   cursor: pointer;
 `;
@@ -219,8 +228,22 @@ const DiaryImage = styled.img`
   margin-bottom: 10px;
 `;
 
+const ImagePlaceholder = styled.div`
+  width: 200px;
+  height: 200px;
+  background-color: white;
+  border: solid #3B6EBA;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 48px;
+  color: #3B6EBA;
+  margin-bottom: 10px;
+`;
+
 const ImageText = styled.p`
-  font-size: 12px;
+  font-size: 16px;
   color: #acacac;
 `;
 
@@ -237,7 +260,7 @@ const StatItem = styled.div`
 `;
 
 const StatLabel = styled.label`
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
 `;
 
@@ -247,12 +270,13 @@ const StatInput = styled.input`
   text-align: right;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-left: 40px
+  margin-left: 40px;
+  font-size: 16px;
 `;
 
 const Unit = styled.span`
   margin-left: 10px;
-  font-size: 14px;
+  font-size: 18px;
   color: #555;
 `;
 
@@ -260,6 +284,7 @@ const Label = styled.label`
   font-weight: bold;
   display: block;
   margin-top: 10px;
+  font-size: 20px;
 `;
 
 const Input = styled.input`
@@ -268,6 +293,7 @@ const Input = styled.input`
   margin-top: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  font-size: 16px;
 `;
 
 const Textarea = styled.textarea`
@@ -277,4 +303,5 @@ const Textarea = styled.textarea`
   margin-top: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  font-size: 16px;
 `;
