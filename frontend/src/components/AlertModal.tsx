@@ -1,28 +1,31 @@
 import React from 'react';
 import styled from 'styled-components';
 
-type AlertModalProps = {
+interface AlertModalProps {
   isOpen: boolean;
   onClose: () => void;
-  message: string;
-};
+  content: React.ReactNode;
+}
 
-const AlertModal = ({ isOpen, onClose, message }: AlertModalProps) => {
+const AlertModal: React.FC<AlertModalProps> = ({ isOpen, onClose, content }) => {
   if (!isOpen) return null;
 
   return (
-    <Modal>
-      <ModalContent>
-        <p>{message}</p>
-        <CloseButton onClick={onClose}>닫기</CloseButton>
+    <ModalOverlay onClick={onClose}>
+      <ModalContent onClick={e => e.stopPropagation()}>
+        <ModalHeader>
+          <h2>알림</h2>
+          <CloseButton onClick={onClose}>&times;</CloseButton>
+        </ModalHeader>
+        <ModalBody>
+          {content}
+        </ModalBody>
       </ModalContent>
-    </Modal>
+    </ModalOverlay>
   );
 };
 
-export default AlertModal;
-
-const Modal = styled.div`
+const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -36,21 +39,29 @@ const Modal = styled.div`
 
 const ModalContent = styled.div`
   background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
-  text-align: center;
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 500px;
+  width: 100%;
+`;
+
+const ModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
+const ModalBody = styled.div`
+  max-height: 400px;
+  overflow-y: auto;
 `;
 
 const CloseButton = styled.button`
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: #3B6EBA;
-  color: white;
+  background: none;
   border: none;
-  border-radius: 5px;
+  font-size: 1.5rem;
   cursor: pointer;
-
-  &:hover {
-    background-color: #173C91;
-  }
 `;
+
+export default AlertModal;

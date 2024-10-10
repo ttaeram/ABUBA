@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import {login} from '../../api/auth'
 import { getBabyInfo } from '../../api/user';
-import { useChildAuthStore } from '../../stores/authStore';
+import { useChildAuthStore, useAuthStore } from '../../stores/authStore';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { setIsAuthenticated, setEmailAndName } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -24,7 +25,6 @@ const LoginForm = () => {
       const userData = await login(email, password);
       const {isEmpty} = userData.data;
       if (isEmpty == false) {
-
         navigate('/onboard');  //true면 온보딩 페이지로 이동
       } else {
 
@@ -34,8 +34,10 @@ const LoginForm = () => {
         const setBabyInfo = useChildAuthStore.getState().setChildInfo;
         setBabyInfo(name, relation, height, weight, birthday, gender);
 
+        setIsAuthenticated(true);  // 인증 상태를 true로 설정
+        setEmailAndName(email, name);  // 이메일과 이름 설정
+
         navigate('/main');  //false면 메인 페이지로 이동
-        
       }
 
 

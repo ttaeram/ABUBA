@@ -1,12 +1,14 @@
 import Header from "./Header"
 import Footer from "./Footer"
+import SSEManager from "./SSEManager"
 
 const Layout = (props: {children: React.ReactNode}) => {
   return (
     <>
-    <Header/>
-    <main>{props.children}</main>
-    <Footer/>
+      <SSEManager />
+      <Header/>
+      <main>{props.children}</main>
+      <Footer/>
     </>
   )
 }
