@@ -13,5 +13,5 @@ public record AlarmResponseDTO(
         @Schema(description = "diary고유Id")
         Long diaryId,
         @Schema(description = "작성자")
-        String writer) {
+        String writer, String title) {
 }
