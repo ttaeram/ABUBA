@@ -39,10 +39,10 @@ const ParentAccountForm = ({ onComplete, onPrevious }: ParentAccountFormProps) =
   const [verificationCode, setVerificationCode] = useState('');
   const [authCode, setAuthCode] = useState('');
   const [authText, setAuthText] = useState('');
-  const [responseMessage, setResponseMessage] = useState('');
+  const [sendResponseMessage, setSendResponseMessage] = useState('');  
+  const [verifyResponseMessage, setVerifyResponseMessage] = useState('');  
   const [isVerified, setIsVerified] = useState(false);
-  const navigate = useNavigate();
-
+  
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   const handleBankSelect = (bank: Bank) => {
@@ -50,71 +50,84 @@ const ParentAccountForm = ({ onComplete, onPrevious }: ParentAccountFormProps) =
     setIsOpen(false);
   };
 
-  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isVerified && selectedBank) {
-      try {
-        const response = await submitAccountInfo({
-          isParent: true, 
-          accountNo: accountNumber,
-          bankName: selectedBank.name,
-        });
-
-        if (response.status === 200) { 
-          alert('계좌 정보 전송 성공!');
-          onComplete();
-
-          const babyInfoData = await getBabyInfo();
-          const { name, relation, height, weight, birthday, gender } = babyInfoData.data;
-  
-          const setBabyInfo = useChildAuthStore.getState().setChildInfo;
-          setBabyInfo(name, relation, height, weight, birthday, gender);
-          navigate('/main');
-        } else {
-          alert(response.message);
-        }
-      } catch (error) {
-        alert('계좌 정보 전송 중 오류가 발생했습니다.');
-      }
-    } else {
-      setResponseMessage('인증 및 은행 선택이 필요합니다.');
+    
+    if (!isVerified) {
+      setSendResponseMessage('계좌 인증이 완료되지 않았습니다. 인증을 완료해주세요.');
+      return;
     }
-  };
+
+    if (!selectedBank) {
+      setSendResponseMessage('은행을 선택해주세요.');
+      return;
+    }
+
+    if (!accountNumber) {
+      setSendResponseMessage('계좌번호를 입력해주세요.');
+      return;
+    }
+
+    try {
+      const response = await submitAccountInfo({
+        isParent: true, 
+        accountNo: accountNumber,
+        bankName: selectedBank.name,
+      });
+
+
+      if (response.status === 200) {
+        onComplete();
+      } else {
+        setSendResponseMessage('계좌 정보 전송 중 오류가 발생했습니다.');
+      }
+    } catch (error) {
+      console.error(error);  
+      setSendResponseMessage('계좌 정보 전송 중 오류가 발생했습니다.');
+    }
+};
 
   const handleSendMoney = async () => {
-    if (selectedBank && accountNumber) {
-      try {
-        const response = await sendMoney(accountNumber, selectedBank.name);
+    if (!selectedBank || !accountNumber) {
+      setSendResponseMessage('은행과 계좌번호를 모두 입력해주세요.');
+      return;
+    }
 
+    try {
+      const response = await sendMoney(accountNumber, selectedBank.name);
+
+      if (response.status === 200 && response.data) {
         setAuthCode(response.data.authCode);
         setAuthText(response.data.authText);
-
-        setResponseMessage(response.message); 
-        alert(response.data.authCode)
-      } catch (error) {
-        setResponseMessage('전송 실패');
+        setSendResponseMessage('1원 송금이 완료되었습니다. 인증번호를 확인해주세요.');
+        alert(response.data.authCode);
+      } else if (response.status === 401) {
+        setSendResponseMessage('계좌번호가 유효하지 않습니다. 다시 확인해주세요.');
+      } else if (response.status === 422) {
+        setSendResponseMessage('이미 등록된 아이의 계좌입니다. 아이의 이름을 제대로 입력했는지 확인해주세요.');
       }
-    } else {
-      setResponseMessage('은행과 계좌번호를 입력해주세요.');
+    } catch (error) {
+      setSendResponseMessage('계좌 정보를 전송하는 중 오류가 발생했습니다.');
     }
   };
 
   const handleVerifyAuthCode = async () => {
-    if (verificationCode && accountNumber) {
-      try {
-        const response = await verifyAuthCode(authCode, authText, accountNumber);
-        setResponseMessage(response.message); 
-        if (response.data.status === "SUCCESS") {
-          alert('인증 성공!');
-          setIsVerified(true);
-        } else {
-          alert('인증 실패');
-        }
-      } catch (error) {
-        setResponseMessage('인증 실패');
+    if (!verificationCode) {
+      setVerifyResponseMessage('인증번호를 입력해주세요.');
+      return;
+    }
+
+    try {
+      const response = await verifyAuthCode(authCode, authText, accountNumber);
+
+      if (response.data.status === 'SUCCESS') {
+        setIsVerified(true);
+        setVerifyResponseMessage('인증 성공!');
+      } else {
+        setVerifyResponseMessage('인증 실패. 다시 시도해주세요.');
       }
-    } else {
-      setResponseMessage('인증번호와 계좌번호를 입력해주세요.');
+    } catch (error) {
+      setVerifyResponseMessage('인증 중 오류가 발생했습니다.');
     }
   };
 
@@ -155,6 +168,10 @@ const ParentAccountForm = ({ onComplete, onPrevious }: ParentAccountFormProps) =
         />
         <Button type="submit" onClick={handleSendMoney}>확인</Button>
         </AccountContainer>
+      
+        {sendResponseMessage && (
+        <ResponseMessage>{sendResponseMessage}</ResponseMessage>
+      )}
         
       <Description>
       입금자명 네자리를 입력해주세요.
@@ -173,6 +190,10 @@ const ParentAccountForm = ({ onComplete, onPrevious }: ParentAccountFormProps) =
         />
         <Button type="submit" onClick={handleVerifyAuthCode}>확인</Button>
       </InputRow>
+
+      {verifyResponseMessage && (
+        <ResponseMessage>{verifyResponseMessage}</ResponseMessage>
+      )}
         
       <ButtonContainer>
         <Button type="button" onClick={onPrevious}>이전</Button>
@@ -228,7 +249,7 @@ const BankGrid = styled.div`
 const BankItem = styled.div`
   display: flex;
   flex-direction: column;
-  font-size: 14px;
+  font-size: 12px;
   gap:10px;
   align-items: center;
   justify-content: left;
@@ -247,11 +268,12 @@ const BankLogo = styled.img`
   height: 25px;
 `;
 
+
 const AccountContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 `;
 
 const Input = styled.input`
@@ -266,7 +288,7 @@ const InputRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
 `;
 
 const ButtonContainer = styled.div`
@@ -274,19 +296,21 @@ const ButtonContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
   gap:20px;
+  margin-top: 20px;
 `;
 
 const Description = styled.div`
   display: flex;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 900;
+  margin-bottom: 5px;
 `;
 
 const SubDescription = styled.div`
   display: flex;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 900;
-  margin-bottom: 60px;
+  margin-bottom: 20px;
 `;
 
 const ResponseMessage = styled.div`

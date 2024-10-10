@@ -132,6 +132,7 @@ const CalendarContainer = styled.div`
     padding-top: 3.5px;
     background: #173C91;
     border: 1px solid #dddee0;
+    border: none; 
     font-weight: 100;
     font-size: 1rem; 
     color: white;
@@ -144,10 +145,21 @@ const CalendarContainer = styled.div`
   .fc .fc-daygrid-day-frame {
     display: flex;
     flex-direction: column;
+    border: none; 
     width: 100%;
     height: 100%;
-
     margin-bottom: 5px;
+  }
+
+  .fc .fc-daygrid-day {
+    border: none; 
+    background: none; 
+    
+  }
+
+  .fc .fc-daygrid-day > div {
+    border: none; 
+    background: none; 
   }
 
   .fc .fc-daygrid-day-top {
@@ -157,25 +169,30 @@ const CalendarContainer = styled.div`
 
   .fc-event {
     cursor: pointer;
-    padding: 5px;
+    display: flex;
+    justify-content: center;
     border-radius: 4px;
     font-weight: 500;
     font-size: 0.875rem; 
+    border: none; 
   }
 
   .fc-day-sun a {
-    color: red;
+
     text-decoration: none;
   }
 
   .fc-day-sat a {
-    color: blue;
+
     text-decoration: none;
   }
 `;
 
 
 const StyledEmoji = styled.span`
-  font-size: 2rem;
+  display: flex; /* Enable flexbox for the emoji container */
+  justify-content: center; /* Center emojis horizontally */
+  align-items: center; /* Center emojis vertically */
+  font-size: 2rem; 
   line-height: 1; 
 `;
