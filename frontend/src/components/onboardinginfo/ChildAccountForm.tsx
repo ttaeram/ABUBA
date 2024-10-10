@@ -81,6 +81,7 @@ const ChildAccountForm = ({ onNext, onPrevious }: ChildAccountFormProps) => {
           setAuthCode(response.data.authCode);
           setAuthText(response.data.authText);
           setSendResponseMessage('계좌 인증을 위해 1원을 보내볼게요.');
+          alert(response.data.authCode)
           setNotification(`인증번호: ${response.data.authCode}`);
         } else {
           setSendResponseMessage('계좌번호가 일치하지 않습니다.');

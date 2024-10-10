@@ -59,10 +59,10 @@ const ParentAccountForm = ({ onComplete, onPrevious }: ParentAccountFormProps) =
 
         if (response.status === 200) { 
           alert('계좌 정보 전송 성공!');
-          onComplete(); 
+          onComplete();
+          navigate('/main');
         } else {
           alert(response.message);
-          navigate('/main');
         }
       } catch (error) {
         alert('계좌 정보 전송 중 오류가 발생했습니다.');
@@ -81,7 +81,7 @@ const ParentAccountForm = ({ onComplete, onPrevious }: ParentAccountFormProps) =
         setAuthText(response.data.authText);
 
         setResponseMessage(response.message); 
-        alert(JSON.stringify(response));
+        alert(response.data.authCode)
       } catch (error) {
         setResponseMessage('전송 실패');
       }

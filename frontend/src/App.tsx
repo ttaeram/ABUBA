@@ -24,7 +24,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage/>} />
         <Route path="/main" element={<Main/>} />
-        <Route path="/mycal" element={<MyEmotionCalendar/>} />
+        <Route path="/mycalendar" element={<MyEmotionCalendar/>} />
         <Route path="/onboard" element={<OnBoardingInfoPage/>} />
         <Route path="/signup" element={<SignupPage/>} />
         <Route path="/account" element={<ChildAccount/>} />
