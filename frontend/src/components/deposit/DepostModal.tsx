@@ -100,6 +100,7 @@ const CloseButton = styled.button`
   font-size: 24px;
   cursor: pointer;
   color: #999;
+  margin-right: 5px;
 
   &:hover {
     color: #333;

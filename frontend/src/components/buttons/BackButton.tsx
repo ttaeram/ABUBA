@@ -17,10 +17,10 @@ const BackButton = ({ label = "뒤로가기", color = "#3B6EBA" }: { label?: str
 
 export default BackButton
 
-const Button = styled.button<{ color?: string }>`
+const Button = styled.div<{ color?: string }>`
   background: none;
   border: none;
   color: ${(props) => (props.color ? props.color : "#3B6EBA")};
-  font-size: 16px;
+  font-size: 24px;
   font-weight: bold;
 `;

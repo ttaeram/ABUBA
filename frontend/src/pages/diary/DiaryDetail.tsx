@@ -75,8 +75,8 @@ const DiaryDetail = () => {
           <DiaryImage src={diaryData.imageUrl} alt={diaryData.title} />
         )}
         <StatsContainer>
-          <StatItem>신장 : {diaryData?.height || 0}</StatItem>
-          <StatItem>체중 : {diaryData?.weight || 0}</StatItem>
+          <StatItem>신장 : {diaryData?.height || 0} cm</StatItem>
+          <StatItem>체중 : {diaryData?.weight || 0} kg</StatItem>
         </StatsContainer>
         <Title>{diaryData?.title || "제목 없음"}</Title>
         <ContentText>{diaryData?.content || "내용 없음"}</ContentText>
@@ -122,15 +122,15 @@ const Date = styled.h2`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 16px;
+  font-size: 22px;
   font-weight: bold;
 `;
 
-const UpdateButton = styled.button`
+const UpdateButton = styled.div`
   background: none;
   border: none;
   color: #3B6EBA;
-  font-size: 16px;
+  font-size: 24px;
   font-weight: bold;
 `;
 
@@ -152,7 +152,7 @@ const StatsContainer = styled.div`
 `;
 
 const StatItem = styled.div`
-  font-size: 18px;
+  font-size: 20px;
   color: #555;
 `;
 
@@ -164,7 +164,7 @@ const Title = styled.h1`
 `;
 
 const ContentText = styled.p`
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1.6;
   margin-bottom: 20px;
   color: #444;
@@ -173,7 +173,7 @@ const ContentText = styled.p`
 const AudioLabel = styled.p`
   font-weight: bold;
   margin-top: 20px;
-  font-size: 18px;
+  font-size: 20px;
 `;
 
 const Loading = styled.div`
@@ -199,24 +199,24 @@ const AccountContainer = styled.div`
 const TransferTitle = styled.span`
   font-weight: bold;
   color: #000;
-  font-size: 14px;
+  font-size: 18px;
 `;
 
 const Money = styled.span`
   color: #3B6EBA;
   margin-bottom: 5px;
-  font-size: 14px;
+  font-size: 18px;
 `;
 
 const Account = styled.span`
   font-weight: bold;
   color: #000;
-  font-size: 14px;
+  font-size: 18px;
 `;
 
 const MemoLabel = styled.p`
   margin-right: 10px;
-  font-size: 14px;
+  font-size: 18px;
 `;
 
 const StyledLogo = styled.img`

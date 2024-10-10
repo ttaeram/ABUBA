@@ -172,7 +172,7 @@ const DiaryCreate = () => {
         name="content"
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        placeholder="오늘의 일기를 작성해주세요"
+        placeholder="오늘의 감정을 기록해 보세요."
       />
 
       <Label>음성 녹음</Label>
@@ -218,15 +218,15 @@ const Header = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 16px;
+  font-size: 24px;
   font-weight: bold;
 `;
 
-const ActionButton = styled.button`
+const ActionButton = styled.div`
   background: none;
   border: none;
   color: #3B6EBA;
-  font-size: 16px;
+  font-size: 24px;
   font-weight: bold;
 `;
 
@@ -247,13 +247,14 @@ const ImageContainer = styled.div`
 const ImagePlaceholder = styled.div`
   width: 200px;
   height: 200px;
-  background-color: #e0e0e0;
+  background-color: white;
+  border: solid #3B6EBA;
   border-radius: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 48px;
-  color: #acacac;
+  color: #3B6EBA;
   margin-bottom: 10px;
 `;
 
@@ -266,7 +267,7 @@ const PreviewImage = styled.img`
 `;
 
 const ImageText = styled.p`
-  font-size: 12px;
+  font-size: 16px;
   margin-top: 10px;
   color: #acacac;
 `;
@@ -284,7 +285,7 @@ const StatItem = styled.div`
 `;
 
 const StatLabel = styled.label`
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
 `;
 
@@ -294,12 +295,13 @@ const StatInput = styled.input`
   text-align: right;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-left: 40px
+  margin-left: 40px;
+  font-size: 16px;
 `;
 
 const Unit = styled.span`
   margin-left: 10px;
-  font-size: 14px;
+  font-size: 18px;
   color: #555;
 `;
 
@@ -307,6 +309,7 @@ const Label = styled.label`
   font-weight: bold;
   display: block;
   margin-top: 10px;
+  font-size: 20px;
 `;
 
 const Input = styled.input`
@@ -315,6 +318,7 @@ const Input = styled.input`
   margin-top: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  font-size: 16px;
 `;
 
 const Textarea = styled.textarea`
@@ -324,6 +328,7 @@ const Textarea = styled.textarea`
   margin-top: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  font-size: 16px;
 `;
 
 const Button = styled.button`
@@ -334,6 +339,7 @@ const Button = styled.button`
   border-radius: 5px;
   cursor: pointer;
   margin-top: 10px;
+  font-size: 16px;
 
   &:hover {
     background-color: #3B6EBA;
