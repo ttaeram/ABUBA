@@ -1,16 +1,22 @@
 package com.hexagon.abuba.alarm.controller;
 
+import com.hexagon.abuba.alarm.AlarmResponseDTO;
 import com.hexagon.abuba.alarm.service.AlarmService;
+import com.hexagon.abuba.common.DataResponse;
 import com.hexagon.abuba.user.Parent;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -39,30 +45,12 @@ public class AlarmController {
     }
 
 
-
-//    // SSE 연결 설정
-//    @GetMapping(value = "/subscribe/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-//    public SseEmitter subscribe(@PathVariable String userId) {
-//        SseEmitter emitter = new SseEmitter(60 * 1000L); // 1분 타임아웃
-//        sseEmitters.put(userId, emitter);
-//        emitter.onCompletion(() -> sseEmitters.remove(userId));
-//        emitter.onTimeout(() -> sseEmitters.remove(userId));
-//        return emitter;
-//    }
-//
-//    // 특정 사용자들에게 알림을 보내는 메서드
-//    @PostMapping("/send/{userId}")
-//    public String sendNotificationToUser(@PathVariable String userId, @RequestParam String message) {
-//        SseEmitter emitter = sseEmitters.get(userId);
-//        if (emitter != null) {
-//            try {
-//                emitter.send(SseEmitter.event().name("notification").data(message));
-//            } catch (IOException e) {
-//                sseEmitters.remove(userId);
-//                return "Failed to send notification";
-//            }
-//        }
-//        return "Notification sent to user " + userId;
-//    }
+    @SecurityRequirement(name="access")
+    @Operation(summary = "알림 조회")
+    @GetMapping
+    public ResponseEntity<DataResponse<?>> getAlarms(@AuthenticationPrincipal(expression = "user") Parent  user) {
+        List<AlarmResponseDTO> response =  alarmService.getAlarms(user.getId());
+        return new ResponseEntity<>(DataResponse.of(HttpStatus.OK,"알람 조회 성공", response),HttpStatus.OK);
+    }
 }
 

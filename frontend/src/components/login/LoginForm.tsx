@@ -24,6 +24,7 @@ const LoginForm = () => {
       const userData = await login(email, password);
       const {isEmpty} = userData.data;
       if (isEmpty == false) {
+
         navigate('/onboard');  //true면 온보딩 페이지로 이동
       } else {
 

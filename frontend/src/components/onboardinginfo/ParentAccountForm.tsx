@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import { Button } from '../../styles/styledComponents';
 import { sendMoney, submitAccountInfo, verifyAuthCode } from '../../api/auth';
 import { useNavigate } from 'react-router-dom';
+import { getBabyInfo } from '../../api/user';
+import { useChildAuthStore } from '../../stores/authStore';
+
 
 interface ParentAccountFormProps {
   onComplete: () => void;
@@ -60,6 +63,12 @@ const ParentAccountForm = ({ onComplete, onPrevious }: ParentAccountFormProps) =
         if (response.status === 200) { 
           alert('계좌 정보 전송 성공!');
           onComplete();
+
+          const babyInfoData = await getBabyInfo();
+          const { name, relation, height, weight, birthday, gender } = babyInfoData.data;
+  
+          const setBabyInfo = useChildAuthStore.getState().setChildInfo;
+          setBabyInfo(name, relation, height, weight, birthday, gender);
           navigate('/main');
         } else {
           alert(response.message);

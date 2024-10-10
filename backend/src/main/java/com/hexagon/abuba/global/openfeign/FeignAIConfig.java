@@ -1,9 +1,11 @@
 package com.hexagon.abuba.global.openfeign;
 import feign.RequestInterceptor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@Slf4j
 @Configuration
 public class FeignAIConfig {
 
@@ -15,6 +17,9 @@ public class FeignAIConfig {
 
     @Bean
     public RequestInterceptor requestInterceptor() {
+        log.debug("requestInterceptor");
+        log.debug("clientId: {}", clientId);
+        log.debug("clientSecret: {}", clientSecret);
         return requestTemplate -> {
             requestTemplate.header("X-NCP-APIGW-API-KEY-ID", clientId);
             requestTemplate.header("X-NCP-APIGW-API-KEY", clientSecret);
