@@ -86,8 +86,8 @@ const Navbar = () => {
                           ? `${notification.title.substring(0, 15)}...`
                           : notification.title || '새 알림'}
                       </NotificationTitle>
-                      <p>{notification.writer || '작성자'}님이 새 일기를 작성했습니다.</p>
-                      <small>{new Date(notification.createdAt).toLocaleString()}</small>
+                      <NotificationText>{notification.writer || '작성자'}님이 새 일기를 작성했습니다.</NotificationText>
+                      <NotificationDate>{new Date(notification.createdAt).toLocaleString()}</NotificationDate>
                     </NotificationContent>
                   </NotificationItem>
                 ))}
@@ -141,7 +141,6 @@ const NotificationList = styled.div`
   max-height: 300px;
   overflow-y: auto;
 `;
-
 const NotificationItem = styled.div<{ isRead: boolean }>`
   padding: 10px;
   border-bottom: 1px solid #eee;
@@ -160,6 +159,7 @@ const NotificationStatus = styled.span<{ isRead: boolean }>`
   color: ${props => props.isRead ? 'gray' : 'blue'};
   margin-right: 10px;
   min-width: 40px;
+  font-weight: bold; /* 강조 */
 `;
 
 const NotificationContent = styled.div`
@@ -169,7 +169,20 @@ const NotificationContent = styled.div`
 
 const NotificationTitle = styled.strong`
   margin-bottom: 5px;
-  font-size: 1em;
+  font-size: 1.1em; /* 제목을 약간 더 크게 */
+  font-weight: bold; /* 제목을 강조 */
+  color: #333;
+`;
+
+const NotificationText = styled.p`
+  font-size: 0.9em; /* 작성자 정보와 메세지 크기 축소 */
+  color: #666;
+  margin: 2px 0;
+`;
+
+const NotificationDate = styled.small`
+  font-size: 0.75em; /* 작성 시간 크기 축소 */
+  color: #999; /* 덜 강조되는 색상 */
 `;
 
 export default Navbar;
