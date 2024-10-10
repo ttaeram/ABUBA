@@ -21,6 +21,9 @@ public class FeignAIConfig {
         log.debug("clientId: {}", clientId);
         log.debug("clientSecret: {}", clientSecret);
         return requestTemplate -> {
+            log.debug("requestInterceptor");
+            log.debug("clientId: {}", clientId);
+            log.debug("clientSecret: {}", clientSecret);
             requestTemplate.header("X-NCP-APIGW-API-KEY-ID", clientId);
             requestTemplate.header("X-NCP-APIGW-API-KEY", clientSecret);
             requestTemplate.header("Content-Type", "application/json");
