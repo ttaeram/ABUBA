@@ -261,7 +261,7 @@ public class DiaryService {
 
         diary.setTitle(reqDTO.title());
         diary.setContent(reqDTO.content());
-        diary.setCreatedAt(LocalDateTime.now().plusHours(9));
+        diary.setCreatedAt(LocalDateTime.now());
         diary.setAccount(reqDTO.account());
         diary.setDeposit(reqDTO.deposit());
         diary.setHeight(reqDTO.height());
