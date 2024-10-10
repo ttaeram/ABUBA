@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import BackButton from "../../components/buttons/BackButton"
-import axios from "axios"
 import AudioPlayer from "../../components/AudioPlayer"
 import styled from "styled-components"
-import { ReactComponent as WonSvg } from "../../assets/images/won.svg"
 import api from "../../api/index"
 import dayjs from "dayjs"
 import FullLogo from "../../assets/images/fulllogo.svg"
@@ -65,7 +62,6 @@ const DiaryDetail = () => {
   return (
     <DiaryContainer>
       <Header>
-        <BackButton label="이전"/>
         <Date>{formattedDate || "날짜  없음"}</Date>
         <UpdateButton onClick={toDiaryUpdate}>수정</UpdateButton>
       </Header>
@@ -109,14 +105,18 @@ const DiaryContainer = styled.div`
 `;
 
 const Header = styled.div`
+  position: relative;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end; /* 작성 버튼을 오른쪽 끝으로 보냄 */
   align-items: center;
   margin-bottom: 20px;
 `;
 
 const Date = styled.h2`
-  font-size: 18px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 16px;
   font-weight: bold;
 `;
 
