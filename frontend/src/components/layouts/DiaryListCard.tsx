@@ -10,7 +10,7 @@ const DiaryListCard = ({ diary }: { diary: { id: number; title: string; content:
   const toDiaryDetail = () => {
     navigate(`/diary/${diary.id}`)
   }
-
+  const formattedDeposit = Number(diary.deposit).toLocaleString()
   const truncatedContent = diary.content.length > 20
     ? diary.content.substring(0, 20) + "..."
     : diary.content
@@ -31,7 +31,7 @@ const DiaryListCard = ({ diary }: { diary: { id: number; title: string; content:
       <Content>{truncatedContent}</Content>
       <InfoRow>
         <Date>{formattedDate}</Date>
-        <Money>+{diary.deposit} 원</Money>
+        <Money>+{formattedDeposit} 원</Money>
       </InfoRow>
     </Card>
   )
