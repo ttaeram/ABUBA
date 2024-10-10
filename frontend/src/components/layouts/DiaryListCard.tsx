@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom"
 import styled from "styled-components"
+import FullLogo from "../../assets/images/fulllogo.svg"
 
 const DiaryListCard = ({ diary }: { diary: { id: number; title: string; content: string; createdAt: string; deposit: number; imageUrl: string } }) => {
   const navigate = useNavigate()
@@ -14,10 +15,15 @@ const DiaryListCard = ({ diary }: { diary: { id: number; title: string; content:
     ? diary.content.substring(0, 20) + "..."
     : diary.content
 
+  const displayImageUrl =
+    diary.imageUrl === "https://hexagon-abuba.s3.amazonaws.com/null" || !diary.imageUrl
+      ? FullLogo
+      : diary.imageUrl
+
   return (
     <Card>
       <div onClick={toDiaryDetail}>
-      <DiaryImage src={diary.imageUrl} alt={diary.title} />
+      <DiaryImage src={displayImageUrl} alt={diary.title} />
         <Title>{diary.title}</Title>
       </div>
       <Content>{truncatedContent}</Content>

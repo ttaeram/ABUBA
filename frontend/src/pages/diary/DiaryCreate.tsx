@@ -8,24 +8,14 @@ import styled from "styled-components"
 import { ReactComponent as WonSvg } from "../../assets/images/won.svg"
 import { useChildAuthStore } from "../../stores/authStore"
 
-interface DiaryData {
-  title: string;
-  content: string;
-  height: number;
-  weight: number;
-  imageFile?: File | null;
-  audioFile?: File | null;
-  account: string;
-  deposit: number;
-  memo: string;
-}
-
 const DiaryCreate = () => {
   const navigate = useNavigate()
+  const { height: initialHeight, weight: initialWeight, childname, relation, birthdate, gender, setChildInfo } = useChildAuthStore()
+
   const [title, setTitle] = useState<string>("")
   const [content, setContent] = useState<string>("")
-  const [height, setHeight] = useState<number>(0)
-  const [weight, setWeight] = useState<number>(0)
+  const [height, setHeight] = useState<number>(initialHeight)
+  const [weight, setWeight] = useState<number>(initialWeight)
   const [childAccount, setChildAccount] = useState<string>("")
   const [parentAccount, setParentAccount] = useState<string>("")
   const [deposit, setDeposit] = useState<number>(0)
@@ -99,6 +89,8 @@ const DiaryCreate = () => {
         },
       })
       console.log('Success')
+
+      setChildInfo(childname, relation, height, weight, birthdate, gender)
       navigate('/diaryList')
     } catch (error) {
       console.error("Failed to create diary", error)
@@ -196,18 +188,16 @@ const DiaryCreate = () => {
         />
       </DepositContainer>
       {childAccount && (
-        <AccountContainer>
-          <IconContainer>
-            <Icon />
-          </IconContainer>
-          <ContentContainer>
+        <>
+          <AccountContainer>
+            <Account>{childAccount}</Account>
+            <Money>+{Number(deposit).toLocaleString()} 원</Money>
+          </AccountContainer>
+          <AccountContainer>
+            <MemoLabel>내 통장 메모:</MemoLabel>
             <TransferTitle>{memo}</TransferTitle>
-            <MoneyAndAccount>
-              <Money>+ {deposit}</Money>
-              <Account>{childAccount}</Account>
-            </MoneyAndAccount>
-          </ContentContainer>
-        </AccountContainer>
+          </AccountContainer>
+        </>
       )}
     </Content>
   </DiaryContainer>
@@ -360,50 +350,30 @@ const DepositContainer = styled.div`
 
 const AccountContainer = styled.div`
   display: flex;
+  justify-content: space-between; /* 양 끝에 배치 */
   align-items: center;
-  padding: 10px;
+  padding: 15px;
   border: 1px solid #ddd;
   border-radius: 8px;
   margin-top: 10px;
-  margin-bottom: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
-const IconContainer = styled.div`
-  margin-right: 10px;
-`;
-
-const Icon = styled(WonSvg)`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid #007bff;
-`;
-
-const ContentContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-`;
-
-const TransferTitle = styled.h3`
-  font-size: 16px;
+const TransferTitle = styled.span`
   font-weight: bold;
-  margin-bottom: 25px;
-`;
-
-const MoneyAndAccount = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  color: #000;
 `;
 
 const Money = styled.span`
-  color: #888;
+  color: #3B6EBA;
   margin-bottom: 5px;
 `;
 
 const Account = styled.span`
   font-weight: bold;
   color: #000;
+`;
+
+const MemoLabel = styled.p`
+  margin-right: 10px; /* Label과 내용 간의 간격 조정 */
 `;

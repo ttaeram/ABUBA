@@ -28,7 +28,6 @@ const TransactionItem: React.FC<Transaction> = ({ date, description, amount, bal
 
 export default TransactionItem
 
-// 계좌 내역 아이템 스타일링
 const TransactionItemWrapper = styled.li`
   display: flex;
   justify-content: space-between;
@@ -36,13 +35,11 @@ const TransactionItemWrapper = styled.li`
   border-bottom: 1px solid #e0e0e0;
 `;
 
-// 날짜 스타일링
 const TransactionDate = styled.div`
   font-size: 14px;
   color: #666;
 `;
 
-// 거래 내역 정보 스타일링
 const TransactionDetail = styled.div`
   display: flex;
   justify-content: space-between;
@@ -58,12 +55,10 @@ const AmountContainer = styled.div`
   align-items: flex-end;
 `;
 
-// 금액 스타일링
 const Amount = styled.span`
   font-size: 16px;
 `;
 
-// 잔액 스타일링
 const Balance = styled.span`
   font-size: 12px;
   color: #999;
