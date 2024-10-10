@@ -17,9 +17,9 @@ public class FeignAIConfig {
 
     @Bean
     public RequestInterceptor requestInterceptor() {
-        log.info("requestInterceptor");
-        log.info("clientId: {}", clientId);
-        log.info("clientSecret: {}", clientSecret);
+        log.debug("requestInterceptor");
+        log.debug("clientId: {}", clientId);
+        log.debug("clientSecret: {}", clientSecret);
         return requestTemplate -> {
             requestTemplate.header("X-NCP-APIGW-API-KEY-ID", clientId);
             requestTemplate.header("X-NCP-APIGW-API-KEY", clientSecret);
