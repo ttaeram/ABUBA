@@ -1,89 +1,168 @@
-import { useState } from "react";
-import { styled } from "styled-components";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
+import React, { useEffect, useState } from 'react';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import koLocale from '@fullcalendar/core/locales/ko';
+import styled from 'styled-components';
+import { sentimentCalendar } from '../../api/calendar';
 
+interface DiaryPost {
+  diaryId: number;
+  title: string;
+  createdAt: string;
+  sentiment: string;
+}
 
-const EmotionCalendar = () => {
+interface PostsResponse {
+  date: string;
+  posts: DiaryPost[];
+}
 
-  const [today, setToday] = useState(new Date()); 
-  const onChangeToday = () => {
-    setToday(today);
+const TeamDateCalendar: React.FC = () => {
+  const [events, setEvents] = useState<any[]>([]); 
+  const currentYear = new Date().getFullYear(); 
+  const currentMonth = new Date().getMonth() + 1; 
+
+  useEffect(() => {
+    const fetchSentimentData = async () => {
+      try {
+        const response = await sentimentCalendar(currentYear, currentMonth);
+        const formattedEvents = formatEvents(response.data.posts);
+        setEvents(formattedEvents);
+      } catch (error) {
+        console.error("Error fetching sentiment data:", error);
+      }
+    };
+
+    fetchSentimentData();
+  }, []);
+
+  const formatEvents = (posts: PostsResponse[]): any[] => {
+    return posts.flatMap(post => {
+      return post.posts.map(diary => {
+        let emoji = "";
+        switch (diary.sentiment) {
+          case "positive":
+            emoji = "😊"; 
+            break;
+          case "negative":
+            emoji = "😢"; 
+            break;
+          case "neutral":
+            emoji = "😐"; 
+            break;
+          default:
+            emoji = "";
+        }
+
+        return {
+          title: emoji,  
+          start: diary.createdAt,
+          diaryId: diary.diaryId,
+        };
+      });
+    });
   };
 
   return (
-    <CalendarBox>
-      <StyleCalendar locale="en" onChange={onChangeToday} value={today} />
-    </CalendarBox>
+    <CalendarContainer>
+      <FullCalendar
+        plugins={[dayGridPlugin]}
+        initialView='dayGridMonth'
+        events={events}
+        locale='ko'
+        eventContent={(arg) => { 
+          return arg.event.title;  
+        }}
+      />
+    </CalendarContainer>
   );
 };
 
-export default EmotionCalendar;
+export default TeamDateCalendar;
 
-const CalendarBox = styled.div`
+const CalendarContainer = styled.div`
+  width: 100%;
+  height: 100%;
   display: flex;
-  align-items: center;
   justify-content: center;
-`;
+  flex-direction: column;
+  align-items: center;
 
-const StyleCalendar = styled(Calendar)`
-  max-width: 100%;
-  border: none;
-  margin-bottom: 15px;
-  padding: 20px;
+  .fc {
+    width: 100%;
+    height: 100%;
+    max-width: 100vw;
+    max-height: 100vh;
+    overflow: hidden;
+  }
 
-  .react-calendar__navigation {
+  .fc .fc-toolbar.fc-header-toolbar {
+    margin-top: 20px;
+    padding: 0 2vw;
+    background-color: #1f1f45;
+    height: 63px;
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: white;
+    border-radius: 20px;
+  }
+
+  .fc .fc-button-primary {
+    background-color: transparent;
+    border: none;
+
+    span {
+      font-size: 1.875rem;
+    }
+
+    :hover {
+      background-color: transparent;
+    }
+  }
+
+  .fc-theme-standard th {
+    height: 32px;
+    padding-top: 3.5px;
+    background: #1f1f45;
+    border: 1px solid #dddee0;
+    font-weight: 100;
+    font-size: 1rem; 
+    color: white;
+  }
+
+  .fc .fc-daygrid-day.fc-day-today {
+    color: #1f1f45;
+  }
+
+  .fc .fc-daygrid-day-frame {
     display: flex;
-    height: 24px;
-    margin-bottom: 1em;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    margin-bottom: 5px;
   }
 
-  .react-calendar__navigation button {
-    min-width: 24px;
-    background-color: none;
+  .fc .fc-daygrid-day-top {
+    flex-direction: row;
+    padding: 10px 0 0 10px;
   }
 
-  .react-calendar__navigation button:disabled {
-    background-color: #e8e8e8;
+  .fc-event {
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.875rem; 
   }
 
-  .react-calendar__navigation button:enabled:hover,
-  .react-calendar__navigation button:enabled:focus {
-    background-color: #e8e8e8;
+  .fc-day-sun a {
+    color: red;
+    text-decoration: none;
   }
 
-  .react-calendar__month-view__weekdays {
-    text-align: center;
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 0.15em;
-  }
-
-  .react-calendar__year-view .react-calendar__tile,
-  .react-calendar__decade-view .react-calendar__tile,
-  .react-calendar__century-view .react-calendar__tile {
-    padding: 1.2em 0.5em;
-  }
-
-  .react-calendar__tile--hasActive {
-    color: #ffffff;
-    background-color: #797979;
-    border-radius: 5px;
-  }
-
-  .react-calendar__tile--hasActive:enabled:hover,
-  .react-calendar__tile--hasActive:enabled:focus {
-    background-color: #797979;
-  }
-
-  .react-calendar__tile--active {
-    color: #ffffff;
-    background-color: #6a6a6a;
-    border-radius: 7px;
-  }
-
-  .react-calendar__tile--active:enabled:hover,
-  .react-calendar__tile--active:enabled:focus {
-    background-color: #6a6a6a;
+  .fc-day-sat a {
+    color: blue;
+    text-decoration: none;
   }
 `;
