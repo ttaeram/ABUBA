@@ -11,4 +11,10 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     List<Diary> findByParentId(Long parentId);
     @Query("SELECT d FROM Diary d WHERE d.parent IN :parents")
     List<Diary> findByParents(List<Parent> parents);
+
+    @Query("SELECT d FROM Diary d " +
+            "WHERE FUNCTION('YEAR', d.createdAt) = :year " +
+            "AND FUNCTION('MONTH', d.createdAt) = :month " +
+            "AND d.parent.baby.id = :babyId")
+    List<Diary> findByYearAndMonthAndId(int year, int month, Long babyId);
 }
