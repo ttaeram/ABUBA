@@ -71,7 +71,7 @@ export const Line = styled.div`
   width: 4px;
   background: #173C91;
   height: 100%;
-  top: 0;
+  top: 10;
   left: 50%;
   transform: translateX(-50%);
   z-index: 0;
