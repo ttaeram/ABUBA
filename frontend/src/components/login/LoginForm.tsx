@@ -4,11 +4,13 @@ import styled from 'styled-components';
 import {login} from '../../api/auth'
 import { getBabyInfo } from '../../api/user';
 import { useChildAuthStore } from '../../stores/authStore';
+import { connect } from '../../api/sse'; // SSE 연결 함수 가져오기
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [notifications, setNotifications] = useState<any[]>([]); // 알림 상태 추가
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -24,7 +26,6 @@ const LoginForm = () => {
       const userData = await login(email, password);
       const {isEmpty} = userData.data;
       if (isEmpty == false) {
-
         navigate('/onboard');  //true면 온보딩 페이지로 이동
       } else {
 
@@ -33,7 +34,9 @@ const LoginForm = () => {
 
         const setBabyInfo = useChildAuthStore.getState().setChildInfo;
         setBabyInfo(name, relation, height, weight, birthday, gender);
-
+        
+        //TODO구독설정
+        connect(setNotifications); // setNotifications를 인자로 전달
         navigate('/main');  //false면 메인 페이지로 이동
         
       }
