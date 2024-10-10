@@ -12,6 +12,8 @@ import com.hexagon.abuba.user.Parent;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -91,7 +93,8 @@ public class AlarmService {
             try {
                 List<AlarmResponseDTO> response = new ArrayList<>();
                 log.info("response.size()={}", response.size());
-                for (Alarm alarm : alarmRepository.findAllByParentId(parent.getId())) {
+                Pageable pageable =  PageRequest.of(0, 10);
+                for (Alarm alarm : alarmRepository.findAllByParentId(parent.getId(),pageable)) {
                     Diary diary = alarm.getDiary();
                     AlarmResponseDTO row = new AlarmResponseDTO(
                             diary.getCreatedAt(),
@@ -128,7 +131,8 @@ public class AlarmService {
     public List<AlarmResponseDTO> getAlarms(Long parentId) {
         List<AlarmResponseDTO> response = new ArrayList<>();
         log.info("response.size()={}", response.size());
-        for (Alarm alarm : alarmRepository.findAllByParentId(parentId)) {
+        Pageable pageable = PageRequest.of(0, 10); // 첫 번째 페이지에서 최대 10개 결과
+        for (Alarm alarm : alarmRepository.findAllByParentId(parentId, pageable)) {
             Diary diary = alarm.getDiary();
             AlarmResponseDTO row = new AlarmResponseDTO(
                     diary.getCreatedAt(),
