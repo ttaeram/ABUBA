@@ -123,4 +123,21 @@ public class AlarmService {
     public void logActiveConnections() {
         log.info("Active SSE connections: {}", sseEmitters.size());
     }
+
+
+    public List<AlarmResponseDTO> getAlarms(Long parentId) {
+        List<AlarmResponseDTO> response = new ArrayList<>();
+        log.info("response.size()={}", response.size());
+        for (Alarm alarm : alarmRepository.findAllByParentId(parentId)) {
+            Diary diary = alarm.getDiary();
+            AlarmResponseDTO row = new AlarmResponseDTO(
+                    diary.getCreatedAt(),
+                    alarm.getIsRead(),
+                    diary.getId(),
+                    diary.getParent().getName()
+            );
+            response.add(row);
+        }
+        return response;
+    }
 }
