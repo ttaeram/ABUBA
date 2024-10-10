@@ -33,8 +33,8 @@ const Navbar = () => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/alarm`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
       });
       setNotifications(response.data.data);
     } catch (error) {
@@ -44,11 +44,11 @@ const Navbar = () => {
 
   const handleHomeClick = () => {
     navigate('/main');
-  }
+  };
 
   const handleCalClick = () => {
     navigate('/mycalendar');
-  }
+  };
 
   const handleNotificationClick = (diaryId: number) => {
     setIsModalOpen(false); // 모달 닫기
@@ -57,9 +57,9 @@ const Navbar = () => {
 
   return (
     <NavbarContainer>
-      <LogoSvgStyled onClick={handleHomeClick}/>
+      <LogoSvgStyled onClick={handleHomeClick} />
       <IconContainer>
-        <AiOutlineCalendar size={24} color="#000000" onClick={handleCalClick}/>
+        <AiOutlineCalendar size={24} color="#000000" onClick={handleCalClick} />
         <NotificationButton onClick={toggleModal}>
           <AiOutlineBell size={24} />
           {hasNewNotification && <NotificationBadge />}
@@ -71,8 +71,8 @@ const Navbar = () => {
             content={
               <NotificationList>
                 {notifications.map((notification, index) => (
-                  <NotificationItem 
-                    key={index} 
+                  <NotificationItem
+                    key={index}
                     onClick={() => handleNotificationClick(notification.diaryId)}
                     isRead={notification.isRead}
                   >
@@ -81,11 +81,12 @@ const Navbar = () => {
                     </NotificationStatus>
                     <NotificationContent>
                       <NotificationTitle>
-                        {notification.title.length > 15 
-                          ? `${notification.title.substring(0, 15)}...` 
-                          : notification.title}
+                        {/* title이 undefined일 경우 대비 */}
+                        {notification.title && notification.title.length > 15
+                          ? `${notification.title.substring(0, 15)}...`
+                          : notification.title || '새 알림'}
                       </NotificationTitle>
-                      <p>{notification.writer}님이 새 일기를 작성했습니다.</p>
+                      <p>{notification.writer || '작성자'}님이 새 일기를 작성했습니다.</p>
                       <small>{new Date(notification.createdAt).toLocaleString()}</small>
                     </NotificationContent>
                   </NotificationItem>
@@ -98,6 +99,91 @@ const Navbar = () => {
     </NavbarContainer>
   );
 };
+
+
+// const Navbar = () => {
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+//   const [notifications, setNotifications] = useState<Notification[]>([]);
+//   const navigate = useNavigate();
+//   const { hasNewNotification, setHasNewNotification } = useNotificationStore();
+
+//   const toggleModal = async () => {
+//     setIsModalOpen(!isModalOpen);
+//     setHasNewNotification(false);
+//     if (!isModalOpen) {
+//       await fetchNotifications();
+//     }
+//   };
+
+//   const fetchNotifications = async () => {
+//     try {
+//       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/alarm`, {
+//         headers: {
+//           Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+//         }
+//       });
+//       setNotifications(response.data.data);
+//     } catch (error) {
+//       console.error('Failed to fetch notifications:', error);
+//     }
+//   };
+
+//   const handleHomeClick = () => {
+//     navigate('/main');
+//   }
+
+//   const handleCalClick = () => {
+//     navigate('/mycalendar');
+//   }
+
+//   const handleNotificationClick = (diaryId: number) => {
+//     setIsModalOpen(false); // 모달 닫기
+//     navigate(`/diary/${diaryId}`); // 해당 일기 상세 페이지로 이동
+//   };
+
+//   return (
+//     <NavbarContainer>
+//       <LogoSvgStyled onClick={handleHomeClick}/>
+//       <IconContainer>
+//         <AiOutlineCalendar size={24} color="#000000" onClick={handleCalClick}/>
+//         <NotificationButton onClick={toggleModal}>
+//           <AiOutlineBell size={24} />
+//           {hasNewNotification && <NotificationBadge />}
+//         </NotificationButton>
+//         {isModalOpen && (
+//           <AlertModal
+//             isOpen={isModalOpen}
+//             onClose={toggleModal}
+//             content={
+//               <NotificationList>
+//                 {notifications.map((notification, index) => (
+//                   <NotificationItem 
+//                     key={index} 
+//                     onClick={() => handleNotificationClick(notification.diaryId)}
+//                     isRead={notification.isRead}
+//                   >
+//                     <NotificationStatus isRead={notification.isRead}>
+//                       {notification.isRead ? '읽음' : '안읽음'}
+//                     </NotificationStatus>
+//                     <NotificationContent>
+//                       <NotificationTitle>
+//                         {notification.title.length > 15 
+//                           ? `${notification.title.substring(0, 15)}...` 
+//                           : notification.title}
+//                       </NotificationTitle>
+//                       <p>{notification.writer}님이 새 일기를 작성했습니다.</p>
+//                       <small>{new Date(notification.createdAt).toLocaleString()}</small>
+//                     </NotificationContent>
+//                   </NotificationItem>
+//                 ))}
+//               </NotificationList>
+//             }
+//           />
+//         )}
+//       </IconContainer>
+//     </NavbarContainer>
+//   );
+// };
 
 const NavbarContainer = styled.nav`
   display: flex;

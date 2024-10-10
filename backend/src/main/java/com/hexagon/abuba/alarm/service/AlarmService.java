@@ -97,8 +97,8 @@ public class AlarmService {
                             diary.getCreatedAt(),
                             alarm.getIsRead(),
                             diary.getId(),
-                            diary.getParent().getName()
-                    );
+                            diary.getParent().getName(),
+                            diary.getTitle());
                     response.add(row);
                 }
 
@@ -134,7 +134,8 @@ public class AlarmService {
                     diary.getCreatedAt(),
                     alarm.getIsRead(),
                     diary.getId(),
-                    diary.getParent().getName()
+                    diary.getParent().getName(),
+                    diary.getTitle()
             );
             response.add(row);
         }
