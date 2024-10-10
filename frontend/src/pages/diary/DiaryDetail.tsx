@@ -7,6 +7,7 @@ import styled from "styled-components"
 import { ReactComponent as WonSvg } from "../../assets/images/won.svg"
 import api from "../../api/index"
 import dayjs from "dayjs"
+import FullLogo from "../../assets/images/fulllogo.svg"
 
 const DiaryDetail = () => {
   const navigate = useNavigate()
@@ -34,6 +35,7 @@ const DiaryDetail = () => {
             diaryId: id,
           }
         })
+        console.log(response.data)
         setDiaryData(response.data)
         setLoading(false)
         setFormattedDate(dayjs(response.data.createdAt).format('YYYY년 MM월 DD일'))
@@ -55,6 +57,11 @@ const DiaryDetail = () => {
   
   if (!diaryData) return null;
 
+  const displayImageUrl =
+    diaryData.imageUrl === "https://hexagon-abuba.s3.amazonaws.com/null" || !diaryData.imageUrl
+      ? FullLogo
+      : diaryData.imageUrl
+
   return (
     <DiaryContainer>
       <Header>
@@ -64,33 +71,29 @@ const DiaryDetail = () => {
       </Header>
 
       <Content>
-        <DiaryImage src={diaryData?.imageUrl || 'https://via.placeholder.com/400x300'} alt={diaryData.title} />
+        <DiaryImage src={displayImageUrl || 'https://via.placeholder.com/400x300'} alt={diaryData.title} />
         <StatsContainer>
           <StatItem>신장 : {diaryData?.height || 0}</StatItem>
           <StatItem>체중 : {diaryData?.weight || 0}</StatItem>
         </StatsContainer>
         <Title>{diaryData?.title || "제목 없음"}</Title>
         <ContentText>{diaryData?.content || "내용 없음"}</ContentText>
-        {diaryData?.recordUrl && (
+        {diaryData?.recordUrl !== "https://hexagon-abuba.s3.amazonaws.com/null" && (
         <>
           <AudioLabel>목소리 듣기</AudioLabel>
           <AudioPlayer src={diaryData.recordUrl} disableRecording={true} />
         </>
         )}
-        {diaryData?.deposit && (
+        {diaryData?.deposit !== 0 && (
           <>
             <AudioLabel>계좌 송금</AudioLabel>
             <AccountContainer>
-              <IconContainer>
-                <Icon />
-              </IconContainer>
-              <ContentContainer>
-                <TransferTitle>{diaryData.memo}</TransferTitle>
-                <MoneyAndAccount>
-                  <Money>+ {diaryData.deposit}</Money>
-                  <Account>{diaryData.account}</Account>
-                </MoneyAndAccount>
-              </ContentContainer>
+              <Account>{diaryData.account}</Account>
+              <Money>+{Number(diaryData.deposit).toLocaleString()} 원</Money>
+            </AccountContainer>
+            <AccountContainer>
+            <MemoLabel>내 통장 메모</MemoLabel>
+            <TransferTitle>{diaryData.memo}</TransferTitle>
             </AccountContainer>
           </>
         )}
@@ -113,7 +116,7 @@ const Header = styled.div`
 `;
 
 const Date = styled.h2`
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
 `;
 
@@ -143,7 +146,7 @@ const StatsContainer = styled.div`
 `;
 
 const StatItem = styled.div`
-  font-size: 14px;
+  font-size: 18px;
   color: #555;
 `;
 
@@ -155,7 +158,7 @@ const Title = styled.h1`
 `;
 
 const ContentText = styled.p`
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.6;
   margin-bottom: 20px;
   color: #444;
@@ -164,6 +167,7 @@ const ContentText = styled.p`
 const AudioLabel = styled.p`
   font-weight: bold;
   margin-top: 20px;
+  font-size: 18px;
 `;
 
 const Loading = styled.div`
@@ -177,50 +181,34 @@ const Error = styled.div`
 
 const AccountContainer = styled.div`
   display: flex;
+  justify-content: space-between; /* 양 끝에 배치 */
   align-items: center;
-  padding: 10px;
+  padding: 15px;
   border: 1px solid #ddd;
   border-radius: 8px;
   margin-top: 10px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
-const IconContainer = styled.div`
-  margin-right: 10px;
-`;
-
-const Icon = styled(WonSvg)`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid #007bff;
-`;
-
-const ContentContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-`;
-
-const TransferTitle = styled.h3`
-  font-size: 16px;
+const TransferTitle = styled.span`
   font-weight: bold;
-  margin-bottom: 25px;
-`;
-
-const MoneyAndAccount = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  color: #000;
+  font-size: 14px;
 `;
 
 const Money = styled.span`
-  color: #888;
+  color: #3B6EBA;
   margin-bottom: 5px;
+  font-size: 14px;
 `;
 
 const Account = styled.span`
   font-weight: bold;
   color: #000;
+  font-size: 14px;
+`;
+
+const MemoLabel = styled.p`
+  margin-right: 10px;
+  font-size: 14px;
 `;

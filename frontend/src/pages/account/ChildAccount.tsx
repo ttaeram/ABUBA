@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Line } from 'react-chartjs-2'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
-import BackButton from '../../components/buttons/BackButton'
 import TransactionItem from '../../components/account/TransactionItem'
 import styled from 'styled-components'
 import api from "../../api/index"
@@ -39,8 +38,8 @@ const ChildAccount: React.FC = () => {
         label: '저축 추세',
         data: [],
         fill: true,
-        backgroundColor: '#3B6EBA',
-        borderColor: 'white',
+        backgroundColor: 'white',
+        borderColor: '#3B6EBA',
       },
     ],
   });
@@ -117,8 +116,8 @@ const ChildAccount: React.FC = () => {
               label: '잔액 추세',
               data: chartBalances,
               fill: true,
-              backgroundColor: '#3B6EBA',
-              borderColor: 'white',
+              backgroundColor: 'white',
+              borderColor: '#3B6EBA',
             },
           ],
         });
@@ -135,9 +134,9 @@ const ChildAccount: React.FC = () => {
     maintainAspectRatio: false,
     scales: {
       x: {
-        display: true,
+        display: false,
         grid: {
-          display: false,
+          display: true,
         },
       },
       y: {
@@ -161,10 +160,6 @@ const ChildAccount: React.FC = () => {
 
   return (
     <ChildAccountWrapper>
-      <Header>
-        <BackButton label='이전' color='white'/>
-      </Header>
-
       <ChartSection>
         <Line data={chartData} options={chartOptions} />
       </ChartSection>
@@ -199,21 +194,11 @@ export default ChildAccount
 const ChildAccountWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: #3B6EBA;
+  background-color: white;
   color: white;
   box-sizing: border-box;
   position: relative;
   height: 100vh;
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 16px;
-  padding: 8px;
-  color: #000;
-  border-radius: 10px;
 `;
 
 const ChartSection = styled.div`
