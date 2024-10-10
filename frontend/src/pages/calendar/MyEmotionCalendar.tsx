@@ -7,7 +7,7 @@ const MyEmotionCalendar = () => {
     <div>
       <TextContainer>
         <TitleText>
-          육아 감정 일기
+          육아 감정 달력
         </TitleText>
         <SubText>
           일기 작성 당시의 감정을 AI가 분석해줘요!
