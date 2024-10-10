@@ -1,5 +1,18 @@
 import api from ".";
 
+// 전체 정보
+export const alldata = async () => {
+  try {
+    const response = await api.get('/api/v1/roadmap');
+    return response.data;
+  } catch (error) {
+    console.error('전체 데이터를 불러오는데 실패했습니다.', error);
+    throw error;
+  }
+};
+
+
+
 // 성장 발달 정보
 export const averagedata = async () => {
     try {

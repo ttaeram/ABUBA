@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import { sentimentCalendar } from '../../api/calendar';
 import { DayCellContentArg } from '@fullcalendar/core';
 
-
 interface DiaryPost {
   diaryId: number;
   title: string;
@@ -20,23 +19,23 @@ interface PostsResponse {
 }
 
 const TeamDateCalendar: React.FC = () => {
-  const [events, setEvents] = useState<any[]>([]); 
-  const currentYear = new Date().getFullYear(); 
-  const currentMonth = new Date().getMonth() + 1; 
+  const [events, setEvents] = useState<any[]>([]);
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
 
   useEffect(() => {
-    const fetchSentimentData = async () => {
-      try {
-        const response = await sentimentCalendar(currentYear, currentMonth);
-        const formattedEvents = formatEvents(response.data.posts);
-        setEvents(formattedEvents);
-      } catch (error) {
-        console.error("Error fetching sentiment data:", error);
-      }
-    };
-
     fetchSentimentData();
   }, []);
+
+  const fetchSentimentData = async () => {
+    try {
+      const response = await sentimentCalendar(currentYear, currentMonth);
+      const formattedEvents = formatEvents(response.data.posts);
+      setEvents(formattedEvents);
+    } catch (error) {
+      console.error("Error fetching sentiment data:", error);
+    }
+  };
 
   const formatEvents = (posts: PostsResponse[]): any[] => {
     return posts.flatMap(post => {
@@ -70,6 +69,14 @@ const TeamDateCalendar: React.FC = () => {
     return dayNumber;
   };
 
+  const handleDatesSet = (dateInfo: { start: Date; end: Date }) => {
+    const newYear = dateInfo.start.getFullYear();
+    const newMonth = dateInfo.start.getMonth() + 1; 
+    setCurrentYear(newYear);
+    setCurrentMonth(newMonth);
+    fetchSentimentData();
+  };
+
   return (
     <CalendarContainer>
       <FullCalendar
@@ -80,7 +87,8 @@ const TeamDateCalendar: React.FC = () => {
         eventContent={(arg) => { 
           return <StyledEmoji>{arg.event.title}</StyledEmoji>;
         }}
-        dayCellContent = {handleDayCellContent}
+        dayCellContent={handleDayCellContent}
+        datesSet={handleDatesSet} 
       />
     </CalendarContainer>
   );
@@ -154,7 +162,6 @@ const CalendarContainer = styled.div`
   .fc .fc-daygrid-day {
     border: none; 
     background: none; 
-    
   }
 
   .fc .fc-daygrid-day > div {
@@ -177,22 +184,15 @@ const CalendarContainer = styled.div`
     border: none; 
   }
 
-  .fc-day-sun a {
-
-    text-decoration: none;
-  }
-
-  .fc-day-sat a {
-
+  .fc-day-sun a, .fc-day-sat a {
     text-decoration: none;
   }
 `;
 
-
 const StyledEmoji = styled.span`
-  display: flex; /* Enable flexbox for the emoji container */
-  justify-content: center; /* Center emojis horizontally */
-  align-items: center; /* Center emojis vertically */
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
   font-size: 2rem; 
   line-height: 1; 
 `;
