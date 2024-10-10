@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import axios from "axios"
+import { BsPencilSquare } from "react-icons/bs";
 import DiaryListCard from "../../components/layouts/DiaryListCard"
 import styled from "styled-components"
 import api from "../../api/index";
@@ -41,7 +41,7 @@ const DiaryList = () => {
     <Container>
       <Header>
         <Title>일기장</Title>
-        <CreateButton onClick={toDiaryCreate}>작성</CreateButton>
+        <BsPencilSquare size={28} onClick={toDiaryCreate} />
       </Header>
       <DiaryContainer isEmpty={diaries.length === 0}>
         {diaries.length > 0 ? (
@@ -65,17 +65,19 @@ const Container = styled.div`
 const Header = styled.div`
   position: relative;
   display: flex;
-  justify-content: flex-end; /* 작성 버튼을 오른쪽 끝으로 보냄 */
+  justify-content: flex-end;
   align-items: center;
   margin-bottom: 20px;
+  color: #3B6EBA;
 `;
 
 const Title = styled.div`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 16px;
+  font-size: 24px;
   font-weight: bold;
+  color: black;
 `;
 
 const DiaryContainer = styled.div<{ isEmpty: boolean }>`
