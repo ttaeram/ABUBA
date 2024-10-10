@@ -68,13 +68,13 @@ public class DiaryService {
         Collections.reverse(diaries);
 
         for (Diary diary : diaries) {
-            // if(diary.getImage_url()==null) continue; // 이미지 URL 이 null 일 경우
-
-            DiaryRecentResDTO diaryRecentResDTO = new DiaryRecentResDTO(
-                    diary.getId(),
-                    s3Service.getFileUrl(diary.getImage_url())
-            );
-
+            DiaryRecentResDTO diaryRecentResDTO = new DiaryRecentResDTO(diary.getId(), null);
+            if(diary.getImage_url() != null) {
+                diaryRecentResDTO = new DiaryRecentResDTO(
+                        diary.getId(),
+                        s3Service.getFileUrl(diary.getImage_url())
+                );
+            }
             diaryRecentResDTOList.add(diaryRecentResDTO);
 
             if(diaryRecentResDTOList.size() == 3) break; // 최대 3개까지만
