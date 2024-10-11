@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -72,7 +73,7 @@ public class AlarmService {
         return emitter;
     }
 
-    @Scheduled(fixedRate = 30000) // 15초마다 실행
+    @Scheduled(fixedRate = 30000) // 30초마다 실행
     public void sendHeartbeat() {
         sseEmitters.forEach((username, emitter) -> {
             try {
@@ -85,6 +86,7 @@ public class AlarmService {
         });
     }
 
+    @Async
     public void sendNotification(Parent parent) {
         String username = parent.getUsername();
         SseEmitter emitter = sseEmitters.get(username);
@@ -93,17 +95,17 @@ public class AlarmService {
             try {
                 List<AlarmResponseDTO> response = new ArrayList<>();
                 log.info("response.size()={}", response.size());
-                Pageable pageable =  PageRequest.of(0, 10);
-                for (Alarm alarm : alarmRepository.findAllByParentId(parent.getId(),pageable)) {
-                    Diary diary = alarm.getDiary();
-                    AlarmResponseDTO row = new AlarmResponseDTO(
-                            diary.getCreatedAt(),
-                            alarm.getIsRead(),
-                            diary.getId(),
-                            diary.getParent().getName(),
-                            diary.getTitle());
-                    response.add(row);
-                }
+//                Pageable pageable =  PageRequest.of(0, 10);
+//                for (Alarm alarm : alarmRepository.findAllByParentId(parent.getId(),pageable)) {
+//                    Diary diary = alarm.getDiary();
+//                    AlarmResponseDTO row = new AlarmResponseDTO(
+//                            diary.getCreatedAt(),
+//                            alarm.getIsRead(),
+//                            diary.getId(),
+//                            diary.getParent().getName(),
+//                            diary.getTitle());
+//                    response.add(row);
+//                }
 
                 String jsonData = objectMapper.writeValueAsString(response);
                 emitter.send(SseEmitter.event().name("notification").data(jsonData));

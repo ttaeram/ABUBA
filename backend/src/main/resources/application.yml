@@ -10,6 +10,13 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
 
+  datasource:
+    hikari:
+      maximum-pool-size: 20  # 원하는 최대 연결 수로 변경
+      minimum-idle: 5        # 최소 유휴 연결 수
+      idle-timeout: 30000    # 유휴 연결 타임아웃 (밀리초)
+      connection-timeout: 30000 # 연결 대기 타임아웃 (밀리초)
+
 springdoc:
   swagger-ui:
     path: /swagger # Swagger UI를 표시할 커스텀 경로

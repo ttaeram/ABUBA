@@ -42,6 +42,7 @@ const ParentAccountForm = ({ onComplete, onPrevious }: ParentAccountFormProps) =
   const [sendResponseMessage, setSendResponseMessage] = useState('');  
   const [verifyResponseMessage, setVerifyResponseMessage] = useState('');  
   const [isVerified, setIsVerified] = useState(false);
+  const navigate = useNavigate();
   
   const toggleDropdown = () => setIsOpen(!isOpen);
 
@@ -77,7 +78,13 @@ const ParentAccountForm = ({ onComplete, onPrevious }: ParentAccountFormProps) =
 
 
       if (response.status === 200) {
+        const babyInfoData = await getBabyInfo();
+        const { name, relation, height, weight, birthday, gender } = babyInfoData.data;
+        const setBabyInfo = useChildAuthStore.getState().setChildInfo;
+        setBabyInfo(name, relation, height, weight, birthday, gender);
         onComplete();
+        
+        navigate('/main');
       } else {
         setSendResponseMessage('계좌 정보 전송 중 오류가 발생했습니다.');
       }
