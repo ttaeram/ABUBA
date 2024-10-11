@@ -196,7 +196,7 @@ const Header = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
 `;
 
@@ -204,7 +204,7 @@ const ActionButton = styled.div`
   background: none;
   border: none;
   color: #3B6EBA;
-  font-size: 24px;
+  font-size: 20px;
 `;
 
 const Content = styled.div`
@@ -260,7 +260,7 @@ const StatItem = styled.div`
 `;
 
 const StatLabel = styled.label`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
 `;
 
@@ -284,7 +284,7 @@ const Label = styled.label`
   font-weight: bold;
   display: block;
   margin-top: 10px;
-  font-size: 20px;
+  font-size: 18px;
 `;
 
 const Input = styled.input`
