@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -85,6 +86,7 @@ public class AlarmService {
         });
     }
 
+    @Async
     public void sendNotification(Parent parent) {
         String username = parent.getUsername();
         SseEmitter emitter = sseEmitters.get(username);
