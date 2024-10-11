@@ -122,7 +122,7 @@ const Date = styled.h2`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
 `;
 
@@ -130,7 +130,7 @@ const UpdateButton = styled.div`
   background: none;
   border: none;
   color: #3B6EBA;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
 `;
 
@@ -152,19 +152,19 @@ const StatsContainer = styled.div`
 `;
 
 const StatItem = styled.div`
-  font-size: 20px;
+  font-size: 18px;
   color: #555;
 `;
 
 const Title = styled.h1`
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   margin-bottom: 15px;
   color: #333;
 `;
 
 const ContentText = styled.p`
-  font-size: 20px;
+  font-size: 18px;
   line-height: 1.6;
   margin-bottom: 20px;
   color: #444;
@@ -173,7 +173,7 @@ const ContentText = styled.p`
 const AudioLabel = styled.p`
   font-weight: bold;
   margin-top: 20px;
-  font-size: 20px;
+  font-size: 18px;
 `;
 
 const Loading = styled.div`
@@ -199,24 +199,24 @@ const AccountContainer = styled.div`
 const TransferTitle = styled.span`
   font-weight: bold;
   color: #000;
-  font-size: 18px;
+  font-size: 16px;
 `;
 
 const Money = styled.span`
   color: #3B6EBA;
   margin-bottom: 5px;
-  font-size: 18px;
+  font-size: 16px;
 `;
 
 const Account = styled.span`
   font-weight: bold;
   color: #000;
-  font-size: 18px;
+  font-size: 16px;
 `;
 
 const MemoLabel = styled.p`
   margin-right: 10px;
-  font-size: 18px;
+  font-size: 16px;
 `;
 
 const StyledLogo = styled.img`

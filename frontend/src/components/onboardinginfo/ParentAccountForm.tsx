@@ -166,7 +166,7 @@ const ParentAccountForm = ({ onComplete, onPrevious }: ParentAccountFormProps) =
           onChange={(e) => setAccountNumber(e.target.value)}
           required
         />
-        <Button type="submit" onClick={handleSendMoney}>확인</Button>
+        <Button type="button" onClick={handleSendMoney}>확인</Button>
         </AccountContainer>
       
         {sendResponseMessage && (
@@ -188,7 +188,7 @@ const ParentAccountForm = ({ onComplete, onPrevious }: ParentAccountFormProps) =
           onChange={(e) => setVerificationCode(e.target.value)}
           required
         />
-        <Button type="submit" onClick={handleVerifyAuthCode}>확인</Button>
+        <Button type="button" onClick={handleVerifyAuthCode}>확인</Button>
       </InputRow>
 
       {verifyResponseMessage && (
