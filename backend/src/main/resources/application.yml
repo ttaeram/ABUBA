@@ -12,10 +12,10 @@ spring:
 
   datasource:
     hikari:
-      maximum-pool-size: 20  # 원하는 최대 연결 수로 변경
-      minimum-idle: 5        # 최소 유휴 연결 수
-      idle-timeout: 30000    # 유휴 연결 타임아웃 (밀리초)
-      connection-timeout: 30000 # 연결 대기 타임아웃 (밀리초)
+      maximum-pool-size: 1000  # 원하는 최대 연결 수로 변경
+      minimum-idle: 10        # 최소 유휴 연결 수
+      idle-timeout: 3600    # 유휴 연결 타임아웃 (second)
+      connection-timeout: 3600 # 연결 대기 타임아웃 (second)
 
 springdoc:
   swagger-ui:
