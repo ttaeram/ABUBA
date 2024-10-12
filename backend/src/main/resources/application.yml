@@ -23,12 +23,6 @@ management:
     web:
       exposure:
         include: health, metrics
-  metrics:
-    export:
-      logging:
-        enabled: true
-        step: 60s  # 60초마다 로그로 메트릭 출력
-
 springdoc:
   swagger-ui:
     path: /swagger # Swagger UI를 표시할 커스텀 경로
