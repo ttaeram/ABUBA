@@ -281,6 +281,9 @@ public class DiaryService {
             if(fileType.equals("img")){
                 diary.setImage_url(uploadFileName);
                 String faceImageUrl = aiService.detectFacesGcs(s3Service.getFileUrl(diary.getImage_url()));
+                if(faceImageUrl != null){
+                    diary.setFace_url(faceImageUrl);
+                }
             }else if(fileType.equals("record")){
                 diary.setRecord_url(uploadFileName);
             }
