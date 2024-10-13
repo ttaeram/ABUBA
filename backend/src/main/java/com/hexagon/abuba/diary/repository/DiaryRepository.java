@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
     List<Diary> findByParentId(Long parentId);
-    @Query("SELECT d FROM Diary d WHERE d.parent IN :parents")
+    @Query("SELECT d FROM Diary d WHERE d.parent IN :parents order by d.createdAt desc")
     List<Diary> findByParents(List<Parent> parents);
 
     @Query("SELECT d FROM Diary d " +

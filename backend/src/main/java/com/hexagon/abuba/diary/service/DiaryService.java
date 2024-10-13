@@ -91,7 +91,7 @@ public class DiaryService {
         }
 
         List<Diary> diaries = diaryRepository.findByParents(parentList);
-        Collections.reverse(diaries);
+//        Collections.reverse(diaries);
         List<DiaryResDTO> diaryResDTOList = new ArrayList<>();
         for (Diary diary : diaries) {
             DiaryResDTO diaryResDTO = EntityToResDTO(diary);
