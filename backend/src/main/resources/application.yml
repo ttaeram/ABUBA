@@ -17,6 +17,12 @@ spring:
       idle-timeout: 3600    # 유휴 연결 타임아웃 (second)
       connection-timeout: 3600 # 연결 대기 타임아웃 (second)
 
+#actuactor
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics
 springdoc:
   swagger-ui:
     path: /swagger # Swagger UI를 표시할 커스텀 경로

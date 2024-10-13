@@ -64,6 +64,9 @@ dependencies {
 	implementation group: 'org.apache.tika', name: 'tika-core', version: '1.24'
 
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: '3.3.4'
+
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
 }
 
 tasks.named('test') {
