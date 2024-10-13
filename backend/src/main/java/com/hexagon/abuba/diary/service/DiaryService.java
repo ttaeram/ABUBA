@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.*;
@@ -238,6 +239,28 @@ public class DiaryService {
     }
 
 
+    public List<HeightResponse> getHeight(Parent user){
+        List<Diary> diaries = diaryRepository.findByParentId(user.getId());
+
+        LocalDate recent = LocalDate.now().plusDays(1);
+        List<HeightResponse> responses = new ArrayList<>();
+        for(Diary diary: diaries){
+            if(recent.isEqual(diary.getCreatedAt().toLocalDate())){
+                continue;
+            }else{
+                recent = diary.getCreatedAt().toLocalDate();
+                responses.add(new HeightResponse(
+                        recent,
+                        diary.getHeight(),
+                        diary.getWeight(),
+                        diary.getFace_url()
+                ));
+
+            }
+        }
+        return responses;
+    }
+
 
 
     private DiaryResDTO EntityToResDTO(Diary diary){
@@ -280,6 +303,10 @@ public class DiaryService {
             String uploadFileName = s3Service.uploadFile(inputStream, fileName, fileType, mimeType);
             if(fileType.equals("img")){
                 diary.setImage_url(uploadFileName);
+                String faceImageUrl = aiService.detectFacesGcs(s3Service.getFileUrl(diary.getImage_url()));
+                if(faceImageUrl != null){
+                    diary.setFace_url(faceImageUrl);
+                }
             }else if(fileType.equals("record")){
                 diary.setRecord_url(uploadFileName);
             }

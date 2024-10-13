@@ -3,10 +3,7 @@ package com.hexagon.abuba.diary.controller;
 import com.hexagon.abuba.common.DataResponse;
 import com.hexagon.abuba.diary.dto.request.DiaryDetailReqDTO;
 import com.hexagon.abuba.diary.dto.request.DiaryEditReqDTO;
-import com.hexagon.abuba.diary.dto.response.CalendarResponse;
-import com.hexagon.abuba.diary.dto.response.DiaryDetailResDTO;
-import com.hexagon.abuba.diary.dto.response.DiaryRecentResDTO;
-import com.hexagon.abuba.diary.dto.response.DiaryResDTO;
+import com.hexagon.abuba.diary.dto.response.*;
 import com.hexagon.abuba.diary.service.DiaryService;
 import com.hexagon.abuba.user.Parent;
 import io.swagger.v3.oas.annotations.Operation;
@@ -115,5 +112,11 @@ public class DiaryController {
         return new ResponseEntity<>(DataResponse.of(HttpStatus.OK,"캘린더 조회 완료",res),HttpStatus.OK);
     }
 
-
+    @SecurityRequirement(name = "access")  // 이 API는 토큰이 필요함
+    @GetMapping("/height")
+    @Operation(summary = "키 몸무게, 얼굴사진 조회")
+    public ResponseEntity<DataResponse<List<HeightResponse>>> getHeight(@AuthenticationPrincipal(expression = "user") Parent user) {
+        List<HeightResponse> responses = diaryService.getHeight(user);
+        return new ResponseEntity<>(DataResponse.of(HttpStatus.OK, "키몸무게, 얼굴사진 조회 완료", responses),HttpStatus.OK);
+    }
 }
