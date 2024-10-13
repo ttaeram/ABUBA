@@ -2,7 +2,7 @@ spring:
   application:
     name: abuba
   profiles:
-    active: prod
+      active: prod
   jwt:
     secret: spring.jwt.secret=vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
   jpa:
@@ -43,5 +43,3 @@ logging:
     org.springframework.security.web.access: DEBUG
     org.springframework.security.authentication: DEBUG
 
-server:
-  address= 0.0.0.0

@@ -26,7 +26,7 @@ public class RoadmapService {
         중복된 로직이 너무 많다. 어떻게 처리할지 구현 완료 후 생각해보자
     */
 
-    @Transactional
+//    @Transactional
     public List<RoadmapResponseDTO> getAllInformation(final Parent parent) {
         Baby baby = parent.getBaby();
         long birthDay = baby.getBirthDate().toEpochDay();
@@ -37,7 +37,7 @@ public class RoadmapService {
         return getRoadmapInformation(roadmaps);
     }
 
-    @Transactional
+//    @Transactional
     public List<RoadmapResponseDTO> getHealthInformation(final Parent parent) {
         Baby baby = parent.getBaby();
         long birthDay = baby.getBirthDate().toEpochDay();
@@ -48,7 +48,7 @@ public class RoadmapService {
         return getRoadmapInformation(roadmaps);
     }
 
-    @Transactional
+//    @Transactional
     public List<RoadmapResponseDTO> getAverageBehaviorInformation(final Parent parent) {
         Baby baby = parent.getBaby();
         long birthDay = baby.getBirthDate().toEpochDay();
@@ -59,7 +59,7 @@ public class RoadmapService {
         return getRoadmapInformation(roadmaps);
     }
 
-    @Transactional
+//    @Transactional
     public List<RoadmapResponseDTO> getSupportedInformation(final Parent parent) {
         Baby baby = parent.getBaby();
         long birthDay = baby.getBirthDate().toEpochDay();
@@ -71,7 +71,7 @@ public class RoadmapService {
         return getRoadmapInformation(roadmaps);
     }
 
-    @Transactional
+//    @Transactional
     public List<RoadmapResponseDTO> getRoadmapInformation(final List<Roadmap> Information) {
         List<RoadmapResponseDTO> roadmaps = new ArrayList<>();
         for(Roadmap roadmap : Information) {
