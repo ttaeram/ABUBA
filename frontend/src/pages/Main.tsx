@@ -41,24 +41,28 @@ const Main = () => {
         <DiaryInfo></DiaryInfo>
       </ChildInfoContainer>
       <AccountInfoContainer>
-        <All onClick={handleAccountClick}>
-          전체보기
-        </All>
-        <TitleText>
-          내 아이 계좌 정보
-        </TitleText>
+        <Header>
+          <TitleText>
+            내 아이 계좌 정보
+          </TitleText>
+          <All onClick={handleAccountClick}>
+            전체보기
+          </All>
+        </Header>
         <SubText>
           아이를 위해 미리 준비해보세요!
         </SubText>
         <AccountInfo></AccountInfo>
       </AccountInfoContainer>
       <RodaMapContainer>
-        <All onClick={handleRoadMapClick}>
-          전체보기
-        </All>
-        <TitleText>
-          내 아이 로드맵
-        </TitleText>
+        <Header>
+          <TitleText>
+            내 아이 로드맵
+          </TitleText>
+          <All onClick={handleRoadMapClick}>
+            전체보기
+          </All>
+        </Header>
         <SubText>
           어부바와 함께 하는 길라잡이
         </SubText>
@@ -120,6 +124,13 @@ const AccountInfoContainer = styled.div`
   flex-direction: column;
   color:#acacac;
 
+`
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 `
 
 const All = styled.div`

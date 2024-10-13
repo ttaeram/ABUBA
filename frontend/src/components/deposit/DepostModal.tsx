@@ -3,6 +3,7 @@ import SelectChildModal from "./SelectChildModal"
 import AmountModal from "./AmountModal"
 import SelectParentModal from "./SelectParentModal"
 import styled from "styled-components"
+import { FaXmark } from "react-icons/fa6";
 import ParentAccountForm from "../onboardinginfo/ParentAccountForm"
 
 interface DepositModalProps {
@@ -42,7 +43,7 @@ const DepositModal: React.FC<DepositModalProps> = ({ isOpen, onClose, onConfirm 
   return (
     <Modal>
       <ModalContainer>
-        <CloseButton onClick={onClose}>x</CloseButton>
+        <CloseButton onClick={onClose}><FaXmark/></CloseButton>
         
         {/* 상태에 따른 내용물 변경 */}
         {step === 1 && <SelectChildModal onNext={handleSelectChildAccount} />}
@@ -100,7 +101,8 @@ const CloseButton = styled.button`
   font-size: 24px;
   cursor: pointer;
   color: #999;
-  margin-right: 5px;
+  margin-right: 7px;
+  margin-top: 10px;
 
   &:hover {
     color: #333;

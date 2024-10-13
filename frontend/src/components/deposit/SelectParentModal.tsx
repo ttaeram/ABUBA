@@ -1,5 +1,6 @@
 import AccountInfo from "../main/AccountInfo";
 import styled from "styled-components"
+import { IoIosArrowBack } from "react-icons/io";
 
 interface SelectParentModalProps {
   onNext: (selectedParentAccount: string) => void;
@@ -9,23 +10,33 @@ interface SelectParentModalProps {
 const SelectParentModal: React.FC<SelectParentModalProps> = ({ onNext, onBack }) => {
   return (
     <div>
-      <Title>부모 계좌 선택</Title>
+      <Header>
+        <BackButton onClick={onBack}><IoIosArrowBack /></BackButton>
+        <Title>부모 계좌 선택</Title>
+      </Header>
       <Content>
         <AccountInfo onSelectAccount={onNext} isParent={true} />
       </Content>
-      <ButtonContainer>
-        <BackButton onClick={onBack}>이전</BackButton>
-      </ButtonContainer>
     </div>
   )
 }
 
 export default SelectParentModal
 
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 20px;
+`
+
 const Title = styled.h2`
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin: 0 auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 `;
 
 const Content = styled.div`
@@ -37,14 +48,10 @@ const ButtonContainer = styled.div`
   justify-content: space-between;
 `;
 
-const BackButton = styled.button`
-  padding: 10px 20px;
-  background-color: #ddd;
+const BackButton = styled.div`
   border: none;
   border-radius: 5px;
   cursor: pointer;
-
-  &:hover {
-    background-color: #ccc;
-  }
+  font-size: 24px;
+  color: #999;
 `;
