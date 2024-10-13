@@ -7,6 +7,7 @@ import api from '../../api/index'
 import styled from "styled-components"
 import { ReactComponent as WonSvg } from "../../assets/images/won.svg"
 import { useChildAuthStore } from "../../stores/authStore"
+import { resizeImage } from "../../utils/resizeImage"
 
 const DiaryCreate = () => {
   const navigate = useNavigate()
@@ -28,13 +29,22 @@ const DiaryCreate = () => {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      setImageFile(file)
+      const maxWidth = 1024;  // 최대 가로 크기
+      const maxHeight = 1024; // 최대 세로 크기
+      
+      resizeImage(file, maxWidth, maxHeight, (resizedBlob) => {
+        const resizedFile = new File([resizedBlob], file.name, { type: file.type });
 
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl)
-      }
-      const newUrl = URL.createObjectURL(file)
-      setPreviewUrl(newUrl)
+        setImageFile(resizedFile)
+
+        if (previewUrl) {
+          URL.revokeObjectURL(previewUrl)
+        }
+        const newUrl = URL.createObjectURL(file)
+        setPreviewUrl(newUrl)
+      })
+
+     
     }
   }
 
