@@ -263,7 +263,7 @@ const BalanceSection = styled.div`
 `;
 
 const BalanceTitle = styled.h2`
-  font-size: 18px;
+  font-size: 16px;
   margin-bottom: 8px;
 `;
 
@@ -294,7 +294,7 @@ const TransactionGroup = styled.div`
 `;
 
 const TransactionDate = styled.h3`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
   margin-bottom: 10px;
   color: #333;

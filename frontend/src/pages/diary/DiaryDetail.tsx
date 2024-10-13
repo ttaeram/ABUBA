@@ -5,6 +5,7 @@ import styled from "styled-components"
 import api from "../../api/index"
 import dayjs from "dayjs"
 import FullLogo from "../../assets/images/fulllogo.svg"
+import BackButton from "../../components/buttons/BackButton"
 
 const DiaryDetail = () => {
   const navigate = useNavigate()
@@ -64,6 +65,7 @@ const DiaryDetail = () => {
   return (
     <DiaryContainer>
       <Header>
+        <BackButton label="이전" />
         <Date>{formattedDate || "날짜  없음"}</Date>
         <UpdateButton onClick={toDiaryUpdate}>수정</UpdateButton>
       </Header>
@@ -113,9 +115,8 @@ const DiaryContainer = styled.div`
 `;
 
 const Header = styled.div`
-  position: relative;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 `;
@@ -124,7 +125,7 @@ const Date = styled.h2`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
 `;
 
@@ -132,7 +133,7 @@ const UpdateButton = styled.div`
   background: none;
   border: none;
   color: #3B6EBA;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
 `;
 
@@ -154,19 +155,19 @@ const StatsContainer = styled.div`
 `;
 
 const StatItem = styled.div`
-  font-size: 18px;
+  font-size: 14px;
   color: #555;
 `;
 
 const Title = styled.h1`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
   margin-bottom: 15px;
   color: #333;
 `;
 
 const ContentText = styled.p`
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1.6;
   margin-bottom: 20px;
   color: #444;
