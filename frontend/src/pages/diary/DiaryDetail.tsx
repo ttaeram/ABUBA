@@ -83,7 +83,9 @@ const DiaryDetail = () => {
         {diaryData?.recordUrl !== "https://hexagon-abuba.s3.amazonaws.com/null" && (
         <>
           <AudioLabel>목소리 듣기</AudioLabel>
-          <AudioPlayer src={diaryData.recordUrl} disableRecording={true} />
+          <AudioContainer>
+            <AudioPlayer src={diaryData.recordUrl} disableRecording={true} />
+          </AudioContainer>
         </>
         )}
         {diaryData?.deposit !== 0 && (
@@ -175,6 +177,14 @@ const AudioLabel = styled.p`
   margin-top: 20px;
   font-size: 18px;
 `;
+
+const AudioContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100px;
+`
 
 const Loading = styled.div`
   text-align: center;

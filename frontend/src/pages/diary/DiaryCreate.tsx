@@ -186,7 +186,9 @@ const DiaryCreate = () => {
       />
 
       <Label>음성 녹음</Label>
-      <AudioPlayer onNewRecording={handleNewRecording} />
+      <AudioContainer>
+        <AudioPlayer onNewRecording={handleNewRecording} />
+      </AudioContainer>
 
       <DepositContainer>
         <Label>계좌 송금</Label>
@@ -374,6 +376,14 @@ const AccountContainer = styled.div`
   margin-top: 10px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 `;
+
+const AudioContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100px;
+`
 
 const TransferTitle = styled.span`
   font-weight: bold;
