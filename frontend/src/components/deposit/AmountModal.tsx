@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { IoIosArrowBack } from "react-icons/io";
 
 interface AmountModalProps {
   deposit: number;
@@ -12,31 +13,48 @@ interface AmountModalProps {
 const AmountModal: React.FC<AmountModalProps> = ({ deposit, setDeposit, memo, setMemo, onConfirm, onBack }) => {
   return (
     <div>
-      <Title>금액 입력</Title>
+      <Header>
+        <BackButton onClick={onBack}><IoIosArrowBack /></BackButton>
+        <Title>송금하기</Title>
+      </Header>
+      <SubTitle>금액 입력</SubTitle>
       <DepositInput
         type="number"
         value={deposit}
         onChange={(e) => setDeposit(Number(e.target.value))}
         placeholder="송금할 금액"
       />
-      <Title>메모 입력</Title>
+      <SubTitle>메모 입력</SubTitle>
       <Input
         type="text"
         value={memo}
         onChange={(e) => setMemo(e.target.value)}
         placeholder="메모를 입력하세요."
       />
-      <ButtonContainer>
-        <BackButton onClick={onBack}>이전</BackButton>
-        <NextButton onClick={onConfirm}>완료</NextButton>
-      </ButtonContainer>
+      <NextButton onClick={onConfirm}>완료</NextButton>
     </div>
   )
 }
 
 export default AmountModal
 
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 20px;
+`
+
 const Title = styled.h2`
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+`;
+
+const SubTitle = styled.h2`
   text-align: left;
   font-size: 18px;
   font-weight: bold;
@@ -82,27 +100,24 @@ const ButtonContainer = styled.div`
   justify-content: space-between;
 `;
 
-const NextButton = styled.button`
+const NextButton = styled.div`
   padding: 10px 20px;
   background-color: #3B6EBA;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  text-align: center;
 
   &:hover {
     background-color: #173C91;
   }
 `;
 
-const BackButton = styled.button`
-  padding: 10px 20px;
-  background-color: #ddd;
+const BackButton = styled.div`
   border: none;
   border-radius: 5px;
   cursor: pointer;
-
-  &:hover {
-    background-color: #ccc;
-  }
+  font-size: 24px;
+  color: #999;
 `;
