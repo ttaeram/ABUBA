@@ -48,7 +48,7 @@ public class AlarmService {
 
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);  // 새로운 Emitter 생성
         sseEmitters.put(username, emitter);
-        log.info("새로운 emitter생성 emitter={}", emitter);
+//        log.info("새로운 emitter생성 emitter={}", emitter);
         // Emitter의 종료 시점 처리
         emitter.onCompletion(() -> {
             log.info("SSE Connection Completed for user: {}", username);
@@ -95,18 +95,6 @@ public class AlarmService {
             try {
                 List<AlarmResponseDTO> response = new ArrayList<>();
                 log.info("response.size()={}", response.size());
-//                Pageable pageable =  PageRequest.of(0, 10);
-//                for (Alarm alarm : alarmRepository.findAllByParentId(parent.getId(),pageable)) {
-//                    Diary diary = alarm.getDiary();
-//                    AlarmResponseDTO row = new AlarmResponseDTO(
-//                            diary.getCreatedAt(),
-//                            alarm.getIsRead(),
-//                            diary.getId(),
-//                            diary.getParent().getName(),
-//                            diary.getTitle());
-//                    response.add(row);
-//                }
-
                 String jsonData = objectMapper.writeValueAsString(response);
                 emitter.send(SseEmitter.event().name("notification").data(jsonData));
                 log.info("Notification sent successfully to user: {}", username);
@@ -124,10 +112,10 @@ public class AlarmService {
         }
     }
 
-    @Scheduled(fixedRate = 60000) // 1분마다 실행
-    public void logActiveConnections() {
-        log.info("Active SSE connections: {}", sseEmitters.size());
-    }
+//    @Scheduled(fixedRate = 60000) // 1분마다 실행
+//    public void logActiveConnections() {
+//        log.info("Active SSE connections: {}", sseEmitters.size());
+//    }
 
 
     public List<AlarmResponseDTO> getAlarms(Long parentId) {
