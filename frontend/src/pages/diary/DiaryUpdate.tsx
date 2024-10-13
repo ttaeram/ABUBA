@@ -206,7 +206,8 @@ const ActionButton = styled.div`
   background: none;
   border: none;
   color: #3B6EBA;
-  font-size: 20px;
+  font-size: 18px;
+  font-weight: bold;
 `;
 
 const Content = styled.div`
@@ -262,7 +263,7 @@ const StatItem = styled.div`
 `;
 
 const StatLabel = styled.label`
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
 `;
 
@@ -272,13 +273,13 @@ const StatInput = styled.input`
   text-align: right;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-left: 40px;
-  font-size: 16px;
+  margin-left: 20px;
+  font-size: 14px;
 `;
 
 const Unit = styled.span`
   margin-left: 10px;
-  font-size: 18px;
+  font-size: 16px;
   color: #555;
 `;
 
@@ -286,7 +287,7 @@ const Label = styled.label`
   font-weight: bold;
   display: block;
   margin-top: 10px;
-  font-size: 18px;
+  font-size: 16x;
 `;
 
 const Input = styled.input`
@@ -295,7 +296,7 @@ const Input = styled.input`
   margin-top: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 14px;
 `;
 
 const Textarea = styled.textarea`
@@ -305,7 +306,7 @@ const Textarea = styled.textarea`
   margin-top: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 14px;
 `;
 
 const AudioContainer = styled.div`

@@ -12,7 +12,7 @@ const DiaryListCard = ({ diary }: { diary: { id: number; title: string; content:
   }
   const formattedDeposit = Number(diary.deposit).toLocaleString()
   const truncatedContent = diary.content.length > 20
-    ? diary.content.substring(0, 20) + "..."
+    ? diary.content.substring(0, 18) + "..."
     : diary.content
 
   const isDefaultImage = !diary.imageUrl || diary.imageUrl === "https://hexagon-abuba.s3.amazonaws.com/null"
@@ -49,13 +49,13 @@ const Card = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 24px;
+  font-size: 18px;
   color: #333;
   margin-bottom: 5px;
 `;
 
 const Content = styled.p`
-  font-size: 20px;
+  font-size: 16px;
   color: #555;
   margin: 10px 0;
 `;
@@ -64,7 +64,7 @@ const InfoRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 18px;
+  font-size: 16px;
   color: #999;
 `;
 
