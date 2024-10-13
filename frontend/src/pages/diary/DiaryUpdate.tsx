@@ -176,7 +176,9 @@ const DiaryUpdate = () => {
       />
 
       <Label>목소리 듣기/녹음</Label>
-      <AudioPlayer src={diaryData.audioUrl} onNewRecording={handleNewRecording} />
+      <AudioContainer>
+        <AudioPlayer src={diaryData.audioUrl} onNewRecording={handleNewRecording} />
+      </AudioContainer>
     </Content>
   </DiaryContainer>
   )
@@ -305,3 +307,11 @@ const Textarea = styled.textarea`
   border-radius: 5px;
   font-size: 16px;
 `;
+
+const AudioContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100px;
+`

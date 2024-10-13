@@ -62,7 +62,7 @@ public class DiaryService {
         Baby baby = parent.getBaby();
         List<Parent> parentList = baby.getParents();
         List<Diary> diaries = diaryRepository.findByParents(parentList);
-        Collections.reverse(diaries);
+//        Collections.reverse(diaries);
 
         for (Diary diary : diaries) {
             DiaryRecentResDTO diaryRecentResDTO = new DiaryRecentResDTO(diary.getId(), null);

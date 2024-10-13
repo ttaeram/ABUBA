@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Line } from 'react-chartjs-2'
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Tick } from 'chart.js'
 import TransactionItem from '../../components/account/TransactionItem'
 import styled from 'styled-components'
 import api from "../../api/index"
@@ -15,6 +15,12 @@ type Transaction = {
   balance: string;
   isPositive: boolean;
 };
+
+const motivationMessages = [
+  "잘하고 있어요!",
+  "오늘도 화이팅!",
+  "매일매일 쌓아보아요!",
+]
 
 const groupTransactionsByDate = (transactions: Transaction[]) => {
   return transactions.reduce((groups: { [key: string]: Transaction[] }, transaction) => {
@@ -43,6 +49,16 @@ const ChildAccount: React.FC = () => {
       },
     ],
   });
+
+  const getHighestTransaction = (transactions: Transaction[]) => {
+    if (transactions.length === 0) return 0
+    const maxTransaction = Math.max(
+      ...transactions.map((transaction) => parseFloat(transaction.amount))
+    )
+    return maxTransaction
+  }
+
+  const [motivationMessage, setMotivationMessage] = useState<string>("");
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -106,6 +122,9 @@ const ChildAccount: React.FC = () => {
 
         setTransactions(transformedTransactions);
 
+        // const highestAmount = getHighestTransaction(transformedTransactions)
+        // setMotivationMessage(`최고 금액: ${highestAmount.toLocaleString()} 원!`)
+
         const chartLabels = transactionData.map((transaction: any) => transaction.transactionDate).reverse();
         const chartBalances = transactionData.map((transaction: any) => parseFloat(transaction.transactionAfterBalance)).reverse();
 
@@ -129,15 +148,27 @@ const ChildAccount: React.FC = () => {
     fetchTransactions();
   }, []);
 
+  useEffect(() => {
+    const randomMessage =
+      motivationMessages[Math.floor(Math.random() * motivationMessages.length)]
+    setMotivationMessage(randomMessage)
+  }, [])
+
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
       x: {
-        display: false,
+        display: true,
         grid: {
           display: true,
         },
+        ticks: {
+          color: `white`,
+          fonst: {
+            size: 10,
+          },
+        }
       },
       y: {
         display: false,
@@ -160,6 +191,7 @@ const ChildAccount: React.FC = () => {
 
   return (
     <ChildAccountWrapper>
+      <MotivationMessaage>{motivationMessage}</MotivationMessaage>
       <ChartSection>
         <Line data={chartData} options={chartOptions} />
       </ChartSection>
@@ -207,6 +239,14 @@ const ChartSection = styled.div`
   align-items: center;
   margin: 20px;
 `;
+
+const MotivationMessaage = styled.div`
+  margin-left: 20px;
+  margin-top: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+`
 
 const BalanceSection = styled.div`
   background-color: #fff;
