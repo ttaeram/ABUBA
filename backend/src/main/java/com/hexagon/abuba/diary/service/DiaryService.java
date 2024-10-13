@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.*;
@@ -237,6 +238,28 @@ public class DiaryService {
         diaryRepository.save(diary);
     }
 
+
+    public List<HeightResponse> getHeight(Parent user){
+        List<Diary> diaries = diaryRepository.findByParentId(user.getId());
+
+        LocalDate recent = LocalDate.now().plusDays(1);
+        List<HeightResponse> responses = new ArrayList<>();
+        for(Diary diary: diaries){
+            if(recent.isEqual(diary.getCreatedAt().toLocalDate())){
+                continue;
+            }else{
+                recent = diary.getCreatedAt().toLocalDate();
+                responses.add(new HeightResponse(
+                        recent,
+                        diary.getHeight(),
+                        diary.getWeight(),
+                        diary.getFace_url()
+                ));
+
+            }
+        }
+        return responses;
+    }
 
 
 
