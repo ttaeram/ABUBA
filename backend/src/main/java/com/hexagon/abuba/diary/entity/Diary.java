@@ -59,6 +59,9 @@ public class Diary {
     //감정
     private String sentiment;
 
+    //얼굴이미지 url
+    private String face_url;
+
     public void setParent(Parent parent) {
         if(this.parent != null){
             this.parent.getDiaries().remove(this);
