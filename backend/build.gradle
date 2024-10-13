@@ -67,6 +67,12 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+	// google api
+	implementation platform('com.google.cloud:libraries-bom:26.44.0')
+	implementation 'com.google.cloud:google-cloud-bigquery'
+
+	implementation platform('org.springframework.cloud:spring-cloud-gcp-dependencies:1.2.8.RELEASE')
+	implementation 'org.springframework.cloud:spring-cloud-gcp-starter-vision'
 }
 
 tasks.named('test') {

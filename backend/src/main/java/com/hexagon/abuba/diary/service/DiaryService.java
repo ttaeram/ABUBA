@@ -280,6 +280,7 @@ public class DiaryService {
             String uploadFileName = s3Service.uploadFile(inputStream, fileName, fileType, mimeType);
             if(fileType.equals("img")){
                 diary.setImage_url(uploadFileName);
+                String faceImageUrl = aiService.detectFacesGcs(s3Service.getFileUrl(diary.getImage_url()));
             }else if(fileType.equals("record")){
                 diary.setRecord_url(uploadFileName);
             }
