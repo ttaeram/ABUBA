@@ -42,3 +42,6 @@ logging:
     org.springframework.security: DEBUG
     org.springframework.security.web.access: DEBUG
     org.springframework.security.authentication: DEBUG
+
+server:
+  address= 0.0.0.0
