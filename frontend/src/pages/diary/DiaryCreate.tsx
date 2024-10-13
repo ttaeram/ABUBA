@@ -238,12 +238,12 @@ const ActionButton = styled.div`
   background: none;
   border: none;
   color: #3B6EBA;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
 `;
 
 const Content = styled.div`
-  margin-top: 20px;
+  margin-top: 18px;
 `;
 
 const ImageContainer = styled.div`
@@ -297,7 +297,7 @@ const StatItem = styled.div`
 `;
 
 const StatLabel = styled.label`
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
 `;
 
@@ -307,13 +307,13 @@ const StatInput = styled.input`
   text-align: right;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-left: 40px;
+  margin-left: 20px;
   font-size: 16px;
 `;
 
 const Unit = styled.span`
   margin-left: 10px;
-  font-size: 18px;
+  font-size: 16px;
   color: #555;
 `;
 
@@ -388,18 +388,22 @@ const AudioContainer = styled.div`
 const TransferTitle = styled.span`
   font-weight: bold;
   color: #000;
+  font-size: 18px;
 `;
 
 const Money = styled.span`
   color: #3B6EBA;
   margin-bottom: 5px;
+  font-size: 16px;
 `;
 
 const Account = styled.span`
   font-weight: bold;
   color: #000;
+  font-size: 16px;
 `;
 
 const MemoLabel = styled.p`
   margin-right: 10px;
+  font-size: 16px;
 `;
