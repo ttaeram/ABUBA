@@ -43,7 +43,7 @@ const DiaryCreate = () => {
         const newUrl = URL.createObjectURL(file)
         setPreviewUrl(newUrl)
       })
-
+      console.log(222);
      
     }
   }
