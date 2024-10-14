@@ -241,23 +241,19 @@ public class DiaryService {
 
 
     public List<HeightResponse> getHeight(Parent user){
-        List<Diary> diaries = diaryRepository.findByParentId(user.getId());
-
-        LocalDate recent = LocalDate.now().plusDays(1);
+        List<Diary> diaries = diaryRepository.findByBaby(user.getBaby());
+        //날짜별로 하나만 있어야한다.
         List<HeightResponse> responses = new ArrayList<>();
+        Set<String> duplicatedDate = new HashSet<>();
         for(Diary diary: diaries){
-            if(recent.isEqual(diary.getCreatedAt().toLocalDate())){
-                continue;
-            }else{
-                recent = diary.getCreatedAt().toLocalDate();
-                responses.add(new HeightResponse(
-                        recent,
-                        diary.getHeight(),
-                        diary.getWeight(),
-                        diary.getFace_url()
-                ));
-
-            }
+            String date = diary.getCreatedAt().toLocalDate().toString();
+            if(duplicatedDate.contains(date)) continue;
+            responses.add(new HeightResponse(
+                    diary.getCreatedAt().toLocalDate(),
+                    diary.getHeight(),
+                    diary.getWeight(),
+                    diary.getFace_url()
+            ));
         }
         return responses;
     }
