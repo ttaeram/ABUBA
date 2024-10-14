@@ -357,9 +357,18 @@ public class DiaryService {
                         Collectors.mapping(this::toPostSummary, Collectors.toList())
                 ));
 
-        dayPostsList.forEach(dayPosts ->
-                dayPosts.setPosts(postsByDate.getOrDefault(dayPosts.getDate(), new ArrayList<>()))
-        );
+        dayPostsList.forEach(dayPosts -> {
+            List<DiarySummary> postList = postsByDate.getOrDefault(dayPosts.getDate(), new ArrayList<>());
+            if (!postList.isEmpty()) {
+                // 첫 번째 post만 추가
+                dayPosts.setPosts(Collections.singletonList(postList.get(0)));
+            } else {
+                dayPosts.setPosts(new ArrayList<>());
+            }
+        });
+//        dayPostsList.forEach(dayPosts ->
+//                dayPosts.setPosts(postsByDate.getOrDefault(dayPosts.getDate(), new ArrayList<>()))
+//        );
     }
 
     private DiarySummary toPostSummary(Diary diary) {
