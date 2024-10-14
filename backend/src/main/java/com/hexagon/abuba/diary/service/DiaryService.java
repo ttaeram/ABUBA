@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
-@Transactional
 @Slf4j
 public class DiaryService {
     private final DiaryRepository diaryRepository;
@@ -57,13 +56,13 @@ public class DiaryService {
         this.alarmService = alarmService;
     }
 
+    @Transactional
     public List<DiaryRecentResDTO> recentDiary(Long parentId) {
         List<DiaryRecentResDTO> diaryRecentResDTOList = new ArrayList<>();
         Parent parent = parentRepository.findById(parentId).orElseThrow();
         Baby baby = parent.getBaby();
         List<Parent> parentList = baby.getParents();
         List<Diary> diaries = diaryRepository.findByParents(parentList);
-//        Collections.reverse(diaries);
 
         for (Diary diary : diaries) {
             DiaryRecentResDTO diaryRecentResDTO = new DiaryRecentResDTO(diary.getId(), null);
@@ -80,6 +79,7 @@ public class DiaryService {
         return diaryRecentResDTOList;
     }
 
+    @Transactional
     public List<DiaryResDTO> getList(Long parentId){
         Parent parent = parentRepository.findById(parentId).orElseThrow();
         Baby baby = parent.getBaby();
@@ -102,6 +102,7 @@ public class DiaryService {
         return diaryResDTOList;
     }
 
+    @Transactional
     public DiaryDetailResDTO getDetail(Long diaryId, Parent user){
         Diary diary = diaryRepository.findById(diaryId).orElseThrow();
         Optional<Alarm> alarm = alarmRepository.findByDiaryIdAndParentId(diaryId, user.getId());
@@ -127,7 +128,6 @@ public class DiaryService {
         return diaryDetailResDTO;
     }
 
-    @Async
     public void addDiary(Long parentId, DiaryDetailReqDTO reqDTO, MultipartFile image, MultipartFile record){
         InputStream imageStream = null;
         InputStream recordStream = null;
@@ -232,10 +232,11 @@ public class DiaryService {
 
         String sentiment = aiService.getSentiment(reqDTO.content());
         diary.setSentiment(sentiment);
-        diary = uploadFile(imageStream, imageName, "img", diary, imgMimeType);
-        diary = uploadFile(recordStream, recordName, "record", diary, recordMimeType);
-
         diaryRepository.save(diary);
+
+        uploadFile(imageStream, imageName, "img", diary, imgMimeType);
+        uploadFile(recordStream, recordName, "record", diary, recordMimeType);
+
     }
 
 
@@ -292,33 +293,37 @@ public class DiaryService {
         diary.setMemo(reqDTO.memo());
 
 
-        diary = uploadFile(imageStream, imageName, "img", diary, imgMimeType);
-        diary = uploadFile(recordStream, recordName, "record", diary, recordMimeType);
+        uploadFile(imageStream, imageName, "img", diary, imgMimeType);
+        uploadFile(recordStream, recordName, "record", diary, recordMimeType);
 
         return diary;
     }
-
-    private Diary uploadFile(InputStream inputStream, String fileName, String fileType, Diary diary, String mimeType){
+    @Async
+    private void uploadFile(InputStream inputStream, String fileName, String fileType, Diary diary, String mimeType){
         if(inputStream != null && fileName != null){
             String uploadFileName = s3Service.uploadFile(inputStream, fileName, fileType, mimeType);
             if(fileType.equals("img")){
                 diary.setImage_url(uploadFileName);
-                String faceImageUrl = aiService.detectFacesGcs(s3Service.getFileUrl(diary.getImage_url()));
-                if(faceImageUrl != null){
-                    diary.setFace_url(faceImageUrl);
-                }
             }else if(fileType.equals("record")){
                 diary.setRecord_url(uploadFileName);
             }
         }
-//        else{
-//            if(fileType.equals("img")){
-//                diary.setImage_url(null);
-//            }else{
-//                diary.setRecord_url(null);
-//            }
-//        }
-        return diary;
+        usingGoogleAI(diary.getImage_url(), diary);
+    }
+
+    @Async
+    private void usingGoogleAI(String imageUrl, Diary diary) {
+        if(imageUrl == null) return;
+        try{
+            String faceImageUrl = String.valueOf(aiService.detectFacesGcs(s3Service.getFileUrl(imageUrl)));
+            if(faceImageUrl != null){
+                diary.setFace_url(faceImageUrl);
+            }
+        }catch (Exception e){
+            log.info("GoogleAI 사용하다가 Exception이 발생했습니다.");
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -327,7 +332,7 @@ public class DiaryService {
      * @param month
      * @param user
      */
-
+    @Transactional
     public CalendarResponse getCalendar(int year, int month, Parent user) {
         YearMonth yearMonth = YearMonth.of(year, month);
         List<DayPosts> dayPostsList = initializeMonthDays(yearMonth);

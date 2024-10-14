@@ -9,6 +9,7 @@ import com.hexagon.abuba.s3.service.S3Service;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -22,10 +23,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 
 @Service
-@Transactional
 @Slf4j
 public class AIService {
     private final FinAIAPIClient finAIAPIClient;
@@ -65,7 +66,8 @@ public class AIService {
         }
     }
 
-    public String detectFacesGcs(String s3Url) {
+    @Async
+    public CompletableFuture<String> detectFacesGcs(String s3Url) {
         List<AnnotateImageRequest> requests = new ArrayList<>();
         ImageSource imgSource = ImageSource.newBuilder().setImageUri(s3Url).build();
         Image img = Image.newBuilder().setSource(imgSource).build();
@@ -80,24 +82,28 @@ public class AIService {
             for (AnnotateImageResponse res : responses) {
                 if (res.hasError()) {
                     log.error("Error: {}", res.getError().getMessage());
-                    return null;
+                    return CompletableFuture.completedFuture(null);
                 }
                 for (FaceAnnotation annotation : res.getFaceAnnotationsList()) {
                     BoundingPoly boundingPoly = annotation.getBoundingPoly();
-                    BufferedImage croppedFace = cropFace(s3Url, boundingPoly);
 
+                    BufferedImage croppedFace = cropFace(s3Url, boundingPoly);
 
                     String uploadedFileName = uploadCroppedFace(croppedFace, "face_image.jpg");
                     log.info("Uploaded cropped face image to S3 with file name: {}", uploadedFileName);
-                    return uploadedFileName;
+
+                    // 비동기 작업 결과 반환
+                    return CompletableFuture.completedFuture(uploadedFileName);
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("IOException occurred: ", e);
+            // 예외 발생 시 비동기 결과 처리
+            return CompletableFuture.failedFuture(e);
         }
-        return null;
+        // 얼굴을 감지하지 못한 경우
+        return CompletableFuture.completedFuture(null);
     }
-
 
 
     public BufferedImage cropFace(String s3Url, BoundingPoly boundingPoly) {
