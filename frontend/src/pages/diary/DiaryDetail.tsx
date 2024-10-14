@@ -139,6 +139,7 @@ const UpdateButton = styled.div`
 
 const Content = styled.div`
   margin-top: 20px;
+  font-weight: 16px;
 `;
 
 const DiaryImage = styled.img`
@@ -208,7 +209,6 @@ const AccountContainer = styled.div`
 `;
 
 const TransferTitle = styled.span`
-  font-weight: bold;
   color: #000;
   font-size: 16px;
 `;

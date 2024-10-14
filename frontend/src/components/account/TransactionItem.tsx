@@ -16,7 +16,7 @@ const TransactionItem: React.FC<Transaction> = ({ date, description, amount, bal
     <TransactionItemWrapper>
       <TransactionDate>{date}</TransactionDate>
       <TransactionDetail>
-        <span>{description}</span>
+        <Memo>{description}</Memo>
         <AmountContainer>
           <Amount style={{ color: isPositive ? 'black' : '#3B6EBA' }}>+{formattedAmount} 원</Amount>
           <Balance>{formattedBalance} 원</Balance>
@@ -45,7 +45,6 @@ const TransactionDetail = styled.div`
   justify-content: space-between;
   width: 100%;
   span {
-    font-size: 16px;
   }
 `;
 
@@ -54,6 +53,10 @@ const AmountContainer = styled.div`
   flex-direction: column;
   align-items: flex-end;
 `;
+
+const Memo = styled.div`
+  font-size: 16px;
+`
 
 const Amount = styled.span`
   font-size: 16px;

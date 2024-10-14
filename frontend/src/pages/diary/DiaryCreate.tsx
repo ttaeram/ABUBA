@@ -343,21 +343,15 @@ const Textarea = styled.textarea`
   font-size: 16px;
 `;
 
-const Button = styled.button`
+const Button = styled.div`
   padding: 10px 20px;
-  background-color: white;
-  color: #3B6EBA;
+  background-color: #3B6EBA;
+  color: white;
   border-color: #3B6EBA;
   border-radius: 5px;
   cursor: pointer;
   margin-top: 10px;
   font-size: 16px;
-
-  &:hover {
-    background-color: #3B6EBA;
-    border-color: white;
-    color: white;
-  }
 `;
 
 const DepositContainer = styled.div`
