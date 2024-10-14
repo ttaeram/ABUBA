@@ -58,7 +58,7 @@ const Growth: React.FC = () => {
       {
         label: '키 (cm)',
         data: heights,
-        borderColor: 'rgba(75, 192, 192, 1)',
+        borderColor: '#3B6EBA',
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
         yAxisID: 'y1',
         tension: 0.1,
@@ -66,7 +66,7 @@ const Growth: React.FC = () => {
       {
         label: '몸무게 (kg)',
         data: weights,
-        borderColor: 'rgba(255, 99, 132, 1)',
+        borderColor: '#ffde02',
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
         yAxisID: 'y2',
         tension: 0.1,
@@ -92,11 +92,14 @@ const Growth: React.FC = () => {
         type: 'linear',
         position: 'left',
         title: {
-          display: true,
-          text: '키 (cm)',
+          display: false,
+          text: '신장 (cm)',
         },
         ticks: {
           stepSize: 5,
+        },
+        grid: {
+          display: false,
         },
       },
       y2: {
@@ -104,20 +107,24 @@ const Growth: React.FC = () => {
         type: 'linear',
         position: 'right',
         title: {
-          display: true,
-          text: '몸무게 (kg)',
+          display: false,
+          text: '체중 (kg)',
         },
         ticks: {
           stepSize: 5,
         },
         grid: {
           drawOnChartArea: false,
+          display: false,
         },
       },
       x: {
         title: {
-          display: true,
+          display: false,
           text: '',
+        },
+        grid: {
+          display: false,
         },
       },
     },
