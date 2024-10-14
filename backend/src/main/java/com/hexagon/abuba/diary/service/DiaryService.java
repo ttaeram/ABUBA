@@ -304,7 +304,7 @@ public class DiaryService {
             String uploadFileName = s3Service.uploadFile(inputStream, fileName, fileType, mimeType);
             if(fileType.equals("img")){
                 diary.setImage_url(uploadFileName);
-//                usingGoogleAI(diary.getImage_url(), diary);
+                usingGoogleAI(diary.getImage_url(), diary);
             }else if(fileType.equals("record")){
                 diary.setRecord_url(uploadFileName);
             }
