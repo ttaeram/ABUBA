@@ -248,6 +248,7 @@ public class DiaryService {
         for(Diary diary: diaries){
             String date = diary.getCreatedAt().toLocalDate().toString();
             if(duplicatedDate.contains(date)) continue;
+            duplicatedDate.add(date);
             responses.add(new HeightResponse(
                     diary.getCreatedAt().toLocalDate(),
                     diary.getHeight(),
