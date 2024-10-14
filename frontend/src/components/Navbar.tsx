@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ReactComponent as LogoSvg } from '../assets/images/onlylogo.svg';
 import AlertModal from './AlertModal';
 import { useNavigate } from 'react-router-dom';
-import { AiOutlineCalendar, AiOutlineBell } from "react-icons/ai";
+import { AiOutlineCalendar, AiOutlineBell, AiOutlineBarChart } from "react-icons/ai";
 import { useNotificationStore } from '../stores/notificationStore';
 import axios from 'axios';
 
@@ -50,6 +50,10 @@ const Navbar = () => {
     navigate('/mycalendar');
   };
 
+  const handleGraphClick = () => {
+    navigate('/growthgraph');
+  };
+
   const handleNotificationClick = (diaryId: number) => {
     setIsModalOpen(false); // 모달 닫기
     navigate(`/diary/${diaryId}`); // 해당 일기 상세 페이지로 이동
@@ -59,6 +63,7 @@ const Navbar = () => {
     <NavbarContainer>
       <LogoSvgStyled onClick={handleHomeClick} />
       <IconContainer>
+        <AiOutlineBarChart size={24} color="#000000" onClick={handleGraphClick}/>
         <AiOutlineCalendar size={24} color="#000000" onClick={handleCalClick} />
         <NotificationButton onClick={toggleModal}>
           <AiOutlineBell size={24} />
