@@ -315,7 +315,7 @@ public class DiaryService {
     private void usingGoogleAI(String imageUrl, Diary diary) {
         if(imageUrl == null) return;
         try{
-            String faceImageUrl = String.valueOf(aiService.detectFacesGcs(s3Service.getFileUrl(imageUrl)));
+            String faceImageUrl = String.valueOf(aiService.detectFacesGcs(s3Service.getFileUrl(imageUrl)).get());
             if(faceImageUrl != null){
                 diary.setFace_url(faceImageUrl);
             }
