@@ -3,7 +3,7 @@ import { useAuthStore } from "../stores/authStore";
 
 export const login = async (email: string, password: string) => {
   try {
-    const response = await api.post(`${process.env.PUBLIC_URL}/api/v1/auth/login`, { email, password });
+    const response = await api.post(`/api/v1/auth/login`, { email, password });
     
     const accessToken = response.headers["authorization"];
     // const refreshToken = response.headers["x-refresh-token"];
