@@ -64,8 +64,8 @@ const Growth: React.FC = () => {
     const firstRecord = data[0]
     const lastRecord = data[data.length - 1]
 
-    const heightDiff = lastRecord.height - firstRecord.height
-    const weightDiff = lastRecord.weight - firstRecord.weight
+    const heightDiff = Math.round(lastRecord.height - firstRecord.height)
+    const weightDiff = Math.round(lastRecord.weight - firstRecord.weight)
 
     setHeightGrowth(heightDiff)
     setWeightGrowth(weightDiff)
@@ -164,16 +164,16 @@ const Growth: React.FC = () => {
 
   return (
     <GraphContainer style={{ width: '100%', height: '400px' }}>
-      <Line data={data} options={options} />
       <GrowthSummary>
         <Duration>{durationInfo}</Duration>
         <HeightChange>
-          - {shortname}(이)는 {duration} 동안 신장이 {heightGrowth > 0 ? `${heightGrowth}cm 자랐어요!` : '변화가 없어요.'}
+          - {shortname}(이)는 <ColoredHeightText>{duration}</ColoredHeightText> 동안 <ColoredHeightText>신장</ColoredHeightText>이 <ColoredHeightText>{heightGrowth > 0 ? `${heightGrowth}cm` : '0cm'}</ColoredHeightText> 자랐어요!
         </HeightChange>
         <WeightChange>
-          - {shortname}(이)는 {duration} 동안 체중이 {weightGrowth > 0 ? `${weightGrowth}kg 늘었어요!` : '변화가 없어요.'}
+          - {shortname}(이)는 <ColoredWeightText>{duration}</ColoredWeightText> 동안 <ColoredWeightText>체중</ColoredWeightText>이 <ColoredWeightText>{weightGrowth > 0 ? `${weightGrowth}kg` : '0kg'}</ColoredWeightText> 늘었어요!
         </WeightChange>
       </GrowthSummary>
+      <Line data={data} options={options} />
     </GraphContainer>
   );
 };
@@ -195,20 +195,28 @@ const Duration = styled.div`
   font-size: 16px;
   font-weight: bold;
   color: #333;
-  margin-bottom: 8px;
+  margin-bottom: 30px;
 `;
 
 const HeightChange = styled.div`
   font-size: 16px;
-  color: #3B6EBA;
+  color: black;
   margin-bottom: 8px;
-  text-align: left;
+  text-align: center;
   width: 100%;
 `;
 
 const WeightChange = styled.div`
   font-size: 16px;
-  color: #FFB800;
-  text-align: left;
+  color: black;
+  text-align: center;
   width: 100%;
+`;
+
+const ColoredHeightText = styled.span`
+  color: #3B6EBA;
+`;
+
+const ColoredWeightText = styled.span`
+  color: #FFB800;
 `;
