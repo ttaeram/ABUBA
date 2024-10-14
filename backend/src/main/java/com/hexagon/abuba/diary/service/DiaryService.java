@@ -304,18 +304,18 @@ public class DiaryService {
             String uploadFileName = s3Service.uploadFile(inputStream, fileName, fileType, mimeType);
             if(fileType.equals("img")){
                 diary.setImage_url(uploadFileName);
+//                usingGoogleAI(diary.getImage_url(), diary);
             }else if(fileType.equals("record")){
                 diary.setRecord_url(uploadFileName);
             }
         }
-        usingGoogleAI(diary.getImage_url(), diary);
     }
 
     @Async
     private void usingGoogleAI(String imageUrl, Diary diary) {
         if(imageUrl == null) return;
         try{
-            String faceImageUrl = String.valueOf(aiService.detectFacesGcs(s3Service.getFileUrl(imageUrl)));
+            String faceImageUrl = String.valueOf(aiService.detectFacesGcs(s3Service.getFileUrl(imageUrl)).get());
             if(faceImageUrl != null){
                 diary.setFace_url(faceImageUrl);
             }
