@@ -58,4 +58,12 @@ public class Baby {
     public void setBankName(String bankName) {
         this.bankName = bankName;
     }
+
+    public void setHeight(Double height) {
+        this.height = height;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
 }

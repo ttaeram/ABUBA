@@ -174,6 +174,8 @@ public class DiaryService {
             diaryRepository.save(diary);
         }
 
+        diary.getParent().getBaby().setHeight(reqDTO.height());
+        diary.getParent().getBaby().setWeight(reqDTO.height());
         //알림 전송을 위한 로직 추가.
         //1.작성자가 해당 게시글을 읽었음으로 표기한다.
         Parent writer = parentRepository.findById(parentId).orElseThrow(()->new BusinessException(ErrorCode.USER_NOT_FOUND));
@@ -233,6 +235,9 @@ public class DiaryService {
         String sentiment = aiService.getSentiment(reqDTO.content());
         diary.setSentiment(sentiment);
         diaryRepository.save(diary);
+
+        diary.getParent().getBaby().setHeight(reqDTO.height());
+        diary.getParent().getBaby().setWeight(reqDTO.height());
 
         uploadFile(imageStream, imageName, "img", diary, imgMimeType);
         uploadFile(recordStream, recordName, "record", diary, recordMimeType);
