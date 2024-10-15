@@ -202,10 +202,10 @@ public class DiaryService {
         diary.setHeight(reqDTO.height());
         diary.setWeight(reqDTO.weight());
 
-        if(diary.getImage_url() != null)
-            s3Service.deleteFile(diary.getImage_url());
-        if(diary.getRecord_url() != null)
-            s3Service.deleteFile(diary.getRecord_url());
+//        if(diary.getImage_url() != null)
+//            s3Service.deleteFile(diary.getImage_url());
+//        if(diary.getRecord_url() != null)
+//            s3Service.deleteFile(diary.getRecord_url());
 
         InputStream imageStream = null;
         InputStream recordStream = null;
