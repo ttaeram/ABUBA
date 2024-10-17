@@ -1,8 +1,10 @@
 # 👶 ABUBA - 육아 다이어리형 금융 서비스
-![Thumbnail](..%2F..%2F..%2F..%2FDownloads%2FABUBA_THUMBNAIL.JPG)
+<hr>
 
-💡 ABUBA는 어떤 서비스인가요?
----
+<img src="docs/thumbnail.JPG">
+
+## 💡 ABUBA는 어떤 서비스인가요?
+<hr>
 아이의 성장을 더 특별하게 기록하고 싶나요? 그렇다면 **ABUBA**를 소개합니다!
 
 **ABUBA**는 육아와 금융을 결합한 새로운 서비스입니다. 부모님이 아이의 일상을 육아 일기로 기록하는 동시에, 아이의 미래를 위한 저축을 관리할 수 있습니다. 아이의 첫 미소, 첫 걸음, 첫 마디, 그 모든 소중한 순간을 간직하면서 미래를 위한 준비도 함께 할 수 있어요.
@@ -11,12 +13,14 @@
 
 **ABUBA**와 함께라면, 아이의 성장과 함께하는 매일이 특별한 추억이 됩니다!
 
-📆 프로젝트 기간
----
+## 📆 프로젝트 기간
+<hr>
+
 2024.08.19(월) ~ 2024.10.11(금)
 
-🏃 팀원 소개
----
+## 🏃 팀원 소개
+<hr>
+
 ### Backend
 | <img src="docs/devMembers/cjh.png"  width="150" height="150"/> | <img src="docs/devMembers/ldg.png"  width="150" height="150"/> | <img src="docs/devMembers/kjy.png"  width="150" height="150"/> |
 |:--------------------------------------------------------------:|:--------------------------------------------------------------:|:--------------------------------------------------------------:|
@@ -32,8 +36,9 @@
 |:--------------------------------------------------------------:|
 |                              김영표                               |
 
-🛠️ 메인 기능
----
+## 🛠️ 메인 기능
+<hr>
+
 - ### 육아 일기 & 성장 기록
     - 아이의 소중한 순간들을 사진과 음성으로 기록할 수 있어요. 예를 들어, 아이가 처음으로 걷는 순간이나 첫 번째 생일을 일기로 남기고, 감정 달력으로 그 날의 기분을 시각화할 수 있어요
     - AI 감정 분석 기능을 통해 일기 작성자의 감정 상태를 분석하고 이모지로 표현하여, 육아 기록을 더 다양하게 간직할 수 있어요
@@ -54,39 +59,66 @@
       <br/>
 
 ## 📜 주요 기술
----
-**Backend Skills**
-* IntelliJ IDEA Ultimate
-* Springboot 3.3.3
-* Spring Security & JWT
-* Spring Data JPA
-* Swagger 2.2.0
-* MySQL
-* Server-Sent Event(SSE)
-* OpenFeign 4.1.3
-* Google API
+<hr>
 
-**Frontend Skills**
-- Visual Studio Code
-- React
+## 🖥️ Client
 
-**Infra Skills**
-- AWS EC2 Lightsail
-- AWS S3
-- Jenkins
-- Docker
-- Nginx
+| 역할 | 종류 |
+|------|------|
+| Framework | ![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=Next.js&logoColor=white) |
+| Programming Language | ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=white) |
+| Styling | ![Styled Components](https://img.shields.io/badge/styled--components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white) |
+| State Management | ![Zustand](https://img.shields.io/badge/Zustand-5B4638?style=for-the-badge&logoColor=white) |
+| Version Control | ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=Git&logoColor=white) ![GitLab](https://img.shields.io/badge/GitLab-FC6D26?style=for-the-badge&logo=GitLab&logoColor=white) |
+| IDE | ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-007ACC?style=for-the-badge&logo=Visual-Studio-Code&logoColor=white) |
+| Web App | ![PWA](https://img.shields.io/badge/PWA-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white) |
+
+## 🖧 Server
+
+| 역할 | 종류 |
+|------|------|
+| Programming Language | ![Java](https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white) |
+| Framework | ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white) ![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=spring-security&logoColor=white) |
+| Authentication | ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white) ![OAuth2](https://img.shields.io/badge/OAuth2-2496ED?style=for-the-badge&logo=OAuth&logoColor=white) |
+| Database | ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white) ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white) |
+| Cloud & SDK | ![GCP SDK](https://img.shields.io/badge/GCP%20SDK-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white) ![GCP](https://img.shields.io/badge/GCP-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white) |
+| Build Tool | ![Gradle](https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white) |
+| Real-time Communication | ![Server-Sent Events](https://img.shields.io/badge/Server--Sent%20Events-008CDD?style=for-the-badge&logo=javascript&logoColor=white) |
+| API Client | ![OpenFeign](https://img.shields.io/badge/OpenFeign-E10098?style=for-the-badge&logo=spring&logoColor=white) |
+
+## 🏗️ Infrastructure
+
+| 역할 | 종류 |
+|------|------|
+| Web Server | ![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white) |
+| Containerization | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) |
+| CI/CD | ![Jenkins](https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white) |
+| Cloud Services | ![AWS EC2](https://img.shields.io/badge/AWS%20EC2-FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white) ![AWS S3](https://img.shields.io/badge/AWS%20S3-569A31?style=for-the-badge&logo=amazon-s3&logoColor=white) |
+
+## 📠 협업 툴
+
+| 도구 | 용도 |
+|------|------|
+| ![GitLab](https://img.shields.io/badge/GitLab-FCA121?style=for-the-badge&logo=gitlab&logoColor=white) | 버전 관리 및 CI/CD |
+| ![Jira](https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=jira&logoColor=white) | 프로젝트 관리 및 이슈 트래킹 |
+| ![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white) | 문서화 및 지식 관리 |
+| ![Mattermost](https://img.shields.io/badge/Mattermost-0058CC?style=for-the-badge&logo=mattermost&logoColor=white) | 팀 커뮤니케이션 |
+| ![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white) | 음성 채팅 및 실시간 협업 |
+| ![Webex](https://img.shields.io/badge/Webex-00A0D1?style=for-the-badge&logo=webex&logoColor=white) | 화상 회의 및 원격 협업 |
 
 ## 📝 ERD Diagram
----
-![ERD.JPG](docs%2FERD.JPG)
+<hr>
+
+<img src="docs/architecture/erd.JPG">
 
 ## 🎨 System Architecture
----
-![img_2.png](docs/SystemArchitecture.png)
+<hr>
+
+<img src="docs/architecture/system_architecture.png">
 
 ## 📁 프로젝트 파일 구조도
----
+<hr>
+
 ### Backend
 ```
 backend
@@ -190,41 +222,37 @@ frontend
 
 ```
 
-
-## 📠 협업 툴
----
-- Gitlab
-- Jira
-- Notion
-- MatterMost
-- Discord
-- Webex
-
 ## 🖥️ ABUBA 서비스 화면
----
+<hr>
+
 - ### 회원 관리
     - #### 아이 정보 입력
-    ![아이정보입력.png](..%2F..%2F..%2F..%2FDownloads%2F%EC%95%84%EC%9D%B4%EC%A0%95%EB%B3%B4%EC%9E%85%EB%A0%A5.png)
-    - #### 부모 계좌 인증
-    ![부모 계좌 인증.png](..%2F..%2F..%2F..%2FDownloads%2F%EB%B6%80%EB%AA%A8%20%EA%B3%84%EC%A2%8C%20%EC%9D%B8%EC%A6%9D.png)
-    - #### 아이 계좌 인증
-    ![아이 계좌 인증.png](..%2F..%2F..%2F..%2FDownloads%2F%EC%95%84%EC%9D%B4%20%EA%B3%84%EC%A2%8C%20%EC%9D%B8%EC%A6%9D.png)
+    <img src="docs/service/insert_baby_information.png">
 
+    - #### 부모 계좌 인증
+    <img src="docs/service/cert_parent_account.png">
+    
+    - #### 아이 계좌 인증
+    <img src="docs/service/cert_baby_account.png">
+    
 - ### 메인 페이지
   - #### 시작 화면
-   ![메인페이지.png](..%2F..%2F..%2F..%2FDownloads%2F%EB%A9%94%EC%9D%B8%ED%8E%98%EC%9D%B4%EC%A7%80.png)
+    <img src="docs/service/main_page.png">
  
 - ### 육아 일기
     - #### 일기 작성
-      ![일기장 작성.png](..%2F..%2F..%2F..%2FDownloads%2F%EC%9D%BC%EA%B8%B0%EC%9E%A5%20%EC%9E%91%EC%84%B1.png)
+    <img src="docs/service/write_diary.png">
+
     - #### 일기장
-      ![일기장.png](..%2F..%2F..%2F..%2FDownloads%2F%EC%9D%BC%EA%B8%B0%EC%9E%A5.png)
+    <img src="docs/service/diary.png">
+
 - ### 성장 기록 & 감정 달력
     - #### 성장 기록 차트
-        ![성장 기록 차트.png](..%2F..%2F..%2F..%2FDownloads%2F%EC%84%B1%EC%9E%A5%20%EA%B8%B0%EB%A1%9D%20%EC%B0%A8%ED%8A%B8.png)
+    <img src="docs/service/growth_chart.png">
+
     - #### 감정 달력
-      ![감정 달력.png](..%2F..%2F..%2F..%2FDownloads%2F%EA%B0%90%EC%A0%95%20%EB%8B%AC%EB%A0%A5.png)
+    <img src="docs/service/emoji_calender.png">
 
 - ### 계좌 상세 정보
     - #### 계좌 이체 내역 & 일기 메모 조회
-    ![계좌 상세정보.png](..%2F..%2F..%2F..%2FDownloads%2F%EA%B3%84%EC%A2%8C%20%EC%83%81%EC%84%B8%EC%A0%95%EB%B3%B4.png)
+    <img src="docs/service/account_detail.png">
